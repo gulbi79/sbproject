@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan(basePackages="com.demo.boot.repository",sqlSessionFactoryRef="db1SqlSessionFactory")/*멀티DB사용시 mapper클래스파일 스켄용 basePackages를 DB별로 따로설정*/
+@MapperScan(basePackages="com.demo.boot.*.repository",sqlSessionFactoryRef="db1SqlSessionFactory")/*멀티DB사용시 mapper클래스파일 스켄용 basePackages를 DB별로 따로설정*/
 @EnableTransactionManagement
 public class MariadbConfig {
 
@@ -33,11 +33,9 @@ public class MariadbConfig {
     @Primary
     public SqlSessionFactory sqlSessionFactory(@Qualifier("db1DataSource") DataSource db1DataSource, ApplicationContext applicationContext) throws Exception{
         final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-//        SqlSessionFactoryBean sessionFactory = new RefreshableSqlSessionFactoryBean();
         sessionFactory.setDataSource(db1DataSource);
         sessionFactory.setConfigLocation(applicationContext.getResource("classpath:mybatis/config/mybatis-config.xml")); //mybatis config.xml 설정
         sessionFactory.setMapperLocations(applicationContext.getResources("classpath:mybatis/mapper/*.xml")); //쿼리작성용 mapper.xml위치 설정.
-//        ((RefreshableSqlSessionFactoryBean) sessionFactory).setInterval(1000);
         return sessionFactory.getObject();
     }
 

@@ -1,4 +1,4 @@
-package com.demo.boot.vo;
+package com.demo.boot.common.vo;
 
 
 import lombok.Data;
@@ -9,7 +9,6 @@ import java.util.Collection;
 
 @Data
 public class UserVo implements UserDetails {
-    private int userNo;
     private String userId;
     private String userPw;
     private String userName;
