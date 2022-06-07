@@ -3,7 +3,6 @@ package com.demo.boot.common.web;
 import com.demo.boot.common.service.UserService;
 import com.demo.boot.common.vo.UserVo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +36,7 @@ public class HomeController {
         return "redirect:/login";
     }
 
-    @PreAuthorize("hasRole('USER')")
+    //@PreAuthorize("hasRole('USER')")
     @GetMapping("/member/info")
     public String userInfoView() {
         return "login/user_info";
