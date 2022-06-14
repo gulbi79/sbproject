@@ -1,0 +1,26 @@
+body{
+    /*background-color: rgb(236, 230, 218);*/
+    background-color: #f6f7f8 !important;
+}
+
+.myCheck::before{
+    border-color: #0b98da!important;
+    background: #0b98da!important;
+}
+
+.frametitle{
+    height: 30px;
+    background-color: #f6f7f8 !important;
+}
+
+.framebody{
+    height: calc(100% - 30px);
+}
+
+.treeDiv{
+    height: calc(100% - 35px);
+}
+
+.bg-basecolor{
+    background-color: #f6f7f8 !important;
+}

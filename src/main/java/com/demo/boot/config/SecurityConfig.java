@@ -50,6 +50,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling()
                 .accessDeniedPage("/denied");
 
+        http.headers()
+                .frameOptions().sameOrigin();
+
+        http.csrf()
+                .disable();
+
         /*
         http
                 .authorizeRequests()

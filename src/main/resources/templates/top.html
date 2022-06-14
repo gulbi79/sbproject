@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="/static/metro/css/metro-all.css?ver=@@b-version" rel="stylesheet">
+
+    <title>layout html</title>
+    <style>
+        #content-wrapper{
+            /*background-color: aqua;*/
+            height: calc(100% - 80px);
+        }
+        iframe {
+            height: 100%;
+        }
+        .frame_container{
+            height: calc(100% - 52px);
+        }
+        .prepend {
+            background: red!important;
+        }
+    </style>
+</head>
+<body class="m4-cloak">
+<div class="h-vh-100">
+    <div data-role="appbar" class="pos-absolute bg-darkCyan fg-white">
+
+        <div class="d-flex flex-align-center">
+            <h2 class="text-light m-0 fg-white pl-3" style="line-height: 52px">Korea</h2>
+        </div>
+
+        <div class="app-bar-container ml-auto">
+            <a href="#" class="app-bar-item">
+                <span class="mif-envelop"></span>
+                <span class="badge bg-green fg-white mt-2 mr-1">4</span>
+            </a>
+            <a href="#" class="app-bar-item">
+                <span class="mif-bell"></span>
+                <span class="badge bg-orange fg-white mt-2 mr-1">10</span>
+            </a>
+            <a href="#" class="app-bar-item">
+                <span class="mif-flag"></span>
+                <span class="badge bg-red fg-white mt-2 mr-1">9</span>
+            </a>
+            <a href="#" class="app-bar-item">
+                <img src="images/jek_vorobey.jpg" class="avatar">
+                <span class="ml-2 app-bar-name">Jack Sparrow</span>
+            </a>
+            <a href="#" class="app-bar-item">
+                <span class="mif-cogs"></span>
+            </a>
+        </div>
+    </div>
+    <div class="frame_container" style="top:52px">
+        <div class="menu">
+            <ul class="h-menu bg-green fg-white">
+                <li><a href="javascript:fn_clickMenu('a','Home')">Home</a></li>
+                <li>
+                    <a href="#" class="dropdown-toggle">Products</a>
+                    <ul class="d-menu bg-pink fg-white" data-role="dropdown">
+                        <li>
+                            <a href="#" class="dropdown-toggle">Windows</a>
+                            <ul class="d-menu" data-role="dropdown">
+                                <li><a href="#">Windows 10</a></li>
+                                <li><a href="#">Windows Server</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">MS-DOS</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:fn_clickMenu('b','Skype')">Skype</a></li>
+                        <li class="divider"></li>
+                        <li><a href="javascript:fn_clickMenu('c','Office')">Office</a></li>
+                    </ul>
+                </li>
+                <li><a href="javascript:fn_clickMenu('d','Support')">Support</a></li>
+                <li><a href="javascript:fn_clickMenu('e','Filter & Grid1/2')">Filter & Grid1/2</a></li>
+                <li><a href="javascript:fn_clickMenu('f','Filter & Grid1')">Filter & Grid1</a></li>
+            </ul>
+        </div>
+
+        <!-- tabs data-tabs-type : text, group, pills.-->
+        <ul id="tabs" data-role="tabs" data-tabs-type="" data-expand="true" data-cls-tabs-list-item-active="bg-taupe fg-white text-light"></ul>
+        <div id="content-wrapper" class=""></div>
+    </div>
+</div>
+
+<script src="/static/metro/js/metro.js?ver=@@b-version"></script>
+<script>
+    function fn_clickMenu(menucd, menunm) {
+        var menu = $(`div[name=${menucd}]`);
+        var menuKey = 0;
+        if (menu.length == 0) menuKey = menu.length;
+        else menuKey = Number(menu.last().attr("id").replace(`_${menucd}_`,""));
+
+        menuKey++;
+        var uniqMenuCd = menucd+'_'+menuKey;
+        console.log(`${menucd} : ${menuKey}`);
+        $('#tabs').append(`<li class="" style="border-right: 1px solid #dfdfdf;"><a href="#_${uniqMenuCd}" class="py-1 px-5"><span class="ml-0">${menunm}</span></a><span class="badge inside c-pointer" onclick="javascript:fn_removeMenu(this,'${uniqMenuCd}')">x</span></li>`);
+
+        var frameHtml = `<div name="${menucd}" id="_${uniqMenuCd}" class="h-100">`;
+        frameHtml += `<iframe name="_${uniqMenuCd}" id="_${uniqMenuCd}_frame" title="Inline Frame Example" width="100%" ></iframe>`; //src="../html/inner1.html"
+        frameHtml += `</div>`;
+        $('#content-wrapper').append(frameHtml);
+
+        var srcUrl = '../html/inner1.html';
+        switch(menucd) {
+            case 'd' :
+                srcUrl = '../html/inner2.html';
+                break;
+            case 'e' :
+                srcUrl = '../html/inner3.html';
+                break;
+            case 'f' :
+            srcUrl = '/inner';
+                break;
+            default :
+                srcUrl = '../html/inner1.html';
+                break;
+        }
+        console.log(srcUrl);
+
+        $(`#_${uniqMenuCd}_frame`).attr('src', srcUrl);
+
+        var tabs = Metro.getPlugin($("#tabs"), "tabs");
+        var li = $("#tabs").find('li');
+        tabs.open(li[li.length-1]);
+    }
+
+    function fn_removeMenu(obj,uniqMenuCd) {
+        //tab 이동 후 삭제
+        var tabs = Metro.getPlugin($("#tabs"), "tabs");
+
+        //활성화된 탭을 닫으면 삭제전에 이동
+        var li = $(obj).parent();
+        if (li.hasClass('active')) {
+            if (li.next().length > 0) tabs.next();
+            else tabs.prev();
+        }
+
+        $('#_'+uniqMenuCd).remove(); //iframe 상위 div 삭제
+        li.remove(); //tab 삭제
+    }
+
+</script>
+
+</body>
+</html>

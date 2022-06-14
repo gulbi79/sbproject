@@ -20,6 +20,26 @@ public class HomeController {
         return "home";
     }
 
+    @GetMapping("/index")
+    public String indexView() {
+        return "index";
+    }
+
+    @GetMapping("/top")
+    public String topView() {
+        return "top";
+    }
+
+    @GetMapping("/inner")
+    public String innerView() {
+        return "inner";
+    }
+
+    @GetMapping("/board/list")
+    public String boardListView() {
+        return "board/list";
+    }
+
     @GetMapping("/login")
     public String loginView() {
         return "login/login";

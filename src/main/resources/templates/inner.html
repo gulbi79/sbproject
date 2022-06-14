@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <link href="/static/metro/css/metro-all.css?ver=@@b-version" rel="stylesheet">
+    <link href="/static/realgrid/2.5.3/realgrid-style.css" rel="stylesheet" />
+    <link href="/static/css/common.css" rel="stylesheet" />
+
+    <title>Tree & Filter & Grid1</title>
+    <style>
+        .filterForm{
+            height: calc(100% - 52px);
+            overflow: auto;
+        }
+
+    </style>
+</head>
+<body class="m4-cloak h-vh-100" >
+    <!-- Page Title -->
+    <header id="frametitle" class="frametitle va-middle bg-transparent pl-2 pt-1">
+        <div class="place-left">
+            <a href="#"><span class="mif-indent-decrease" onclick="$('#_divFilter').toggle(); $(this).toggleClass('mif-indent-decrease mif-indent-increase');"></span></a>
+            Page Info : Inner1
+        </div>
+        <div class="place-right mr-4">
+            <a href="#" class="px-1"><span class="mif-stack"></span></a>
+            <a href="#" class="px-1"><span class="mif-list"></span></a>
+            <a href="#" class="px-1"><span class="mif-file-excel"></span></a>
+        </div>
+    </header>
+    <main id="framebody" class="framebody" data-role="splitter" data-split-sizes="20, 80" data-min-sizes="350, 200" data-gutter-size="5" >
+        <!-- Left Filter -->
+        <section id="_divFilter" data-role="splitter" data-split-mode="vertical" data-split-sizes="35, 65" data-min-sizes="100" data-gutter-size="5" >
+            <!-- tree -->
+            <div class="mt-0">
+                <ul id="treetabs" data-role="tabs" data-expand="true" data-cls-tabs-list-item-active="fg-orange">
+                    <li><a href="#_sales" class="py-1">Sales</a></li>
+                    <li><a href="#_product" class="py-1">Product</a></li>
+                    <li><a href="#_plant" class="py-1">Plant</a></li>
+                </ul>
+                <div class="border bd-default no-border-top p-0 overflow treeDiv">
+                    <div id="_sales">
+                        <ul data-role="treeview">
+                            <li>
+                                <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+                                <ul>
+                                    <li class="p-0" data-collapsed="true">
+                                        <input type="checkbox" data-role="checkbox" data-style='2' data-caption="AVI" title="" value="avi" data-level="2" data-uniqval="_sales_avi_">
+                                        <ul>
+                                            <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MPEG3" title="" value="mpeg3" data-level="3" data-uniqval="_sales_avi_mpeg3_"></li>
+                                            <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="VIDX3" title="" value="vidx3" data-level="3" data-uniqval="_sales_avi_vidx3_"></li>        
+                                        </ul>
+                                    </li>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MPEG" title="" value="mpeg" data-level="2" data-uniqval="_sales_mpeg_"></li>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="VIDX" title="" value="vidx" data-level="2" data-uniqval="_sales_vidx_"></li>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MP4" title="" value="mp4" data-level="2" data-uniqval="_sales_mp4_"></li>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="XVID" title="" value="xvid" data-level="2" data-uniqval="_sales_xvid_"></li>
+                                </ul>
+                            </li>
+                            <li class="p-0" data-collapsed="true"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Play audio" title="" value="playaudio" data-level="1" data-uniqval="_playaudio_"></li>
+                            <li data-collapsed="true">
+                                <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Subtitles" title="" value="subtitles" data-level="1" data-uniqval="_subtitles_">
+                                <ul>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="English" title="" value="english" data-level="2" data-uniqval="_subtitles_english_"></li>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Ukrainian" title="" value="ukrainian" data-level="2" data-uniqval="_subtitles_ukrainian_"></li>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Dutch" title="" value="dutch" data-level="2" data-uniqval="_subtitles_dutch_"></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="_product">
+                        <ul data-role="treeview">
+                            <li>
+                                <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+                                <ul>
+                                    <li class="p-0" data-collapsed="true">
+                                        <input type="checkbox" data-role="checkbox" data-style='2' data-caption="AVI" title="" value="avi" data-level="2" data-uniqval="_sales_avi_">
+                                        <ul>
+                                            <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MPEG3" title="" value="mpeg3" data-level="3" data-uniqval="_sales_avi_mpeg3_"></li>
+                                            <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="VIDX3" title="" value="vidx3" data-level="3" data-uniqval="_sales_avi_vidx3_"></li>        
+                                        </ul>
+                                    </li>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MP4" title="" value="mp4" data-level="2" data-uniqval="_sales_mp4_"></li>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="XVID" title="" value="xvid" data-level="2" data-uniqval="_sales_xvid_"></li>
+                                </ul>
+                            </li>
+                            <li class="p-0" data-collapsed="true"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Play audio" title="" value="playaudio" data-level="1" data-uniqval="_playaudio_"></li>
+                            <li data-collapsed="true">
+                                <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Subtitles" title="" value="subtitles" data-level="1" data-uniqval="_subtitles_">
+                                <ul>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="English" title="" value="english" data-level="2" data-uniqval="_subtitles_english_"></li>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Ukrainian" title="" value="ukrainian" data-level="2" data-uniqval="_subtitles_ukrainian_"></li>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Dutch" title="" value="dutch" data-level="2" data-uniqval="_subtitles_dutch_"></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="_plant">
+                        <ul data-role="treeview">
+                            <li>
+                                <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+                                <ul>
+                                    <li class="p-0" data-collapsed="true">
+                                        <input type="checkbox" data-role="checkbox" data-style='2' data-caption="AVI" title="" value="avi" data-level="2" data-uniqval="_sales_avi_">
+                                        <ul>
+                                            <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MPEG3" title="" value="mpeg3" data-level="3" data-uniqval="_sales_avi_mpeg3_"></li>
+                                            <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="VIDX3" title="" value="vidx3" data-level="3" data-uniqval="_sales_avi_vidx3_"></li>        
+                                        </ul>
+                                    </li>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="XVID" title="" value="xvid" data-level="2" data-uniqval="_sales_xvid_"></li>
+                                </ul>
+                            </li>
+                            <li class="p-0" data-collapsed="true"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Play audio" title="" value="playaudio" data-level="1" data-uniqval="_playaudio_"></li>
+                            <li data-collapsed="true">
+                                <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Subtitles" title="" value="subtitles" data-level="1" data-uniqval="_subtitles_">
+                                <ul>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="English" title="" value="english" data-level="2" data-uniqval="_subtitles_english_"></li>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Ukrainian" title="" value="ukrainian" data-level="2" data-uniqval="_subtitles_ukrainian_"></li>
+                                    <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Dutch" title="" value="dutch" data-level="2" data-uniqval="_subtitles_dutch_"></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- /tree -->
+            <!-- Filter -->
+            <div class="w-100 filter" style="overflow: auto;">
+                <ul class="v-menu filterForm">
+                    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> text</li>
+                    <li class="pl-3 bg-basecolor">
+                        <input name="input1" type="text" data-role="input" class="input-small">
+                    </li>
+                    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> popup text</li>
+                    <li class="pl-3 bg-basecolor">
+                        <input name="popupinput1" type="text" data-role="input" data-search-button="true" class="input-small" data-search-button-click="custom" data-on-search-button-click="Metro.dialog.open('#demoDialog1')">
+                        <input type="hidden" name="popupinput1cd">
+                    </li>
+                    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Check Box</li>
+                    <li class="pl-3 bg-basecolor">
+                        <input name="check1" type="checkbox" data-role="checkbox" data-caption="Check1">
+                        <input name="check2" type="checkbox" data-role="checkbox" data-caption="Check2" checked>
+                        <input name="check3" type="checkbox" data-role="checkbox" data-caption="Check3" data-indeterminate="true">
+                        <input name="check4" ype="checkbox" data-role="checkbox" data-caption="Check4" disabled>
+                        <input name="check5" type="checkbox" data-role="checkbox" data-caption="Check5" disabled checked>
+                    </li>
+                    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Radio1</li>
+                    <li class="pl-3 bg-basecolor">
+                        <input type="radio" data-role="radio" data-caption="Check1" value="r1_a" name="radio1">
+                        <input type="radio" data-role="radio" data-caption="Check2" value="r1_b" name="radio1" checked>
+                    </li>
+                    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Radio2</li>
+                    <li class="pl-3 bg-basecolor">
+                        <input type="radio" data-role="radio" data-caption="Check3" value="r2_a" name="radio2" disabled>
+                        <input type="radio" data-role="radio" data-caption="Check4" value="r2_b" name="radio2" checked disabled>
+                    </li>
+                    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> select</li>
+                    <li class="pl-3 bg-basecolor">
+                        <select name="select1" data-role="select" class="input-small">
+                            <option value="1" data-template="<span class='mif-amazon icon'></span> $1">Amazon</option>
+                            <option value="2" data-template="<span class='mif-apple icon'></span> $1">Apple</option>
+                            <option value="3" data-template="<span class='mif-blogger icon'></span> $1">Blogger</option>
+                            <option value="4" data-template="<span class='mif-evernote icon'></span> $1">Evernote</option>
+                            <option value="5" data-template="<span class='mif-github icon'></span> $1">GitHub</option>
+                        </select>
+                    </li>
+                    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Multiple</li>
+                    <li class="pl-3 bg-basecolor">
+                        <select id="mselect" name="mselect1" data-role="select" class="input-small" data-clear-button="false" 
+                            data-cls-drop-list="no-wrap" 
+                            data-cls-parent-option="px-0" 
+                            multiple>
+                            <option value="1" data-template="<input type='checkbox' data-role='checkbox' data-style='2'> $1">Amazonaaaaaaaaaaaaaaabbbbbcccccccc</option>
+                            <option value="2" data-template="<input type='checkbox' data-role='checkbox' data-style='2'> $1">Apple</option>
+                            <option value="3" data-template="<input type='checkbox' data-role='checkbox' data-style='2'> $1">Blogger</option>
+                            <option value="4" data-template="<input type='checkbox' data-role='checkbox' data-style='2'> $1">Evernote</option>
+                            <option value="5" data-template="<input type='checkbox' data-role='checkbox' data-style='2'> $1">GitHub</option>
+                        </select>
+                    </li>
+
+                    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Calendar picker1</li>
+                    <li class="pl-3 bg-basecolor">
+                        <input name="calendar1" type="text" data-role="calendarpicker" class="input-small" 
+                        data-dialog-mode="false" data-dialog-overlay="false" data-show-week-number="true" data-cls-calendar="compact"
+                        data-on-calendar-show="fn_onCalendarShow" data-on-calendar-hide="fn_onCalendarHide">
+                    </li>
+                    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Calendar picker From To</li>
+                    <li class="pl-3 bg-basecolor">
+                        <div class="row no-gap">
+                            <input name="calendar2" type="text" data-role="calendarpicker" class="input-small" data-size="calc(50% - 11.4px)"
+                            data-dialog-mode="false" data-dialog-overlay="false" data-show-week-number="true" data-cls-calendar="compact">
+                            &nbsp;~&nbsp;
+                            <input name="calendar3" type="text" data-role="calendarpicker" class="input-small" data-size="calc(50% - 11.4px)"
+                            data-dialog-mode="false" data-dialog-overlay="false" data-show-week-number="true" data-cls-calendar="compact">
+                        </div>
+                    </li>
+                </ul>
+                <div class="pt-3 pl-3 pr-1">
+                    <button id="apply" class="button primary shadowed w-100">Apply</button>
+                </div>
+            </div>
+            <!-- /Filter -->
+        </section>
+        <!-- Content -->
+        <section class="d-flex" style="overflow: auto;">
+            <div class="container-fluid">
+                <div class="mt-0"></div>
+                <div id="realgrid1" class="w-100" style="height: calc(100% - 44px);"></div>
+                <div class="mt-1 place-right">
+                    <button id="reset" class="button shadowed info">Reset</button>
+                    <button id="add" class="button shadowed ">Add</button>
+                    <button id="delete" class="button shadowed ">Delete</button>
+                    <button id="save" class="button shadowed success">Save</button>
+                </div>
+            </div>
+        </section>
+        <!-- /Content -->
+    </main>
+    <!-- hidden -->
+    <div class="dialog" data-role="dialog" id="demoDialog1">
+        <div class="dialog-title py-1">Popup Dialog</div>
+        <div class="dialog-content py-1 px-3 mt-0">
+            <div style="height: 30px;">
+                <button class="button float-right mb-1 small">Search</button>
+            </div>
+            <div id="realgridPopup" class="w-100" style="height: 250px;"></div>
+        </div>
+        <div class="dialog-actions text-right mt-0 px-2">
+            <button class="button js-dialog-close small">Cancel</button>
+            <button class="button primary js-dialog-close small" onclick="fn_clickPopup();">Ok</button>
+        </div>
+    </div>
+    <!-- /hidden -->
+    
+    <script src="/static/metro/js/metro.js?ver=@@b-version"></script>
+    <!-- RealGrid -->
+    <script src="/static/realgrid/2.5.3/realgrid-lic.js"></script>
+    <script src="/static/realgrid/2.5.3/realgrid.2.5.3.min.js"></script>
+    <script src="/static/realgrid/realgrid-utils.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/data.js"></script>
+    <script>
+        var Utils = Metro.utils;
+        var gridMain, gridPopup;
+        $(function() {
+            fn_filterInit(); //필터초기화
+            fn_gridInit(); //그리드초기화
+            fn_eventInit(); //이벤트초기화
+        });
+
+        function fn_onCalendarShow(el, cal) {
+            console.log($('.filter').css('overflow'));
+        }
+
+        function fn_onCalendarHide(el, cal) {
+            console.log($('.filter').css('overflow'));
+        }
+
+        //필터초기화
+        function fn_filterInit() {
+            $("#mselect").append("<option value=\"6\" data-template=\"<input type='checkbox' data-role='checkbox' data-style='2'> $1\">GitHub222</option>");
+            var mselect = Metro.getPlugin($("#mselect"), "select");
+            mselect.reset();
+            mselect.val(["1","3","6"]);
+        }
+
+        //그리드초기화
+        function fn_gridInit() {
+            //dataType이 text가 아닌경우 tag속성에 지정
+            var columns_01 = [{
+                "name": "COUNTRY",
+                "type": "data",
+                "width": "100",
+                "header": {
+                    "text": "Country"
+                }
+            }, {
+                "name": "COUNTRY2",
+                "type": "data",
+                "width": "100",
+                "tag": {"fieldName": "COUNTRY"},
+                "header": {
+                    "text": "Country"
+                }
+            }, {
+                "name": "QUANTITY",
+                "type": "data",
+                "width": "100",
+                "tag": {"dataType": "number"},    //dataType이 text가 아닌경우 tag속성에 지정
+                "header": {
+                    "text": "Quantity"
+                },
+                "footer": {
+                    "expression": "sum",
+                },
+                "numberFormat": "#,##0"
+            }, {
+                "name": "ORDERDATE",
+                "type": "data",
+                "width": "100",
+                "tag": {"dataType": "datetime", "datetimeFormat": "yyyyMMdd",}, //dataType이 text가 아닌경우 tag속성에 지정
+                "header": {
+                    "text": "OrderDate"
+                }
+            }];
+            gridMain = new GRID().init({gridId: "realgrid1", columns: columns_01});
+            gridPopup = new GRID().init({gridId: "realgridPopup", columns: columns_01});
+        }
+        
+        //이벤트초기화
+        function fn_eventInit() {
+            $("#apply").on("click", function() {
+                fn_apply();
+            });
+
+            $("#reset").on("click", function() {
+                
+            });
+
+            $("#add").on("click", function() {
+                
+            });
+
+            $("#delete").on("click", function() {
+                
+            });
+
+            $("#save").on("click", function() {
+                
+            });
+        }
+
+        //조회
+        function fn_apply() {
+            //필터폼 데이터 생성
+            var filterObj = gfn_getFormObj($('.filterForm'));
+            filterObj = {...filterObj, ...gfn_getChkTree()}; //체크트리 파라미터 셋
+
+            console.log(filterObj);
+
+            if (fn_aTest()) {
+                console.log("실행함@@@@");
+            }
+
+            return;
+
+            //유효성 검증
+            if (!fn_validation()) return false;
+
+            gridMain.provider.clearRows(); //데이터 초기화
+            //그리드 데이터 생성
+            gridMain.gridview.cancel();
+            gridMain.provider.setRows(griddata1);
+
+            /*
+            gfn_confirm({
+                title: "Confirm",
+                content: "Apply???",
+                okCaption: "OK",
+                cancelCaption: "Cancel",
+                okCallback: function() {
+                    setTimeout(function() {
+                        gfn_alert({
+                            title: "Alert",
+                            content: "Alert???",
+                            okCaption: "OK",
+                            okCallback: function() {
+                                console.log(filterObj);
+                            }
+                        });
+                    },10);
+                },
+                cancelCallback: function() {
+                    console.log("cancel Click");
+                },
+            });
+            */
+        }
+
+        function fn_callback(tranId) {
+
+        }
+
+        function fn_validation() {
+            gfn_confirm({
+                title: "Confirm",
+                content: "Apply???",
+                okCaption: "OK",
+                cancelCaption: "Cancel",
+                okCallback: function() {
+                    console.log("OK Click");
+                },
+                cancelCallback: function() {
+                    console.log("cancel Click");
+                },
+            });
+            return true;
+        }
+
+        function fn_clickPopup() {
+            console.log("fn_clickPopup!!!!");
+        }
+
+        //test
+        function fn_aTest() {
+            _fn_aTest().then(function(res) {
+                console.log("success");
+                return true;
+            }).catch(function(err) {
+                console.log("cancel");
+                return false;
+            });
+        }
+
+        function _fn_aTest() {
+            return new Promise(function(resolve, reject) {
+                gfn_confirm2({
+                    title: "Confirm",
+                    content: "Apply???",
+                    okCaption: "OK",
+                    cancelCaption: "Cancel",
+                    okCallback: function() {
+                        resolve();
+                    },
+                    cancelCallback: function() {
+                        reject();
+                    },
+                });
+            })
+
+            //return "a";
+        }
+
+        function gfn_confirm2(options) {
+            var Utils = Metro.utils;
+            var alertConfig = {
+                title: "Confirm",
+                content: "",
+                okCaption: "OK",
+                cancelCaption: "Cancel",
+                okCallback: null,
+                cancelCallback: null,
+            };
+            alertConfig = {...alertConfig, ...options};
+            Metro.dialog.create({
+                title: alertConfig.title,
+                content: alertConfig.content,
+                actions: [{
+                    caption: alertConfig.okCaption,
+                    cls: "js-dialog-close alert",
+                    onclick: function() {
+                        if (Utils.isFunc(alertConfig.okCallback)) {
+                            Utils.exec(alertConfig.okCallback);
+                        }
+                    }
+                }, {
+                    caption: alertConfig.cancelCaption,
+                    cls: "js-dialog-close",
+                    onclick: function() {
+                        if (Utils.isFunc(alertConfig.cancelCallback)) {
+                            Utils.exec(alertConfig.cancelCallback);
+                        }
+                    }
+                }]
+            });
+        }
+        
+    </script>
+</body>
+</html>
