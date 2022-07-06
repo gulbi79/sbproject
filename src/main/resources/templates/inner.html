@@ -333,16 +333,24 @@
         }
 
         //조회
-        function fn_apply() {
+        async function fn_apply() {
             //필터폼 데이터 생성
             var filterObj = gfn_getFormObj($('.filterForm'));
             filterObj = {...filterObj, ...gfn_getChkTree()}; //체크트리 파라미터 셋
 
             console.log(filterObj);
 
-            if (fn_aTest()) {
-                console.log("실행함@@@@");
-            }
+            var confirm = await gfn_confirm2({content: "Apply???"}).then(function(res) {
+                console.log("success");
+                return true;
+            }).catch(function(err) {
+                console.log("cancel");
+                return false;
+            });
+
+            if (!confirm) return;
+
+            console.log("실행함@@@@");
 
             return;
 
@@ -404,14 +412,18 @@
         }
 
         //test
-        function fn_aTest() {
-            _fn_aTest().then(function(res) {
+        async function fn_aTest() {
+            //await _fn_aTest()
+
+            /*
+            return await _fn_aTest().then(function(res) {
                 console.log("success");
-                return true;
+                //return true;
             }).catch(function(err) {
                 console.log("cancel");
-                return false;
+                //return false;
             });
+            */
         }
 
         function _fn_aTest() {
@@ -422,10 +434,10 @@
                     okCaption: "OK",
                     cancelCaption: "Cancel",
                     okCallback: function() {
-                        resolve();
+                        resolve(true);
                     },
                     cancelCallback: function() {
-                        reject();
+                        reject(false);
                     },
                 });
             })
@@ -434,36 +446,40 @@
         }
 
         function gfn_confirm2(options) {
-            var Utils = Metro.utils;
-            var alertConfig = {
-                title: "Confirm",
-                content: "",
-                okCaption: "OK",
-                cancelCaption: "Cancel",
-                okCallback: null,
-                cancelCallback: null,
-            };
-            alertConfig = {...alertConfig, ...options};
-            Metro.dialog.create({
-                title: alertConfig.title,
-                content: alertConfig.content,
-                actions: [{
-                    caption: alertConfig.okCaption,
-                    cls: "js-dialog-close alert",
-                    onclick: function() {
-                        if (Utils.isFunc(alertConfig.okCallback)) {
-                            Utils.exec(alertConfig.okCallback);
+            return new Promise(function(resolve, reject) {
+                var Utils = Metro.utils;
+                var alertConfig = {
+                    title: "Confirm",
+                    content: "",
+                    okCaption: "OK",
+                    cancelCaption: "Cancel",
+                    okCallback: null,
+                    cancelCallback: null,
+                };
+                alertConfig = {...alertConfig, ...options};
+                Metro.dialog.create({
+                    title: alertConfig.title,
+                    content: alertConfig.content,
+                    actions: [{
+                        caption: alertConfig.okCaption,
+                        cls: "js-dialog-close alert",
+                        onclick: function() {
+                            if (Utils.isFunc(alertConfig.okCallback)) {
+                                Utils.exec(alertConfig.okCallback);
+                            }
+                            resolve(true);
                         }
-                    }
-                }, {
-                    caption: alertConfig.cancelCaption,
-                    cls: "js-dialog-close",
-                    onclick: function() {
-                        if (Utils.isFunc(alertConfig.cancelCallback)) {
-                            Utils.exec(alertConfig.cancelCallback);
+                    }, {
+                        caption: alertConfig.cancelCaption,
+                        cls: "js-dialog-close",
+                        onclick: function() {
+                            if (Utils.isFunc(alertConfig.cancelCallback)) {
+                                Utils.exec(alertConfig.cancelCallback);
+                            }
+                            reject(false);
                         }
-                    }
-                }]
+                    }]
+                });
             });
         }
         
