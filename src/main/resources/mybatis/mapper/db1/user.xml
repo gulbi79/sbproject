@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="com.demo.boot.common.repository.UserRepository">
+<mapper namespace="com.demo.boot.common.db1repository.UserRepository">
 
     <!-- 로그인 -->
     <select id="getUserAccount" parameterType="String" resultType="com.demo.boot.common.vo.UserVo">
-        /* getUserAccount */
+        /* db1 getUserAccount */
         SELECT USER_ID, USER_NAME, USER_PW
         FROM TB_MST_USER
         WHERE USER_ID= @{userId}
@@ -14,7 +14,7 @@
 
     <!-- 권한조회 -->
     <select id="getUserAuthorities" parameterType="String" resultType="String">
-        /* getUserAuthorities */
+        /* db1 getUserAuthorities */
         SELECT ROLE_CD
         FROM TB_MAP_ROLE
         WHERE USER_ID = @{userId}
@@ -22,7 +22,7 @@
 
     <!-- 회원가입 -->
     <insert id="saveUser" parameterType="com.demo.boot.common.vo.UserVo">
-        /* saveUser */
+        /* db1 saveUser */
         INSERT INTO TB_MST_USER (
           USER_ID, USER_PW, USER_NAME
         ) VALUES (

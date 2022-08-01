@@ -335,24 +335,14 @@
         //조회
         async function fn_apply() {
             //필터폼 데이터 생성
-            var filterObj = gfn_getFormObj($('.filterForm'));
+            let filterObj = gfn_getFormObj($('.filterForm'));
             filterObj = {...filterObj, ...gfn_getChkTree()}; //체크트리 파라미터 셋
+            
+            const alert = await gfn_alertSync({title: "alert title", content: "contents"}).then(function(res) { return true; }).catch(function(err) { return false; });
+            if (!alert) return;
 
-            console.log(filterObj);
-
-            var confirm = await gfn_confirm2({content: "Apply???"}).then(function(res) {
-                console.log("success");
-                return true;
-            }).catch(function(err) {
-                console.log("cancel");
-                return false;
-            });
-
+            const confirm = await gfn_confirmSync({content: "Apply???"}).then(function(res) { return true; }).catch(function(err) { return false; });
             if (!confirm) return;
-
-            console.log("실행함@@@@");
-
-            return;
 
             //유효성 검증
             if (!fn_validation()) return false;
@@ -362,29 +352,6 @@
             gridMain.gridview.cancel();
             gridMain.provider.setRows(griddata1);
 
-            /*
-            gfn_confirm({
-                title: "Confirm",
-                content: "Apply???",
-                okCaption: "OK",
-                cancelCaption: "Cancel",
-                okCallback: function() {
-                    setTimeout(function() {
-                        gfn_alert({
-                            title: "Alert",
-                            content: "Alert???",
-                            okCaption: "OK",
-                            okCallback: function() {
-                                console.log(filterObj);
-                            }
-                        });
-                    },10);
-                },
-                cancelCallback: function() {
-                    console.log("cancel Click");
-                },
-            });
-            */
         }
 
         function fn_callback(tranId) {
@@ -392,18 +359,7 @@
         }
 
         function fn_validation() {
-            gfn_confirm({
-                title: "Confirm",
-                content: "Apply???",
-                okCaption: "OK",
-                cancelCaption: "Cancel",
-                okCallback: function() {
-                    console.log("OK Click");
-                },
-                cancelCallback: function() {
-                    console.log("cancel Click");
-                },
-            });
+    
             return true;
         }
 
@@ -411,78 +367,6 @@
             console.log("fn_clickPopup!!!!");
         }
 
-        //test
-        async function fn_aTest() {
-            //await _fn_aTest()
-
-            /*
-            return await _fn_aTest().then(function(res) {
-                console.log("success");
-                //return true;
-            }).catch(function(err) {
-                console.log("cancel");
-                //return false;
-            });
-            */
-        }
-
-        function _fn_aTest() {
-            return new Promise(function(resolve, reject) {
-                gfn_confirm2({
-                    title: "Confirm",
-                    content: "Apply???",
-                    okCaption: "OK",
-                    cancelCaption: "Cancel",
-                    okCallback: function() {
-                        resolve(true);
-                    },
-                    cancelCallback: function() {
-                        reject(false);
-                    },
-                });
-            })
-
-            //return "a";
-        }
-
-        function gfn_confirm2(options) {
-            return new Promise(function(resolve, reject) {
-                var Utils = Metro.utils;
-                var alertConfig = {
-                    title: "Confirm",
-                    content: "",
-                    okCaption: "OK",
-                    cancelCaption: "Cancel",
-                    okCallback: null,
-                    cancelCallback: null,
-                };
-                alertConfig = {...alertConfig, ...options};
-                Metro.dialog.create({
-                    title: alertConfig.title,
-                    content: alertConfig.content,
-                    actions: [{
-                        caption: alertConfig.okCaption,
-                        cls: "js-dialog-close alert",
-                        onclick: function() {
-                            if (Utils.isFunc(alertConfig.okCallback)) {
-                                Utils.exec(alertConfig.okCallback);
-                            }
-                            resolve(true);
-                        }
-                    }, {
-                        caption: alertConfig.cancelCaption,
-                        cls: "js-dialog-close",
-                        onclick: function() {
-                            if (Utils.isFunc(alertConfig.cancelCallback)) {
-                                Utils.exec(alertConfig.cancelCallback);
-                            }
-                            reject(false);
-                        }
-                    }]
-                });
-            });
-        }
-        
     </script>
 </body>
 </html>

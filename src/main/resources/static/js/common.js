@@ -115,3 +115,68 @@ function gfn_alert(options) {
         }]
     });
 }
+
+function gfn_confirmSync(options) {
+    return new Promise(function(resolve, reject) {
+        var Utils = Metro.utils;
+        var alertConfig = {
+            title: "Confirm",
+            content: "",
+            okCaption: "OK",
+            cancelCaption: "Cancel",
+            okCallback: null,
+            cancelCallback: null,
+        };
+        alertConfig = {...alertConfig, ...options};
+        Metro.dialog.create({
+            title: alertConfig.title,
+            content: alertConfig.content,
+            actions: [{
+                caption: alertConfig.okCaption,
+                cls: "js-dialog-close alert",
+                onclick: function() {
+                    if (Utils.isFunc(alertConfig.okCallback)) {
+                        Utils.exec(alertConfig.okCallback);
+                    }
+                    resolve(true);
+                }
+            }, {
+                caption: alertConfig.cancelCaption,
+                cls: "js-dialog-close",
+                onclick: function() {
+                    if (Utils.isFunc(alertConfig.cancelCallback)) {
+                        Utils.exec(alertConfig.cancelCallback);
+                    }
+                    reject(false);
+                }
+            }]
+        });
+    });
+}
+
+function gfn_alertSync(options) {
+    return new Promise(function(resolve, reject) {
+        var Utils = Metro.utils;
+        var alertConfig = {
+            title: "Alert",
+            content: "",
+            okCaption: "OK",
+            okCallback: null,
+        };
+        alertConfig = {...alertConfig, ...options};
+        Metro.dialog.create({
+            title: alertConfig.title,
+            content: alertConfig.content,
+            actions: [{
+                caption: alertConfig.okCaption,
+                cls: "js-dialog-close alert",
+                onclick: function() {
+                    if (Utils.isFunc(alertConfig.okCallback)) {
+                        Utils.exec(alertConfig.okCallback);
+                    }
+                    resolve(true);
+                }
+            }]
+        });
+    });
+}

@@ -1,6 +1,6 @@
 package com.demo.boot.biz.service;
 
-import com.demo.boot.biz.repository.TestRepository;
+import com.demo.boot.biz.db1repository.TestRepository;
 import com.demo.boot.utils.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.demo.boot.common.service;
 
-import com.demo.boot.common.repository.UserRepository;
+import com.demo.boot.common.db2repository.UserRepository2;
 import com.demo.boot.common.vo.UserVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,7 +18,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     //@Autowired
-    private final UserRepository userRepository;
+    private final UserRepository2 userRepository;
 
     @Transactional
     public void joinUser(UserVo userVo) {

@@ -1,4 +1,4 @@
-package com.demo.boot.common.repository;
+package com.demo.boot.common.db2repository;
 
 import com.demo.boot.common.vo.UserVo;
 import org.apache.ibatis.annotations.Mapper;
@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Mapper
-public interface UserRepository {
+public interface UserRepository2 {
     List<HashMap<String,Object>> selectUser(HashMap<String,Object> paramMap);
 
     //Integer insertUser(HashMap<String,Object> paramMap);
