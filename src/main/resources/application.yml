@@ -13,7 +13,7 @@ spring:
     db2:
         datasource:
             driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-            jdbc-url: jdbc:log4jdbc:oracle:thin:@146.56.164.175:1521/xe
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@130.162.132.213:1521/xe
             username: SUNG
             password: 1234
     devtools:
@@ -25,5 +25,6 @@ spring:
         cache: false
     mvc:
         static-path-pattern: /static/**
-    resources:
-        static-locations: classpath:/static/
+    web:
+        resources:
+            static-locations: classpath:/static/

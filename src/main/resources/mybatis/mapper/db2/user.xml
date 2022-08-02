@@ -24,9 +24,9 @@
     <insert id="saveUser" parameterType="com.demo.boot.common.vo.UserVo">
         /* db2 saveUser */
         INSERT INTO TB_MST_USER (
-          USER_ID, USER_PW, USER_NM
+          USER_ID, USER_PW, USER_NM, EMAIL
         ) VALUES (
-          @{userId},@{userPw},@{userName}
+          @{userId},@{userPw},@{userNm}, @{email}
         )
     </insert>
 

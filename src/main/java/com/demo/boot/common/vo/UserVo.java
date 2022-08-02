@@ -11,7 +11,8 @@ import java.util.Collection;
 public class UserVo implements UserDetails {
     private String userId;
     private String userPw;
-    private String userName;
+    private String userNm;
+    private String email;
     private Collection<? extends GrantedAuthority> authorities;
 
     @Override
@@ -32,8 +33,12 @@ public class UserVo implements UserDetails {
     }
 
     // Vo의 userName !
-    public String getUserName(){
-        return this.userName;
+    public String getUserNm(){
+        return this.userNm;
+    }
+    
+    public String getEmail(){
+        return this.email;
     }
 
     @Override

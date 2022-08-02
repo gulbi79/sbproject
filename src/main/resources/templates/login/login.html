@@ -1,28 +1,74 @@
-<!--로그인 페이지-->
-<!-- login.html-->
+
 <!DOCTYPE html>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-  <meta charset="UTF-8">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- Metro 4 -->
+    <link href="/static/metro/css/metro-all.css?ver=@@b-version" rel="stylesheet">
+
+    <title>Log in</title>
 </head>
-<body>
-<div class="container">
-  <h1>로그인</h1>
-  <form th:action="@{/login}" method="post">
-    <div class="form-group">
-      <label th:for="username">아이디</label>
-      <input type="text" name="username" class="form-control" placeholder="아이디 입력해주세요">
+<body class="m4-cloak h-vh-100 d-flex flex-justify-center flex-align-center">
+
+    <div class="login-box">
+        <form th:action="@{/login}" method="post"
+              class="bg-white p-4"
+              action="javascript:"
+              data-role="validator"
+              data-clear-invalid="5000"
+              data-on-error-form="invalidForm"
+        >
+            <img src="/static/images/p-120x120.png" class="place-right mt-4-minus mr-6-minus">
+            <h1 class="mb-0">Login</h1>
+            <div class="text-muted mb-4">Sign in to start your session</div>
+            <div class="form-group">
+                <input type="text" name="username" data-role="input" placeholder="User ID" data-validate="required">
+                <span class="invalid_feedback">Please enter a valid User ID</span>
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" data-role="input" placeholder="Password" data-validate="required">
+                <span class="invalid_feedback">Please enter a password</span>
+            </div>
+            <div class="form-group d-flex flex-align-center flex-justify-between">
+                <input type="checkbox" data-role="checkbox" data-caption="Remember Me">
+                <button class="button primary">Sign In</button>
+            </div>
+            <div class="text-center m-4">- OR -</div>
+            <div class="form-group">
+                <button class="image-button w-100 mt-1 bg-facebook fg-white" type="button">
+                    <span class="mif-facebook icon"></span>
+                    <span class="caption">Sign In using Facebook</span>
+                </button>
+                <button class="image-button w-100 mt-1 bg-github fg-white" type="button">
+                    <span class="mif-github icon"></span>
+                    <span class="caption">Sign In using GitHub</span>
+                </button>
+                <button class="image-button w-100 mt-1 bg-gitlab fg-white" type="button">
+                    <span class="mif-gitlab icon"></span>
+                    <span class="caption">Sign In using GitLab</span>
+                </button>
+            </div>
+            <div class="form-group border-top bd-default pt-2">
+                <a href="#" class="d-block">I forgot my password</a>
+                <a th:href=@{/signup} href="#" class="d-block">Register a new membership</a>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-      <label th:for="password">비밀번호</label>
-      <input type="password" class="form-control" name="password" placeholder="비밀번호 입력해주세요">
-    </div>
-    <button type="submit" class="btn btn-primary">로그인</button>
-    <button type="button" class="btn btn-primary" onClick="location.href='signup'">회원 가입</button>
-  </form>
-  <br/>
-</div>
+
+
+    <!--<script src="vendors/jquery/jquery-3.4.1.min.js"></script>-->
+    <script src="/static/metro/js/metro.js?ver=@@b-version"></script>
+    <script>
+        function invalidForm(){
+            var form  = $(this);
+            form.addClass("ani-ring");
+            setTimeout(function(){
+                form.removeClass("ani-ring");
+            }, 1000);
+        }
+    </script>
 </body>
 </html>
