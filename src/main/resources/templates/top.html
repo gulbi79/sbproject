@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link href="/static/metro/css/metro-all.css?ver=@@b-version" rel="stylesheet">
 
-    <title>layout html</title>
+    <title>Korea</title>
     <style>
         #content-wrapper{
             /*background-color: aqua;*/
@@ -20,6 +20,13 @@
         .prepend {
             background: red!important;
         }
+        
+        .avatar {
+		    width: 32px;
+		    height: 32px;
+		    border-radius: 50%;
+		    overflow: hidden;
+		}
     </style>
 </head>
 <body class="m4-cloak">
@@ -44,7 +51,7 @@
                 <span class="badge bg-red fg-white mt-2 mr-1">9</span>
             </a>
             <a href="#" class="app-bar-item">
-                <img src="images/jek_vorobey.jpg" class="avatar">
+                <img src="/static/images/jek_vorobey.jpg" class="avatar">
                 <span class="ml-2 app-bar-name">Jack Sparrow</span>
             </a>
             <a href="#" class="app-bar-item">
@@ -112,7 +119,7 @@
                 srcUrl = '../html/inner3.html';
                 break;
             case 'f' :
-            srcUrl = '/inner';
+            	srcUrl = '/inner';
                 break;
             default :
                 srcUrl = '../html/inner1.html';

@@ -8,6 +8,7 @@
         <setting name="mapUnderscoreToCamelCase" value="true"/>
         <setting name="defaultScriptingLanguage" value="velocity"/>
         <setting name="callSettersOnNulls" value="true"/>
+        <setting name="returnInstanceForEmptyRow" value="true"/>
     </settings>
 
     <typeAliases>
