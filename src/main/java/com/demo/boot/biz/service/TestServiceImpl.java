@@ -1,6 +1,6 @@
 package com.demo.boot.biz.service;
 
-import com.demo.boot.biz.db2repository.TestRepository2;
+import com.demo.boot.biz.repository.TestRepository;
 import com.demo.boot.utils.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import static com.demo.boot.utils.ErrorCode.NOT_FOUND;
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
 
-    private final TestRepository2 testRepository;
+    private final TestRepository testRepository;
 
     @Override
     public List<HashMap<String,Object>> getRoleList() {

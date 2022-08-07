@@ -1,6 +1,6 @@
 package com.demo.boot.common.service;
 
-import com.demo.boot.common.db2repository.UserRepository2;
+import com.demo.boot.common.repository.UserRepository;
 import com.demo.boot.common.vo.UserVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -18,7 +19,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     //@Autowired
-    private final UserRepository2 userRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public void joinUser(UserVo userVo) {
@@ -48,5 +49,11 @@ public class UserServiceImpl implements UserService {
         }
 
         return grantedAuthorities;
+    }
+    
+    public List<HashMap<String, String>> userMenu(String userId) {
+    	List<HashMap<String, String>> rtnList = null;
+    	rtnList = userRepository.userMenu(userId);
+        return rtnList;
     }
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 
-<mapper namespace="com.demo.boot.biz.db2repository.TestRepository2">
+<mapper namespace="com.demo.boot.biz.repository.TestRepository">
 
     <!-- role select -->
     <select id="getRoleList" resultType="hashmap">

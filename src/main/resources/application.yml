@@ -1,21 +1,11 @@
 spring:
-    db1:
-        datasource:
-            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-            jdbc-url: jdbc:log4jdbc:mariadb://146.56.164.175:3306/testdb?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
-            username: admin
-            password: sung1q2w3e
-            maximum-pool-size: 50
-            max-lifetime: 30000
-            idle-timeout: 28000
-            connection-timeout: 0
-            transaction-isolation: TRANSACTION_READ_UNCOMMITTED
-    db2:
-        datasource:
-            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-            jdbc-url: jdbc:log4jdbc:oracle:thin:@130.162.132.213:1521/xe
-            username: SUNG
-            password: 1234
+    datasource:
+#        driver-class-name: oracle.jdbc.driver.OracleDriver
+#        jdbc-url: jdbc:oracle:thin:@130.162.132.213:1521/xe
+        driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+        jdbc-url: jdbc:log4jdbc:oracle:thin:@130.162.132.213:1521/xe
+        username: SUNG
+        password: 1234
     devtools:
         livereload:
             enabled: true
@@ -28,3 +18,8 @@ spring:
     web:
         resources:
             static-locations: classpath:/static/
+#    mybatis:
+#        configuration:
+#            map-underscore-to-camel-case: true
+#mybatis.configuration.return-instance-for-empty-row=false
+

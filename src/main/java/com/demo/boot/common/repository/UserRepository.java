@@ -1,4 +1,4 @@
-package com.demo.boot.common.db2repository;
+package com.demo.boot.common.repository;
 
 import com.demo.boot.common.vo.UserVo;
 import org.apache.ibatis.annotations.Mapper;
@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Mapper
-public interface UserRepository2 {
+public interface UserRepository {
     List<HashMap<String,Object>> selectUser(HashMap<String,Object> paramMap);
 
     //Integer insertUser(HashMap<String,Object> paramMap);
@@ -19,4 +19,6 @@ public interface UserRepository2 {
 
     // 회원가입
     void saveUser(UserVo userVo);
+
+    List<HashMap<String, String>> userMenu(String userId);
 }

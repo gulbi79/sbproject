@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.demo.boot.common.repository.UserRepository">
+
+    <!-- 로그인 -->
+    <select id="getUserAccount" parameterType="String" resultType="com.demo.boot.common.vo.UserVo">
+        /* getUserAccount */
+        SELECT USER_ID, USER_NM, USER_PW
+        FROM TB_MST_USER
+        WHERE USER_ID= @{userId}
+    </select>
+
+    <!-- 권한조회 -->
+    <select id="getUserAuthorities" parameterType="String" resultType="String">
+        /* getUserAuthorities */
+        SELECT ROLE_CD
+        FROM TB_MAP_ROLE
+        WHERE USER_ID = @{userId}
+    </select>
+
+    <!-- 회원가입 -->
+    <insert id="saveUser" parameterType="com.demo.boot.common.vo.UserVo">
+        /* saveUser */
+        INSERT INTO TB_MST_USER (
+          USER_ID, USER_PW, USER_NM, EMAIL
+        ) VALUES (
+          @{userId},@{userPw},@{userNm}, @{email}
+        )
+    </insert>
+    
+    <!-- 메뉴조회 -->
+    <select id="userMenu" parameterType="String" resultType="custommap">
+        /* userMenu */
+        -- 전체메뉴 트리
+		WITH W_MENU AS (
+			SELECT MENU_CD, MENU_NM, PARENT_MENU_CD, URL
+			     , LEVEL AS LVL
+			     , CASE WHEN CONNECT_BY_ISLEAF = 1 AND URL IS NOT NULL THEN 'Y' ELSE 'N' END AS URL_YN
+			     , SYS_CONNECT_BY_PATH(MENU_CD, '>') || '>' AS PATH
+			FROM TB_MST_MENU
+			START WITH PARENT_MENU_CD IS NULL
+			CONNECT BY PRIOR MENU_CD = PARENT_MENU_CD
+			ORDER SIBLINGS BY MENU_CD
+		)
+		-- 사용자 권한에 따른 메뉴코드
+		, W_ROLE_MENU AS (
+			SELECT SB.MENU_CD
+			FROM TB_MAP_ROLE SA
+			INNER JOIN TB_MAP_ROLE_MENU SB
+			   ON SB.ROLE_CD = SA.ROLE_CD
+			WHERE SA.USER_ID = @{userId}
+		)
+		-- 사용자 권한에 따른 메뉴코드의 상위, 하위, 자신
+		, W_ROLE_ALL_MENU AS (
+			-- 순방향 전개 : 하위메뉴코드 전체
+			SELECT MENU_CD
+			FROM TB_MST_MENU
+			START WITH MENU_CD IN (SELECT MENU_CD MENU_CD FROM W_ROLE_MENU)
+			CONNECT BY PRIOR MENU_CD =  PARENT_MENU_CD
+			UNION ALL
+			-- 역방향 전개 : 상위메뉴코드 전체
+			SELECT MENU_CD
+			FROM TB_MST_MENU
+			START WITH MENU_CD IN (SELECT MENU_CD MENU_CD FROM W_ROLE_MENU)
+			CONNECT BY PRIOR MENU_CD =  PARENT_MENU_CD
+			--ORDER SIBLINGS BY MENU_CD
+		)
+		SELECT *
+		FROM W_MENU
+		WHERE MENU_CD IN (SELECT MENU_CD FROM W_ROLE_ALL_MENU)
+    </select>
+
+</mapper>
