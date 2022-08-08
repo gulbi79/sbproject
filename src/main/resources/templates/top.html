@@ -32,7 +32,7 @@
 <body class="m4-cloak">
 <div class="h-vh-100">
 	<!-- top -->
-    <div data-role="appbar" class="pos-absolute bg-darkCyan fg-white">
+    <div data-role="appbar" class="pos-absolute bg-black fg-white">
         <div class="d-flex flex-align-center">
             <h2 class="text-light m-0 fg-white pl-3" style="line-height: 52px">Korea</h2>
         </div>
@@ -62,74 +62,38 @@
     <div class="frame_container" style="top:52px">
     	<!-- 메뉴 -->
         <div class="menu">
-            <ul class="h-menu bg-green fg-white">
-        		<!-- 대메뉴 -->
-            	<th:block th:each="item, itemStat: ${menuList}">
-            		<th:block th:if="${item.lvl == 1}">
-            		<li>
-            			<th:block th:if="${item.urlYn == 'Y'}">
-            			<a href="#" th:menuCd="${item.menuCd}" th:menuNm="${item.menuNm}" th:onclick="fn_clickMenu(this.getAttribute('menuCd'),this.getAttribute('menuNm'))" th:text="${item.menuNm}">Home</a>
-            			</th:block>
-            			<th:block th:if="${item.urlYn != 'Y'}">
-            			<a href="#" th:menuCd="${item.menuCd}" th:menuNm="${item.menuNm}" th:text="${item.menuNm}">Home</a>
-            			</th:block>
-            			<!-- 중메뉴 -->
-            			<th:block th:each="item2 : ${menuList}">
-		            		<ul th:if="${item.menuCd == item2.parentMenuCd && item2.lvl == 2}" class="d-menu bg-pink fg-white" data-role="dropdown">
-		                    	<li>
-		                    		<th:block th:if="${item2.urlYn == 'Y'}">
-			            			<a href="#" class="dropdown-toggle" th:menuCd="${item2.menuCd}" th:menuNm="${item2.menuNm}" th:onclick="fn_clickMenu(this.getAttribute('menuCd'),this.getAttribute('menuNm'))" th:text="${item2.menuNm}">Home</a>
-			            			</th:block>
-			            			<th:block th:if="${item2.urlYn != 'Y'}">
-			            			<a href="#" class="dropdown-toggle" th:menuCd="${item2.menuCd}" th:menuNm="${item2.menuNm}" th:text="${item2.menuNm}">Home</a>
-			            			</th:block>
-		                    		<!-- 소메뉴 -->
-		                    		<th:block th:each="item3 : ${menuList}">
-				            		<ul th:if="${item2.menuCd == item3.parentMenuCd && item3.lvl == 3}" class="d-menu" data-role="dropdown">
-				                        <li><a href="#" th:text="${item3.menuNm}">Windows 10</a></li>
-				                        <th:block th:if="${item3.urlYn == 'Y'}">
-				            			<a href="#" th:menuCd="${item3.menuCd}" th:menuNm="${item3.menuNm}" th:onclick="fn_clickMenu(this.getAttribute('menuCd'),this.getAttribute('menuNm'))" th:text="${item3.menuNm}">Home</a>
-				            			</th:block>
-				            			<th:block th:if="${item3.urlYn != 'Y'}">
-				            			<a href="#" th:menuCd="${item3.menuCd}" th:menuNm="${item3.menuNm}" th:text="${item3.menuNm}">Home</a>
-				            			</th:block>
-				                    </ul>
-		                    		</th:block>
-		                    	</li>
-		                 	</ul>
-            			</th:block>
-            		</li>
-            		</th:block>
-            	</th:block>
-            		
-            	<!--
-                <li><a href="javascript:fn_clickMenu('a','Home')">Home</a></li>
-                <li>
-                    <a href="#" class="dropdown-toggle">Products</a>
-                    <ul class="d-menu bg-pink fg-white" data-role="dropdown">
-                        <li>
-                            <a href="#" class="dropdown-toggle">Windows</a>
-                            <ul class="d-menu" data-role="dropdown">
-                                <li><a href="#">Windows 10</a></li>
-                                <li><a href="#">Windows Server</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">MS-DOS</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="javascript:fn_clickMenu('b','Skype')">Skype</a></li>
-                        <li class="divider"></li>
-                        <li><a href="javascript:fn_clickMenu('c','Office')">Office</a></li>
-                    </ul>
-                </li>
-                <li><a href="javascript:fn_clickMenu('d','Support')">Support</a></li>
-                <li><a href="javascript:fn_clickMenu('e','Filter & Grid1/2')">Filter & Grid1/2</a></li>
-                <li><a href="javascript:fn_clickMenu('aaa','Filter & Grid1')">Filter & Grid1</a></li>
-                -->
-            </ul>
+        	<ul class="h-menu bg-darkGrayBlue fg-white mega">
+        		<th:block th:each="item1 : ${menuList}">
+        		<li th:if="${item1.lvl == 1}">
+			        <a href="#" class="dropdown-toggle" th:text="${item1.menuNm}">Products</a>
+			        <div class="mega-container p-2" data-role="dropdown">
+			            <div class="row">
+			            	<th:block th:each="item2 : ${menuList}">
+			            	<div class="cell-md-2" th:if="${item2.lvl == 2 && item1.menuCd == item2.parentMenuCd}">
+			                    <h6 th:text="${item2.menuNm}">Begin with Metro 4</h6>
+			                    <ul class="unstyled-list pl-0">
+			                    	<th:block th:each="item3 : ${menuList}">
+                    		 			<li th:if="${item3.lvl == 3 && item2.menuCd == item3.parentMenuCd}">
+				                    		<th:block th:if="${item3.urlYn == 'Y'}">
+                    		 				<a href="#" th:menuCd="${item3.menuCd}" th:menuNm="${item3.menuNm}" th:onclick="fn_clickMenu(this.getAttribute('menuCd'),this.getAttribute('menuNm'))" th:text="${item3.menuNm}">Getting started</a>
+				                    		</th:block>
+				                    		<th:block th:if="${item3.urlYn != 'Y'}">
+                    		 				<a href="#" th:text="${item3.menuNm}">Getting started</a>
+				                    		</th:block>
+                    		 			</li>
+			                    	</th:block>
+			                    </ul>
+			                </div>
+			            	</th:block>
+			            </div>
+			        </div>
+			    </li>
+        		</th:block>
+        	</ul>
         </div>
 
         <!-- tabs data-tabs-type : text, group, pills.-->
-        <ul id="tabs" data-role="tabs" data-tabs-type="" data-expand="true" data-cls-tabs-list-item-active="bg-taupe fg-white text-light"></ul>
+        <ul id="tabs" data-role="tabs" data-tabs-type="" data-expand="true" data-cls-tabs-list-item-active="bg-gray fg-white text-light"></ul>
         <div id="content-wrapper" class=""></div>
     </div>
 </div>

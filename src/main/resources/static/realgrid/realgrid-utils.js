@@ -23,6 +23,14 @@ GRID.prototype = {
         this.setColumn();
         return this;
     },
+    initTree: function(options) {
+        this.setConfig(options);
+        this.provider = new RealGrid.LocalDataProvider();
+        this.gridview = new RealGrid.TreeView(this.realgridConfig.gridId);
+        this.gridview.setDataSource(this.provider);
+        this.setColumn();
+        return this;
+    },
 
     setConfig: function(options) {
         this.realgridConfig = {...this.realgridConfig, ...options};

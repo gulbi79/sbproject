@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.demo.boot.common.repository.AdminRepository">
+
+    <!-- 메뉴조회 -->
+    <select id="selectMenu" parameterType="hashmap" resultType="custommap">
+        /* selectMenu */
+        SELECT MENU_CD, MENU_NM, PARENT_MENU_CD, URL, USE_YN, SORT, LEVEL AS LVL
+        FROM TB_MST_MENU
+        START WITH PARENT_MENU_CD IS NULL
+        CONNECT BY PRIOR MENU_CD = PARENT_MENU_CD 
+        ORDER SIBLINGS BY SORT
+    </select>
+
+</mapper>
