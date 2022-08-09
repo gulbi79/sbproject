@@ -12,6 +12,7 @@
     </settings>
 
     <typeAliases>
+        <typeAlias alias="map" type="java.util.Map"/>
         <typeAlias alias="hashmap" type="java.util.HashMap"/>
         <typeAlias alias="custommap" type="com.demo.boot.common.vo.CustomMap"/>
         <typeAlias alias="velocity" type="org.mybatis.scripting.velocity.VelocityLanguageDriver"/>
