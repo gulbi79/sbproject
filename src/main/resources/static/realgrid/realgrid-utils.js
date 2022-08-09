@@ -11,6 +11,8 @@ var GRID = function() {
     this.provider;
     this.realgridConfig = {
         gridId : "realgrid",
+        fields : null,
+        columns : null,
     };
 };
 
@@ -23,9 +25,9 @@ GRID.prototype = {
         this.setColumn();
         return this;
     },
-    initTree: function(options) {
+    treeInit: function(options) {
         this.setConfig(options);
-        this.provider = new RealGrid.LocalDataProvider();
+        this.provider = new RealGrid.LocalTreeDataProvider();
         this.gridview = new RealGrid.TreeView(this.realgridConfig.gridId);
         this.gridview.setDataSource(this.provider);
         this.setColumn();
@@ -37,8 +39,14 @@ GRID.prototype = {
     },
 
     setColumn: function() {
+		var fields = [];
+		
+		//추가 fields
+		if (this.realgridConfig.fields) {
+			fields = [...this.realgridConfig.fields];
+		}
+		
         if (this.realgridConfig.columns) {
-            var fields = [];
             this.realgridConfig.columns = this.realgridConfig.columns.map(function(v) {
                 var f = {fieldName: v.name};
                 if (v.tag) f = {...f, ...v.tag};

@@ -8,6 +8,7 @@
     <select id="selectMenu" parameterType="hashmap" resultType="custommap">
         /* selectMenu */
         SELECT MENU_CD, MENU_NM, PARENT_MENU_CD, URL, USE_YN, SORT, LEVEL AS LVL
+             , 'M' || SYS_CONNECT_BY_PATH(MENU_CD, '.') AS TREE_ID
         FROM TB_MST_MENU
         START WITH PARENT_MENU_CD IS NULL
         CONNECT BY PRIOR MENU_CD = PARENT_MENU_CD 

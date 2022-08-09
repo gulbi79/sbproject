@@ -146,6 +146,7 @@
     <script src="/static/realgrid/2.5.3/realgrid-lic.js"></script>
     <script src="/static/realgrid/2.5.3/realgrid.2.5.3.min.js"></script>
     <script src="/static/realgrid/realgrid-utils.js"></script>
+    <script src="/static/realgrid/libs/jszip.min.js"></script>
     <script src="/static/js/common.js"></script>
     <script src="/static/js/data.js"></script>
     <script>
@@ -176,16 +177,19 @@
         //그리드초기화
         function fn_gridInit() {
             //dataType이 text가 아닌경우 tag속성에 지정
+            var fields = [
+            	{fieldName: "treeId", type: "data"}
+            ];
             var columns = [
-            	{name: "menuCd",      type: "data", width: "100", header: {text: "Menu Code"       }}
-              , {name: "menuNm",      type: "data", width: "100", header: {text: "Menu Name"       }}
+                {name: "menuNm",      type: "data", width: "200", header: {text: "Menu Name"       }}
+              , {name: "menuCd",      type: "data", width: "100", header: {text: "Menu Code"       }}
               , {name: "parentMenuCd",type: "data", width: "100", header: {text: "Parent Menu Code"}}
 			  , {name: "url",         type: "data", width: "100", header: {text: "URL"             }}
 			  , {name: "useYn",       type: "data", width: "100", header: {text: "사용여부"           }}
 			  , {name: "lvl",         type: "data", width: "100", header: {text: "Level"           }}
 			  , {name: "sort",        type: "data", width: "100", header: {text: "Sort"            }}
             ];
-            gridMain = new GRID().init({gridId: "realgrid1", columns: columns});
+            gridMain = new GRID().treeInit({gridId: "realgrid1", columns: columns, fields: fields});
         }
         
         //이벤트초기화
@@ -199,7 +203,9 @@
             });
 
             $("#add").on("click", function() {
-                
+                //var row = gridMain.gridview.getCurrent().dataRow;
+				//gridMain.provider.insertRow(row,[]);
+				gridMain.provider.addChildRow(4, ['value1', 'value2', 'value3', 'value4'], -1, false);
             });
 
             $("#delete").on("click", function() {
@@ -209,6 +215,11 @@
             $("#save").on("click", function() {
                 
             });
+            
+            //엑셀다운로드
+            $("header .mif-file-excel").on("click", function() {
+				exportExcel(gridMain.gridview);
+			});
         }
 
         //조회
@@ -239,7 +250,8 @@
 		            gridMain.provider.clearRows(); //데이터 초기화
 		            //그리드 데이터 생성
 		            gridMain.gridview.cancel();
-		            gridMain.provider.setRows(data);
+		            gridMain.provider.setRows(data, "treeId", false, null, "iconField");
+		            gridMain.gridview.expandAll();
 			    })
 			    .catch(err => { // 오류 발생시 오류를 담아서 보여줌
 			        console.log('Fetch Error', err);
