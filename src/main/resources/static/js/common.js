@@ -23,7 +23,8 @@ function gfn_getChkTree() {
  */
 function gfn_getFormObj($ele) {
     var o = {};
-    var elements = $('.filterForm').find('input, select');
+    //var elements = $('.filterForm').find('input, select');
+    var elements = $ele.find('input, select');
     elements.each(function() {
         if (this.name === null || this.name === undefined || this.name === '') return;
 

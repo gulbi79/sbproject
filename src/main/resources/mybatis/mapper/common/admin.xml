@@ -7,12 +7,27 @@
     <!-- 메뉴조회 -->
     <select id="selectMenu" parameterType="hashmap" resultType="custommap">
         /* selectMenu */
-        SELECT MENU_CD, MENU_NM, PARENT_MENU_CD, URL, USE_YN, SORT, LEVEL AS LVL
+        -- 전체메뉴 트리
+        WITH W_MENU AS (
+            SELECT MENU_CD, MENU_NM, PARENT_MENU_CD, URL, USE_YN, SORT, LEVEL AS LVL
              , 'M' || SYS_CONNECT_BY_PATH(MENU_CD, '.') AS TREE_ID
-        FROM TB_MST_MENU
-        START WITH PARENT_MENU_CD IS NULL
-        CONNECT BY PRIOR MENU_CD = PARENT_MENU_CD 
-        ORDER SIBLINGS BY SORT
+            FROM TB_MST_MENU
+            START WITH PARENT_MENU_CD IS NULL
+            CONNECT BY PRIOR MENU_CD = PARENT_MENU_CD
+            ORDER SIBLINGS BY MENU_CD
+        )
+        -- 사용자 권한에 따른 메뉴코드의 상위, 하위, 자신
+        , W_ROLE_ALL_MENU AS (
+            -- 역방향 전개 : 상위메뉴코드 전체
+            SELECT MENU_CD
+            FROM TB_MST_MENU
+            START WITH MENU_CD IN (#repeat( $_parameter.param123 $vMenucd ",") '$vMenucd' #end)
+            CONNECT BY MENU_CD = PRIOR PARENT_MENU_CD
+            --ORDER SIBLINGS BY MENU_CD
+        )
+        SELECT *
+        FROM W_MENU
+        WHERE MENU_CD IN (SELECT MENU_CD FROM W_ROLE_ALL_MENU)
     </select>
 
 </mapper>

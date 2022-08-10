@@ -14,7 +14,6 @@
             height: calc(100% - 52px);
             overflow: auto;
         }
-
     </style>
 </head>
 <body class="m4-cloak h-vh-100" >
@@ -34,7 +33,7 @@
         <!-- Left Filter -->
         <section id="_divFilter">
             <!-- Filter -->
-            <div class="w-100 filter" style="overflow: auto;">
+            <div class="w-100 h-100 filter" style="overflow: auto;">
                 <ul class="v-menu filterForm">
                     <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> text</li>
                     <li class="pl-3 bg-basecolor">
@@ -213,7 +212,8 @@
             });
 
             $("#save").on("click", function() {
-                
+                var sGridData = gfn_getGrdSavedata(gridMain.gridview);
+                console.log(sGridData);
             });
             
             //엑셀다운로드
@@ -231,7 +231,7 @@
             //유효성 검증
             if (!fn_validation()) return false;
             
-            let formData = JSON.stringify({param123: [1,2,3]});
+            let formData = JSON.stringify({param123: ['M1','M331']});
             
 			
 			//page 시작할 때 마다, db에 portfolio 데이터 요청

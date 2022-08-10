@@ -15,7 +15,6 @@ import com.demo.boot.common.service.MenuService;
 import com.demo.boot.common.service.UserService;
 import com.demo.boot.common.vo.UserVo;
 
-import ch.qos.logback.classic.Logger;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -47,9 +46,6 @@ public class MemberController {
     	//1.로그인한 유저의 권한에 따른 메뉴 조회
     	//2.사용자 정보
     	List<HashMap<String, String>> menuList = userService.userMenu(uservo.getUserId());
-    	for (HashMap<String, String> map : menuList) {
-    		System.out.println(map.get("menuNm"));
-    	}
     	model.addAttribute("menuList", menuList);
         return "top";
     }

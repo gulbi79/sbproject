@@ -1,25 +1,29 @@
 spring:
-    datasource:
-#        driver-class-name: oracle.jdbc.driver.OracleDriver
-#        jdbc-url: jdbc:oracle:thin:@130.162.132.213:1521/xe
-        driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-        jdbc-url: jdbc:log4jdbc:oracle:thin:@130.162.132.213:1521/xe
-        username: SUNG
-        password: 1234
-    devtools:
-        livereload:
-            enabled: true
-    thymeleaf:
-        prefix: classpath:templates/
-        suffix: .html
-        cache: false
-    mvc:
-        static-path-pattern: /static/**
-    web:
-        resources:
-            static-locations: classpath:static/
+  datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    jdbc-url: ENC(F569Wb4PMcSPZlENgatqPK4jD1a6m77m3qdL/E3kTnVwZ/ob8vt2fWqe6bg8kiAw5oYcw8wIt6JHorSy8z6Nmg==)
+    username: ENC(LoVBvkHceiW3h0bJfKGZ4g==)
+    password: a1234
+  devtools:
+    livereload:
+        enabled: true
+  thymeleaf:
+    prefix: classpath:templates/
+    suffix: .html
+    cache: false
+  mvc:
+    static-path-pattern: /static/**
+  web:
+    resources:
+        static-locations: classpath:static/
 #    mybatis:
 #        configuration:
 #            map-underscore-to-camel-case: true
 #mybatis.configuration.return-instance-for-empty-row=false
+
+jasypt:
+  encryptor:
+#    bean: jasyptStringEncryptor
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
 

@@ -127,7 +127,7 @@
             </div>
             <!-- /tree -->
             <!-- Filter -->
-            <div class="w-100 filter" style="overflow: auto;">
+            <div class="w-100 h-100 filter" style="overflow: auto;">
                 <ul class="v-menu filterForm">
                     <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> text</li>
                     <li class="pl-3 bg-basecolor">
@@ -337,6 +337,8 @@
             //필터폼 데이터 생성
             let filterObj = gfn_getFormObj($('.filterForm'));
             filterObj = {...filterObj, ...gfn_getChkTree()}; //체크트리 파라미터 셋
+            
+            console.log("filterObj",filterObj);
             
             const alert = await gfn_alertSync({title: "alert title", content: "contents"}).then(function(res) { return true; }).catch(function(err) { return false; });
             if (!alert) return;
