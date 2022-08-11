@@ -31,6 +31,7 @@ GRID.prototype = {
         this.gridview = new RealGrid.TreeView(this.realgridConfig.gridId);
         this.gridview.setDataSource(this.provider);
         this.setColumn();
+        this.setOptions();
         return this;
     },
 
@@ -62,98 +63,78 @@ GRID.prototype = {
             })).values()];
 
             this.provider.setFields(fields);
+            console.log(this.realgridConfig.columns);
             this.gridview.setColumns(this.realgridConfig.columns);
         }
     },
+    
+    setOptions : function() {
+		let defaultOptions = {
+	        panel	: { visible: false },
+	        footer	: { visible: false },
+	        checkBar: { visible: false },
+	        stateBar: { visible: false },
+	        sorting : { enabled: true  },
+	        sortMode: "explicit",
+	        edit    : { insertable: true, appendable: false, updatable: true, editable: true, deletable: true},
+	        header  : {
+	            heightFill: "fixed",
+	            showTooltip: true
+	        },
+	        display : {
+	        	emptyMessage: "",
+	        }
+	    };
+	    
+	    defaultOptions = {...defaultOptions, ...this.realgridConfig.options};
+	    
+		this.gridview.setOptions(defaultOptions);
+	    
+	    this.gridview.setSortingOptions({
+			style: "exclusive" //1.exclusive : 단일정렬, 2.inclusive : 멀티정렬, 3.reverse : 멀티역방향정렬
+		});
+		
+		this.gridview.setPasteOptions({
+			checkReadOnly: true,
+			enableAppend: false,
+			eventEachRow: true,
+			forceColumnValidation : true,
+			forceRowValidation : true,
+			stopOnError : true,
+			checkDomainOnly : true,
+			noEditEvent : true,
+			selectBlockPaste: true,
+			convertLookupLabel: true,
+		});
+	
+		this.gridview.setCopyOptions({
+			lookupDisplay: true,
+		});
+	
+		this.gridview.setDisplayOptions({
+			editItemMerging : true,
+			rowHeight : 21,
+			//fitStyle : "even",
+		});
+	
+		//필터링 옵션 설정
+		this.gridview.setFilteringOptions({
+			clearWhenSearchCheck: true,
+			selector: {
+				showSearchInput: true,
+				showButtons: true,
+				acceptText: "OK",
+				cancelText: "CANCEL"
+			}
+		});
+		
+		this.provider.setOptions({
+			commitBeforeDataEdit: true,
+			restoreMode: "auto",
+	    	softDeleting: true //삭제시 상태값만 바꾼다.
+	    });
+	}
 }
-
-//컬럼 그룹핑을 위한 레이아웃을 colNames 정보로 생성한다.
-function getMultiLevelColumns(colNames) {
-    "use strict";
-
-    function leastCommonMultiple(arr) {
-            var result = lcm(arr[0], arr[1]);
-
-            for (var i = 2; i < arr.length; i++) {
-                    result = lcm(result, arr[i]);
-            }
-
-            return result;
-    };
-
-    function gcd(a, b) {
-            while (b != 0) {
-                    var temp = a % b;
-                    a = b;
-                    b = temp;
-            }
-
-            return a;
-    };
-
-    function lcm(a, b) {
-            return a * b / gcd(a, b);
-    };
-
-    //var arrLen = colNames.map(x => x.length); //각 배열의 길이
-    var arrLen = colNames.map(function (x) { return x.length }); //각 배열의 길이
-    var lcmValue = leastCommonMultiple(arrLen); //최소공배수
-
-    var parentGrpColObj = {}
-    parentGrpColObj.direction = "vertical";
-    parentGrpColObj.items = [];
-    parentGrpColObj.header = { visible: false };
-
-    for (var i = 0; i < colNames.length; i++) {
-            var grpColObj = {};
-            grpColObj.direction = "horizontal";
-            grpColObj.items = [];
-            grpColObj.header = {visible: false};
-
-            for (var j = 0; j < colNames[i].length ; j++) {
-                    var cellSpan = lcmValue / colNames[i].length;;
-                    var column = {};
-
-                    column.column = colNames[i][j];
-                    column.cellSpan = cellSpan;
-                    column.width = 50;
-
-                    grpColObj.items.push(column);
-                    for (var k = 0; k < cellSpan - 1; k++) {
-                            grpColObj.items.push(50);
-                    }
-            }
-            parentGrpColObj.items.push(grpColObj);
-    }
-
-    return [parentGrpColObj];
-}
-
-//필드,컬럼 동적 생성
-//조건 > 1 level 구성으로 그룹 컬럼은 지정할 수 없다.
-function setFieldsNColumns(provider, grid, columnInfo) {
-    var fields = [];
-
-    for (var key in columnInfo) {
-        var col = columnInfo[key];
-
-        if (!col.fieldName) {
-            col.fieldName = col.name;
-            col.header = col.name;
-        };
-
-        if (col && (!col.items)) {
-            //field 구성
-            var f = {};
-            f.fieldName = col.name;
-            if (col.tag && col.tag.dataType) f.dataType = col.tag.dataType;
-            fields.push(f);
-        };
-    };
-
-    provider.setFields(fields);
-    grid.setColumns(columnInfo);
-};
 
 // 페이지 네비게이션 생성 및 이동 처리
 // 이 함수는 JQuery가 사용되었습니다.
@@ -226,29 +207,6 @@ function paging(totalData, dataPerPage, pageCount, currentPage){
         paging(totalData, dataPerPage, pageCount, selectedPage);
     });
 
-}
-
-function getColumnsToFormModel(grid){
-    var model = { footer: { popupMenu: "menuForm"}, items: []};
-    var formModel = model.items;
-    var columns = grid.getColumns();
-
-    //IE 11 에서 for of 실행이 안됨
-    // for (var dataColumn of columns) {
-    //     var f = {};
-    //     f.header = dataColumn.header.text;
-    //     f.column = dataColumn.name;
-    //     formModel.push(f);
-    // };
-
-    for (var col in columns) {
-        var f = {};
-        f.header = columns[col].header.text;
-        f.column = columns[col].name;
-        formModel.push(f);
-    };
-
-    return model;
 }
 
 // 엑셀 내보내기 실행
@@ -454,63 +412,39 @@ function getSelectionSummary(grid) {
     return sum;
 }
 
-function getMultiLevelColumns (colNames) {
-    "use strict";
+function gfn_getGrdSavedata(objGrid) {
+	objGrid.commit();
+	var objData = objGrid.getDataSource();
+    var jData;
+    var jRowsData = [];
+    var rows = objData.getAllStateRows();
 
-    function leastCommonMultiple(arr) {
-            var result = lcm(arr[0], arr[1]);
+    rows.deleted.forEach(v => {
+        jData = objData.getJsonRow(v);
+        jData.state = "deleted";
+        jData._rownum = v;
+        jRowsData.push(jData);
+    });
 
-            for (var i = 2; i < arr.length; i++) {
-                    result = lcm(result, arr[i]);
-            }
+    rows.updated.forEach(v => {
+        jData = objData.getJsonRow(v);
+        jData.state = "updated";
+        jData._rownum = v;
+        jRowsData.push(jData);
+    });
 
-            return result;
-    };
+    rows.created.forEach(v => {
+        jData = objData.getJsonRow(v);
+        jData.state = "created";
+        jData._rownum = v;
+        jRowsData.push(jData);
+    });
 
-    function gcd(a, b) {
-            while (b != 0) {
-                    var temp = a % b;
-                    a = b;
-                    b = temp;
-            }
-
-            return a;
-    };
-
-    function lcm(a, b) {
-            return a * b / gcd(a, b);
-    };
-
-    //var arrLen = colNames.map(x => x.length); //각 배열의 길이
-    var arrLen = colNames.map(function (x) { return x.length }); //각 배열의 길이
-    var lcmValue = leastCommonMultiple(arrLen); //최소공배수
-
-    var parentGrpColObj = {}
-    parentGrpColObj.direction = "vertical";
-    parentGrpColObj.items = [];
-    parentGrpColObj.header = { visible: false };
-
-    for (var i = 0; i < colNames.length; i++) {
-            var grpColObj = {};
-            grpColObj.direction = "horizontal";
-            grpColObj.items = [];
-            grpColObj.header = {visible: false};
-
-            for (var j = 0; j < colNames[i].length ; j++) {
-                    var cellSpan = lcmValue / colNames[i].length;;
-                    var column = {};
-
-                    column.column = colNames[i][j];
-                    column.cellSpan = cellSpan;
-                    column.width = 50;
-
-                    grpColObj.items.push(column);
-                    for (var k = 0; k < cellSpan - 1; k++) {
-                            grpColObj.items.push(50);
-                    }
-            }
-            parentGrpColObj.items.push(grpColObj);
+    if (jRowsData.length === 0) {
+        objData.clearRowStates(true);
+        return jRowsData;
     }
 
-    return [parentGrpColObj];
+    return jRowsData;
 }
+

@@ -6,5 +6,7 @@ import java.util.Map;
 public interface AdminService {
     
 	List<Map<String, Object>> selectMenu(Map<String,Object> paramMap);
+
+	Map<String, Object> saveMenu(Map<String,Object> paramMap);
 	
 }

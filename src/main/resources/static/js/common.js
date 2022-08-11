@@ -1,5 +1,38 @@
 /**
- *
+ * 공통 서비스 함수
+ */
+async function gfn_service(pConfigs) {
+	let serviceConfig = {
+		url: '',
+		method: 'post', 
+		headers: { "Content-Type": "application/json" },
+	    body: null,
+	    successCallback: null,
+	    errorCallback: null
+	};
+	
+	serviceConfig = {...serviceConfig, ...pConfigs};
+	
+	//server api 요청
+	fetch(serviceConfig.url, {
+	    method: serviceConfig.method, 
+	    headers: serviceConfig.headers,
+	    body: serviceConfig.body
+	})
+    .then(res => {
+		if (!res.ok) throw res;
+		return res.json(); //응답 결과를 json으로 파싱
+	}) 
+    .then(serviceConfig.successCallback)
+    .catch(err => {
+        err.text().then(async function(msg) {
+			await gfn_alertSync({title: "Error", content: JSON.parse(msg).message});
+		})
+    });
+}
+
+/**
+ * Tree 체크데이터 배열로 리턴
  */
 function gfn_getChkTree() {
     var rtnObj = {};
@@ -59,6 +92,9 @@ function gfn_getFormObj($ele) {
     return o;
 }
 
+/**
+ * async confirm
+ */
 function gfn_confirm(options) {
     var Utils = Metro.utils;
     var alertConfig = {
@@ -93,6 +129,9 @@ function gfn_confirm(options) {
     });
 }
 
+/**
+ * async alert
+ */
 function gfn_alert(options) {
     var Utils = Metro.utils;
     var alertConfig = {
@@ -117,6 +156,9 @@ function gfn_alert(options) {
     });
 }
 
+/**
+ * sync confirm
+ */
 function gfn_confirmSync(options) {
     return new Promise(function(resolve, reject) {
         var Utils = Metro.utils;
@@ -155,6 +197,9 @@ function gfn_confirmSync(options) {
     });
 }
 
+/**
+ * sync alert
+ */
 function gfn_alertSync(options) {
     return new Promise(function(resolve, reject) {
         var Utils = Metro.utils;

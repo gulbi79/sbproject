@@ -42,7 +42,7 @@
             FROM TB_MST_MENU
             START WITH PARENT_MENU_CD IS NULL
             CONNECT BY PRIOR MENU_CD = PARENT_MENU_CD
-            ORDER SIBLINGS BY MENU_CD
+            ORDER SIBLINGS BY SORT
         )
         -- 사용자 권한에 따른 메뉴코드
         , W_ROLE_MENU AS (
@@ -65,7 +65,7 @@
             FROM TB_MST_MENU
             START WITH MENU_CD IN (SELECT MENU_CD MENU_CD FROM W_ROLE_MENU)
             CONNECT BY MENU_CD = PRIOR PARENT_MENU_CD
-            --ORDER SIBLINGS BY MENU_CD
+            --ORDER SIBLINGS BY SORT
         )
         SELECT *
         FROM W_MENU

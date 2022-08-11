@@ -1,9 +1,11 @@
 package com.demo.boot.common.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.demo.boot.common.repository.AdminRepository;
 
@@ -18,6 +20,18 @@ public class AdminServiceImpl implements AdminService {
 
     public List<Map<String, Object>> selectMenu(Map<String,Object> paramMap) {
     	return adminRepository.selectMenu(paramMap);
+    }
+    
+    @Transactional
+    public Map<String, Object> saveMenu(Map<String,Object> paramMap) {
+    	Map<String, Object> rtnMap = new HashMap<String, Object>();
+    	List<Map<String,Object>> grdData = (List<Map<String,Object>>)paramMap.get("grdData");
+    	for (Map<String,Object> rowMap : grdData) {
+    		adminRepository.saveMenu(rowMap);
+    	}
+    	
+    	rtnMap.put("result", "ok");
+    	return rtnMap;
     }
 
 }

@@ -23,7 +23,7 @@
     <header id="frametitle" class="frametitle va-middle bg-transparent pl-2 pt-1">
         <div class="place-left">
             <a href="#"><span class="mif-indent-decrease" onclick="$('#_divFilter').toggle(); $(this).toggleClass('mif-indent-decrease mif-indent-increase');"></span></a>
-            Page Info : Inner1
+            Page Info : Role Management
         </div>
         <div class="place-right mr-4">
             <a href="#" class="px-1"><span class="mif-stack"></span></a>
@@ -88,7 +88,7 @@
     <script src="/static/js/common.js"></script>
     <script src="/static/js/data.js"></script>
     <script>
-        const Utils = Metro.utils;
+        var Utils = Metro.utils;
         let grid, provider;
         $(function() {
             fn_filterInit(); //필터초기화
@@ -145,7 +145,7 @@
 		        if (provider.getSavePoints().length > 0) provider.rollback(provider.getSavePoints()[0]);
 		    	else provider.clearRows();
 		    	
-		    	grid.expandAll();
+		    	grid.gridview.expandAll();
             });
 
             $("#add").on("click", function() {
@@ -159,7 +159,6 @@
 
             $("#delete").on("click", function() {
                 var rows = grid.getCheckedRows();
-				//dataProvider.removeRows(rows, false);
 				for (var i=rows.length-1; i>=0; i--) {
 					provider.removeRow(rows[i]);
 				}
@@ -179,13 +178,9 @@
 					url: '/admin/menureg',
 				    body: JSON.stringify({grdData: uGrdData}),
 				    successCallback: async function(data) {
-						try {
-							//데이터 초기화 및 그리드 데이터 생성
-							await gfn_alertSync({title: "Success", content: "Save success"});
-				            fn_apply();
-			            } catch(e) {
-							console.log(e);
-						}
+						//데이터 초기화 및 그리드 데이터 생성
+						await gfn_alertSync({title: "Success", content: "Save success"});
+			            fn_apply();
 				    }
 				}; 
 				gfn_service(pConfigs);
@@ -239,8 +234,6 @@
         function fn_clickPopup() {
             console.log("fn_clickPopup!!!!");
         }
-        
-
     </script>
 </body>
 </html>
