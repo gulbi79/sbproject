@@ -19,8 +19,13 @@ public class AdminController {
 
     private final AdminService adminService;
     
-    @PostMapping("menu")
+    @PostMapping("menulist")
     public ResponseEntity<?> selectMenu(@RequestBody Map<String, Object> params) {
         return ResponseEntity.ok().body(adminService.selectMenu(params));
+    }
+    
+    @PostMapping("menureg")
+    public ResponseEntity<?> saveMenu(@RequestBody Map<String, Object> params) {
+        return ResponseEntity.ok().body(adminService.saveMenu(params));
     }
 }

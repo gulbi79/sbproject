@@ -5,7 +5,7 @@
 <mapper namespace="com.demo.boot.common.repository.AdminRepository">
 
     <!-- 메뉴조회 -->
-    <select id="selectMenu" parameterType="hashmap" resultType="custommap">
+    <select id="selectMenu" parameterType="map" resultType="custommap">
         /* selectMenu */
         -- 전체메뉴 트리
         WITH W_MENU AS (
@@ -14,20 +14,49 @@
             FROM TB_MST_MENU
             START WITH PARENT_MENU_CD IS NULL
             CONNECT BY PRIOR MENU_CD = PARENT_MENU_CD
-            ORDER SIBLINGS BY MENU_CD
+            ORDER SIBLINGS BY SORT
         )
         -- 사용자 권한에 따른 메뉴코드의 상위, 하위, 자신
         , W_ROLE_ALL_MENU AS (
             -- 역방향 전개 : 상위메뉴코드 전체
             SELECT MENU_CD
             FROM TB_MST_MENU
-            START WITH MENU_CD IN (#repeat( $_parameter.param123 $vMenucd ",") '$vMenucd' #end)
+            START WITH MENU_NM LIKE '%' || @{f_menuname} || '%'
             CONNECT BY MENU_CD = PRIOR PARENT_MENU_CD
-            --ORDER SIBLINGS BY MENU_CD
         )
         SELECT *
         FROM W_MENU
         WHERE MENU_CD IN (SELECT MENU_CD FROM W_ROLE_ALL_MENU)
     </select>
+
+    <!-- 메뉴저장 -->
+    <insert id="saveMenu" parameterType="map">
+        /* saveMenu */
+        MERGE INTO TB_MST_MENU A
+        USING (
+            SELECT @{menuCd} AS MENU_CD
+                 , @{menuNm} AS MENU_NM
+                 , @{url} AS URL
+                 , @{parentMenuCd} AS PARENT_MENU_CD
+                 , @{useYn} AS USE_YN
+                 , @{sort} AS SORT
+                 , @{state} AS STATE
+            FROM DUAL
+        ) B
+           ON (A.MENU_CD = B.MENU_CD)
+         WHEN MATCHED THEN
+              UPDATE 
+                 SET A.MENU_NM        = B.MENU_NM
+                   , A.URL            = B.URL
+                   , A.PARENT_MENU_CD = B.PARENT_MENU_CD
+                   , A.USE_YN         = DECODE(B.STATE, 'deleted', 'N', B.USE_YN)
+                   , A.SORT           = B.SORT
+                   
+              --DELETE WHERE B.STATE = 'deleted'
+              
+         WHEN NOT MATCHED THEN
+              INSERT (A.MENU_CD, A.MENU_NM, A.URL, A.PARENT_MENU_CD, A.USE_YN, A.SORT)
+              VALUES (B.MENU_CD, B.MENU_NM, B.URL, B.PARENT_MENU_CD, B.USE_YN, B.SORT)
+    </insert>
 
 </mapper>
