@@ -6,57 +6,100 @@
 
     <!-- 메뉴조회 -->
     <select id="selectMenu" parameterType="map" resultType="custommap">
-        /* selectMenu */
-        -- 전체메뉴 트리
-        WITH W_MENU AS (
-            SELECT MENU_CD, MENU_NM, PARENT_MENU_CD, URL, USE_YN, SORT, LEVEL AS LVL
-             , 'M' || SYS_CONNECT_BY_PATH(MENU_CD, '.') AS TREE_ID
-            FROM TB_MST_MENU
-            START WITH PARENT_MENU_CD IS NULL
-            CONNECT BY PRIOR MENU_CD = PARENT_MENU_CD
-            ORDER SIBLINGS BY SORT
-        )
-        -- 사용자 권한에 따른 메뉴코드의 상위, 하위, 자신
-        , W_ROLE_ALL_MENU AS (
-            -- 역방향 전개 : 상위메뉴코드 전체
-            SELECT MENU_CD
-            FROM TB_MST_MENU
-            START WITH MENU_NM LIKE '%' || @{f_menuname} || '%'
-            CONNECT BY MENU_CD = PRIOR PARENT_MENU_CD
-        )
-        SELECT *
-        FROM W_MENU
-        WHERE MENU_CD IN (SELECT MENU_CD FROM W_ROLE_ALL_MENU)
+    /* selectMenu */
+    -- 전체메뉴 트리
+    WITH W_MENU AS (
+        SELECT MENU_CD, MENU_NM, PARENT_MENU_CD, URL, USE_YN, SORT, LEVEL AS LVL
+         , 'M' || SYS_CONNECT_BY_PATH(MENU_CD, '.') AS TREE_ID
+        FROM TB_MST_MENU
+        START WITH PARENT_MENU_CD IS NULL
+        CONNECT BY PRIOR MENU_CD = PARENT_MENU_CD
+        ORDER SIBLINGS BY SORT
+    )
+    -- 사용자 권한에 따른 메뉴코드의 상위, 하위, 자신
+    , W_ROLE_ALL_MENU AS (
+        -- 역방향 전개 : 상위메뉴코드 전체
+        SELECT MENU_CD
+        FROM TB_MST_MENU
+        START WITH MENU_NM LIKE '%' || @{f_menuname} || '%'
+#if($_parameter.f_useyny == "on" and $_parameter.f_useynn != "on")
+               AND USE_YN = 'Y'
+#elseif($_parameter.f_useyny != "on" and $_parameter.f_useynn == "on")
+               AND USE_YN = 'N'
+#end
+        CONNECT BY MENU_CD = PRIOR PARENT_MENU_CD
+    )
+    SELECT *
+    FROM W_MENU
+    WHERE MENU_CD IN (SELECT MENU_CD FROM W_ROLE_ALL_MENU)
     </select>
 
     <!-- 메뉴저장 -->
     <insert id="saveMenu" parameterType="map">
-        /* saveMenu */
-        MERGE INTO TB_MST_MENU A
-        USING (
-            SELECT @{menuCd} AS MENU_CD
-                 , @{menuNm} AS MENU_NM
-                 , @{url} AS URL
-                 , @{parentMenuCd} AS PARENT_MENU_CD
-                 , @{useYn} AS USE_YN
-                 , @{sort} AS SORT
-                 , @{state} AS STATE
-            FROM DUAL
-        ) B
-           ON (A.MENU_CD = B.MENU_CD)
-         WHEN MATCHED THEN
-              UPDATE 
-                 SET A.MENU_NM        = B.MENU_NM
-                   , A.URL            = B.URL
-                   , A.PARENT_MENU_CD = B.PARENT_MENU_CD
-                   , A.USE_YN         = DECODE(B.STATE, 'deleted', 'N', B.USE_YN)
-                   , A.SORT           = B.SORT
-                   
-              --DELETE WHERE B.STATE = 'deleted'
-              
-         WHEN NOT MATCHED THEN
-              INSERT (A.MENU_CD, A.MENU_NM, A.URL, A.PARENT_MENU_CD, A.USE_YN, A.SORT)
-              VALUES (B.MENU_CD, B.MENU_NM, B.URL, B.PARENT_MENU_CD, B.USE_YN, B.SORT)
+    /* saveMenu */
+    MERGE INTO TB_MST_MENU A
+    USING (
+        SELECT @{menuCd} AS MENU_CD
+             , @{menuNm} AS MENU_NM
+             , @{url} AS URL
+             , @{parentMenuCd} AS PARENT_MENU_CD
+             , @{useYn} AS USE_YN
+             , @{sort} AS SORT
+             , @{state} AS STATE
+        FROM DUAL
+    ) B
+       ON (A.MENU_CD = B.MENU_CD)
+     WHEN MATCHED THEN
+          UPDATE 
+             SET A.MENU_NM        = B.MENU_NM
+               , A.URL            = B.URL
+               , A.PARENT_MENU_CD = B.PARENT_MENU_CD
+               , A.USE_YN         = DECODE(B.STATE, 'deleted', 'N', B.USE_YN)
+               , A.SORT           = B.SORT
+               
+          --DELETE WHERE B.STATE = 'deleted'
+          
+     WHEN NOT MATCHED THEN
+          INSERT (A.MENU_CD, A.MENU_NM, A.URL, A.PARENT_MENU_CD, A.USE_YN, A.SORT)
+          VALUES (B.MENU_CD, B.MENU_NM, B.URL, B.PARENT_MENU_CD, B.USE_YN, B.SORT)
+    </insert>
+
+    <!-- 공통코드조회 -->
+    <select id="selectCode" parameterType="map" resultType="custommap">
+    /* selectCode */
+    SELECT GROUP_CD, GROUP_NM, CODE_CD, CODE_NM, SORT, USE_YN
+    FROM TB_MST_CODE
+    ORDER BY GROUP_NM, SORT
+    </select>
+
+    <!-- 메뉴저장 -->
+    <insert id="saveCode" parameterType="map">
+    /* saveCode */
+    MERGE INTO TB_MST_CODE A
+    USING (
+        SELECT @{groupCd} AS GROUP_CD
+             , @{groupNm} AS GROUP_NM
+             , @{codeCd} AS CODE_CD
+             , @{codeNm} AS CODE_NM
+             , @{sort} AS SORT
+             , @{useYn} AS USE_YN
+             , @{state} AS STATE
+        FROM DUAL
+    ) B
+       ON (A.GROUP_CD = B.GROUP_CD AND A.CODE_CD = B.CODE_CD)
+     WHEN MATCHED THEN
+          UPDATE 
+             SET A.GROUP_NM       = B.GROUP_NM
+               , A.CODE_NM        = B.CODE_NM
+               , A.SORT           = B.SORT
+               , A.PARENT_MENU_CD = B.PARENT_MENU_CD
+               , A.USE_YN         = DECODE(B.STATE, 'deleted', 'N', B.USE_YN)
+               
+          --DELETE WHERE B.STATE = 'deleted'
+          
+     WHEN NOT MATCHED THEN
+          INSERT (A.GROUP_CD, A.GROUP_NM, A.CODE_CD, A.CODE_NM, A.USE_YN, A.SORT)
+          VALUES (B.GROUP_CD, B.GROUP_NM, B.CODE_CD, B.CODE_NM, B.USE_YN, B.SORT)
     </insert>
 
 </mapper>

@@ -129,7 +129,7 @@
 			  , stateBar: { visible: true }
 			};
 			
-            const gridInstance = new GRID().treeInit({gridId: "realgrid1", columns: columns, fields: fields, options: options});
+            const gridInstance = new GRID().init({gridId: "realgrid1", columns: columns, fields: fields, options: options});
             grid = gridInstance.gridview;
             provider = gridInstance.provider;
         }
@@ -203,15 +203,14 @@
 			
 			//server api 요청
 			const pConfigs = {
-				url: '/admin/menulist',
+				url: '/admin/rolelist',
 			    body: JSON.stringify(filterObj),
 			    successCallback: function(data) {
 					try {
 						//데이터 초기화 및 그리드 데이터 생성
 			            provider.clearRows();
 			            grid.cancel();
-			            provider.setRows(data, "treeId", false, null, "iconField");
-			            grid.expandAll();
+			            provider.setRows(data);
 			            
 			            provider.clearSavePoints();
 						provider.savePoint(); //초기화 포인트 저장

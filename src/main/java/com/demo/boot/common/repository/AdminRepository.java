@@ -10,4 +10,8 @@ public interface AdminRepository {
     List<Map<String,Object>> selectMenu(Map<String,Object> paramMap);
 
     void saveMenu(Map<String,Object> paramMap);
+
+    List<Map<String,Object>> selectCode(Map<String,Object> paramMap);
+    
+    void saveCode(Map<String,Object> paramMap);
 }

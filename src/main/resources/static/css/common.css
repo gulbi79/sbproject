@@ -24,3 +24,8 @@ body{
 .bg-basecolor{
     background-color: #f6f7f8 !important;
 }
+
+.filterForm{
+    height: calc(100% - 52px);
+    overflow: auto;
+}

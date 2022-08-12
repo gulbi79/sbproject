@@ -6,9 +6,9 @@
 
     <!-- role select -->
     <select id="getRoleList" resultType="hashmap">
-        /* getRoleList */
-        SELECT ROLE_CD, ROLE_NM
-        FROM TB_MST_ROLE
+    /* getRoleList */
+    SELECT ROLE_CD, ROLE_NM
+    FROM TB_MST_ROLE
     </select>
 
 </mapper>

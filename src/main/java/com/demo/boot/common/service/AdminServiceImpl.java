@@ -34,4 +34,20 @@ public class AdminServiceImpl implements AdminService {
     	return rtnMap;
     }
 
+    public List<Map<String, Object>> selectCode(Map<String,Object> paramMap) {
+    	return adminRepository.selectCode(paramMap);
+    }
+    
+    @Transactional
+    public Map<String, Object> saveCode(Map<String,Object> paramMap) {
+    	Map<String, Object> rtnMap = new HashMap<String, Object>();
+    	List<Map<String,Object>> grdData = (List<Map<String,Object>>)paramMap.get("grdData");
+    	for (Map<String,Object> rowMap : grdData) {
+    		adminRepository.saveCode(rowMap);
+    	}
+    	
+    	rtnMap.put("result", "ok");
+    	return rtnMap;
+    }
+
 }

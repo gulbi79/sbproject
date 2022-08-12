@@ -28,4 +28,14 @@ public class AdminController {
     public ResponseEntity<?> saveMenu(@RequestBody Map<String, Object> params) {
         return ResponseEntity.ok().body(adminService.saveMenu(params));
     }
+
+    @PostMapping("codelist")
+    public ResponseEntity<?> selectCode(@RequestBody Map<String, Object> params) {
+    	return ResponseEntity.ok().body(adminService.selectCode(params));
+    }
+    
+    @PostMapping("codereg")
+    public ResponseEntity<?> saveCode(@RequestBody Map<String, Object> params) {
+    	return ResponseEntity.ok().body(adminService.saveCode(params));
+    }
 }

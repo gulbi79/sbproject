@@ -9,7 +9,7 @@
     <link href="/static/realgrid/realgrid-utils.css" rel="stylesheet" />
     <link href="/static/css/common.css" rel="stylesheet" />
 
-    <title>Menu Management</title>
+    <title>Code Management</title>
     <style>
     </style>
 </head>
@@ -18,7 +18,7 @@
     <header id="frametitle" class="frametitle va-middle bg-transparent pl-2 pt-1">
         <div class="place-left">
             <a href="#"><span class="mif-indent-decrease" onclick="$('#_divFilter').toggle(); $(this).toggleClass('mif-indent-decrease mif-indent-increase');"></span></a>
-            Page Info : Menu Management
+            Page Info : Code Management
         </div>
         <div class="place-right mr-4">
             <a href="#" class="px-1"><span class="mif-stack"></span></a>
@@ -35,11 +35,6 @@
                     <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Menu Name</li>
                     <li class="pl-3 bg-basecolor">
                         <input name="f_menuname" type="text" data-role="input" class="input-small">
-                    </li>
-                    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Use Y/N</li>
-                    <li class="pl-3 bg-basecolor">
-                        <input name="f_useyny" type="checkbox" data-role="checkbox" data-caption="Y&nbsp;&nbsp;" checked>
-                        <input name="f_useynn" type="checkbox" data-role="checkbox" data-caption="N" checked>
                     </li>
                 </ul>
                 <div class="pt-3 pl-3 pr-1">
@@ -88,7 +83,7 @@
     <script src="/static/js/common.js"></script>
     <script src="/static/js/data.js"></script>
     <script>
-        const Utils = Metro.utils;
+        var Utils = Metro.utils;
         let grid, provider;
         $(function() {
             fn_filterInit(); //필터초기화
@@ -112,16 +107,13 @@
         //그리드초기화
         function fn_gridInit() {
             //dataType이 text가 아닌경우 tag속성에 지정
-            const fields = [
-            	{fieldName: "treeId", type: "data"}
-            ];
+            const fields = [];
             const columns = [
-                {name: "menuNm",      type: "data", width: "200", header: {text: "Menu Name"       }, styleName: "tal-column" }
-              , {name: "menuCd",      type: "data", width: "100", header: {text: "Menu Code"       }, styleName: "tal-column" }
-              , {name: "parentMenuCd",type: "data", width: "100", header: {text: "Parent Menu Code"}, styleName: "tal-column" }
-			  , {name: "url",         type: "data", width: "100", header: {text: "URL"             }, styleName: "tal-column" }
+                {name: "groupCd",     type: "data", width: "100", header: {text: "Group Code"      }, styleName: "tal-column" }
+              , {name: "groupNm",     type: "data", width: "200", header: {text: "Group Name"      }, styleName: "tal-column" }
+              , {name: "codeCd",      type: "data", width: "100", header: {text: "Code"            }, styleName: "tal-column" }
+              , {name: "codeNm",      type: "data", width: "200", header: {text: "Code Name"       }, styleName: "tal-column" }
 			  , {name: "useYn",       type: "data", width: "100", header: {text: "Use Y/N"         }, styleName: "tac-column" }
-			  , {name: "lvl",         type: "data", width: "100", header: {text: "Level"           }, styleName: "tac-column" , editable: false }
 			  , {name: "sort",        type: "data", width: "100", header: {text: "Sort"            }, styleName: "tal-column" }
             ];
             const options = {
@@ -129,7 +121,7 @@
 			  , stateBar: { visible: true }
 			};
 			
-            const gridInstance = new GRID().treeInit({gridId: "realgrid1", columns: columns, fields: fields, options: options});
+            const gridInstance = new GRID().init({gridId: "realgrid1", columns: columns, fields: fields, options: options});
             grid = gridInstance.gridview;
             provider = gridInstance.provider;
         }
@@ -144,51 +136,24 @@
                 grid.cancel();
 		        if (provider.getSavePoints().length > 0) provider.rollback(provider.getSavePoints()[0]);
 		    	else provider.clearRows();
-		    	
-		    	grid.expandAll();
             });
 
             $("#add").on("click", function() {
-                var row = grid.getCurrent().dataRow;
-				var addVal = { 
-					parentMenuCd: provider.getValue(row, "menuCd"),
-					useYn: "Y", 
-				};
-				provider.addChildRow(row, addVal, -1, false);
+                let row = grid.getCurrent().dataRow;
+                row = row == -1 ? 0 : row;
+				const addVal = { useYn: "Y" };
+				provider.insertRow(row, addVal);
             });
 
             $("#delete").on("click", function() {
                 var rows = grid.getCheckedRows();
-				//dataProvider.removeRows(rows, false);
 				for (var i=rows.length-1; i>=0; i--) {
 					provider.removeRow(rows[i]);
 				}
             });
 
-            $("#save").on("click", async function() {
-				var uGrdData = gfn_getGrdSavedata(grid);
-				if (uGrdData.length == 0) {
-					gfn_alert({title: "Info", content: "저장 할 데이터가 없습니다."});
-					return;
-		    	}
-    	
-				if(!await gfn_confirmSync({title: "Info", content: "저장하시겠습니까?"})) return;
-				
-				//server api 요청
-				const pConfigs = {
-					url: '/admin/menureg',
-				    body: JSON.stringify({grdData: uGrdData}),
-				    successCallback: async function(data) {
-						try {
-							//데이터 초기화 및 그리드 데이터 생성
-							await gfn_alertSync({title: "Success", content: "Save success"});
-				            fn_apply();
-			            } catch(e) {
-							console.log(e);
-						}
-				    }
-				}; 
-				gfn_service(pConfigs);
+            $("#save").on("click", function() {
+				fn_save();
             });
             
             //엑셀다운로드
@@ -196,7 +161,7 @@
 				exportExcel(grid);
 			});
         }
-
+        
         //조회
         async function fn_apply() {
             //필터폼 데이터 생성
@@ -208,15 +173,14 @@
 			
 			//server api 요청
 			const pConfigs = {
-				url: '/admin/menulist',
+				url: '/admin/codelist',
 			    body: JSON.stringify(filterObj),
 			    successCallback: function(data) {
 					try {
 						//데이터 초기화 및 그리드 데이터 생성
 			            provider.clearRows();
 			            grid.cancel();
-			            provider.setRows(data, "treeId", false, null, "iconField");
-			            grid.expandAll();
+			            provider.setRows(data);
 			            
 			            provider.clearSavePoints();
 						provider.savePoint(); //초기화 포인트 저장
@@ -228,9 +192,27 @@
 			gfn_service(pConfigs);
         }
         
-        function fn_callback(tranId) {
-
-        }
+        async function fn_save() {
+			var uGrdData = gfn_getGrdSavedata(grid);
+			if (uGrdData.length == 0) {
+				gfn_alert({title: "Info", content: "저장 할 데이터가 없습니다."});
+				return;
+	    	}
+	
+			if(!await gfn_confirmSync({title: "Info", content: "저장하시겠습니까?"})) return;
+			
+			//server api 요청
+			const pConfigs = {
+				url: '/admin/codereg',
+			    body: JSON.stringify({grdData: uGrdData}),
+			    successCallback: async function(data) {
+					//데이터 초기화 및 그리드 데이터 생성
+					await gfn_alertSync({title: "Success", content: "Save success"});
+		            fn_apply();
+			    }
+			}; 
+			gfn_service(pConfigs);
+		}
 
         function fn_validation() {
             return true;
@@ -239,8 +221,6 @@
         function fn_clickPopup() {
             console.log("fn_clickPopup!!!!");
         }
-        
-
     </script>
 </body>
 </html>
