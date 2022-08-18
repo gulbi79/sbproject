@@ -23,6 +23,7 @@ GRID.prototype = {
         this.gridview = new RealGrid.GridView(this.realgridConfig.gridId);
         this.gridview.setDataSource(this.provider);
         this.setColumn();
+        this.setOptions();
         return this;
     },
     treeInit: function(options) {
@@ -82,7 +83,8 @@ GRID.prototype = {
 	            showTooltip: true
 	        },
 	        display : {
-	        	emptyMessage: "",
+		        showEmptyMessage : true,
+	        	emptyMessage: "표시할 데이타가 없습니다.",
 	        }
 	    };
 	    

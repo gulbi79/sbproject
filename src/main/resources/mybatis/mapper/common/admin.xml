@@ -69,6 +69,15 @@
     /* selectCode */
     SELECT GROUP_CD, GROUP_NM, CODE_CD, CODE_NM, SORT, USE_YN
     FROM TB_MST_CODE
+#where()
+ #if($_parameter.f_group and $_parameter.f_group != "")
+      AND ( UPPER(GROUP_CD) LIKE '%' || UPPER(@{f_group}) || '%' OR UPPER(GROUP_NM) LIKE '%' || UPPER(@{f_group}) || '%' )
+ #end
+ #if($_parameter.f_code and $_parameter.f_code != "")
+      AND ( UPPER(CODE_CD) LIKE '%' || UPPER(@{f_code}) || '%' OR UPPER(CODE_NM) LIKE '%' || UPPER(@{f_code}) || '%' )
+ #end
+#end
+    
     ORDER BY GROUP_NM, SORT
     </select>
 
@@ -86,13 +95,13 @@
              , @{state} AS STATE
         FROM DUAL
     ) B
-       ON (A.GROUP_CD = B.GROUP_CD AND A.CODE_CD = B.CODE_CD)
+       ON ( A.GROUP_CD = B.GROUP_CD 
+        AND A.CODE_CD  = B.CODE_CD )
      WHEN MATCHED THEN
           UPDATE 
              SET A.GROUP_NM       = B.GROUP_NM
                , A.CODE_NM        = B.CODE_NM
                , A.SORT           = B.SORT
-               , A.PARENT_MENU_CD = B.PARENT_MENU_CD
                , A.USE_YN         = DECODE(B.STATE, 'deleted', 'N', B.USE_YN)
                
           --DELETE WHERE B.STATE = 'deleted'

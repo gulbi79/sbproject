@@ -1,88 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <link href="/static/metro/css/metro-all.css?ver=@@b-version" rel="stylesheet">
-    <link href="/static/realgrid/2.5.3/realgrid-style.css" rel="stylesheet" />
-    <link href="/static/realgrid/realgrid-utils.css" rel="stylesheet" />
-    <link href="/static/css/common.css" rel="stylesheet" />
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/basemaster}">
 
-    <title>Code Management</title>
-    <style>
-    </style>
-</head>
-<body class="m4-cloak h-vh-100" >
-    <!-- Page Title -->
-    <header id="frametitle" class="frametitle va-middle bg-transparent pl-2 pt-1">
-        <div class="place-left">
-            <a href="#"><span class="mif-indent-decrease" onclick="$('#_divFilter').toggle(); $(this).toggleClass('mif-indent-decrease mif-indent-increase');"></span></a>
-            Page Info : Code Management
-        </div>
-        <div class="place-right mr-4">
-            <a href="#" class="px-1"><span class="mif-stack"></span></a>
-            <a href="#" class="px-1"><span class="mif-list"></span></a>
-            <a href="#" class="px-1"><span class="mif-file-excel"></span></a>
-        </div>
-    </header>
-    <main id="framebody" class="framebody" data-role="splitter" data-split-sizes="20, 80" data-min-sizes="350, 200" data-gutter-size="5">
-        <!-- Left Filter -->
-        <section id="_divFilter">
-            <!-- Filter -->
-            <div class="w-100 h-100 filter" style="overflow: auto;">
-                <ul class="v-menu filterForm">
-                    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Menu Name</li>
-                    <li class="pl-3 bg-basecolor">
-                        <input name="f_menuname" type="text" data-role="input" class="input-small">
-                    </li>
-                </ul>
-                <div class="pt-3 pl-3 pr-1">
-                    <button id="apply" class="button primary shadowed w-100">Apply</button>
-                </div>
-            </div>
-            <!-- /Filter -->
-        </section>
-        <!-- Content -->
-        <section class="d-flex" style="overflow: auto;">
-            <div class="container-fluid">
-                <div class="mt-0"></div>
-                <div id="realgrid1" class="w-100" style="height: calc(100% - 44px);"></div>
-                <div class="mt-1 place-right">
-                    <button id="reset" class="button shadowed info">Reset</button>
-                    <button id="add" class="button shadowed ">Add</button>
-                    <button id="delete" class="button shadowed ">Delete</button>
-                    <button id="save" class="button shadowed success">Save</button>
-                </div>
-            </div>
-        </section>
-        <!-- /Content -->
-    </main>
-    <!-- hidden -->
-    <div class="dialog" data-role="dialog" id="demoDialog1">
-        <div class="dialog-title py-1">Popup Dialog</div>
-        <div class="dialog-content py-1 px-3 mt-0">
-            <div style="height: 30px;">
-                <button class="button float-right mb-1 small">Search</button>
-            </div>
-            <div id="realgridPopup" class="w-100" style="height: 250px;"></div>
-        </div>
-        <div class="dialog-actions text-right mt-0 px-2">
-            <button class="button js-dialog-close small">Cancel</button>
-            <button class="button primary js-dialog-close small" onclick="fn_clickPopup();">Ok</button>
-        </div>
-    </div>
-    <!-- /hidden -->
-    
-    <script src="/static/metro/js/metro.js?ver=@@b-version"></script>
-    <!-- RealGrid -->
-    <script src="/static/realgrid/2.5.3/realgrid-lic.js"></script>
-    <script src="/static/realgrid/2.5.3/realgrid.2.5.3.min.js"></script>
-    <script src="/static/realgrid/realgrid-utils.js"></script>
-    <script src="/static/realgrid/libs/jszip.min.js"></script>
-    <script src="/static/js/common.js"></script>
-    <script src="/static/js/data.js"></script>
-    <script>
+<th:block layout:fragment="filter">
+	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Group','f_group')"></th:block>
+	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Code','f_code')"></th:block>
+	<th:block th:replace="/layouts/fragments/filters :: selectFragment('Select','select111')"></th:block>
+	<th:block th:replace="/layouts/fragments/filters :: mselectFragment('Multiple','mselect1')"></th:block>
+</th:block>
+
+<th:block layout:fragment="contentjs">
+	<script>
         var Utils = Metro.utils;
         let grid, provider;
         $(function() {
@@ -101,7 +30,10 @@
 
         //필터초기화
         function fn_filterInit() {
-            
+			$("#mselect").append("<option value=\"6\" data-template=\"<input type='checkbox' data-role='checkbox' data-style='2'> $1\">GitHub222</option>");
+            var mselect = Metro.getPlugin($("#mselect"), "select");
+            mselect.reset();
+            mselect.val(["1","3","6"]);
         }
 
         //그리드초기화
@@ -222,5 +154,5 @@
             console.log("fn_clickPopup!!!!");
         }
     </script>
-</body>
+</th:block>
 </html>

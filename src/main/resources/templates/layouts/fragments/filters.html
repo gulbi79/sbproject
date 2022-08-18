@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lagn="ko" xmlns:th="http://www.thymeleaf.org">
+    <th:block th:fragment="inputFragment(title, name)">
+	    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> <span th:text=${title}>Group</span></li>
+	    <li class="pl-3 bg-basecolor">
+	        <input name="f_" th:attr="name=${name}" type="text" data-role="input" class="input-small">
+	    </li>
+    </th:block>
+    
+    <th:block th:fragment="selectFragment(title, name)">
+	    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> <span th:text=${title}>select</span></li>
+	    <li class="pl-3 bg-basecolor">
+	        <select name="select1" th:attr="name=${name}" data-role="select" class="input-small">
+	            <option value="1" data-template="<span class='mif-amazon icon'></span> $1">Amazon</option>
+	            <option value="2" data-template="<span class='mif-apple icon'></span> $1">Apple</option>
+	            <option value="3" data-template="<span class='mif-blogger icon'></span> $1">Blogger</option>
+	            <option value="4" data-template="<span class='mif-evernote icon'></span> $1">Evernote</option>
+	            <option value="5" data-template="<span class='mif-github icon'></span> $1">GitHub</option>
+	        </select>
+	    </li>
+    </th:block>
+    <th:block th:fragment="mselectFragment(title, name)">
+	    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> <span th:text=${title}>Multiple</span></li>
+        <li class="pl-3 bg-basecolor">
+            <select id="mselect" name="mselect1" th:attr="name=${name}" data-role="select" class="input-small" data-clear-button="false" 
+                data-cls-drop-list="no-wrap" 
+                data-cls-parent-option="px-0" 
+                multiple>
+                <option value="1" data-template="<input type='checkbox' data-role='checkbox' data-style='2'> $1">Amazonaaaaaaaaaaaaaaabbbbbcccccccc</option>
+                <option value="2" data-template="<input type='checkbox' data-role='checkbox' data-style='2'> $1">Apple</option>
+                <option value="3" data-template="<input type='checkbox' data-role='checkbox' data-style='2'> $1">Blogger</option>
+                <option value="4" data-template="<input type='checkbox' data-role='checkbox' data-style='2'> $1">Evernote</option>
+                <option value="5" data-template="<input type='checkbox' data-role='checkbox' data-style='2'> $1">GitHub</option>
+            </select>
+        </li>
+    </th:block>
+    <th:block th:fragment="singlecalFragment(title, name)">
+	    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> <span th:text=${title}>Calendar picker1</span></li>
+	    <li class="pl-3 bg-basecolor">
+            <input name="calendar1" th:attr="name=${name}" type="text" data-role="calendarpicker" class="input-small" 
+            data-dialog-mode="false" data-show-week-number="true" 
+            data-on-calendar-show="fn_onCalendarShow" data-on-calendar-hide="fn_onCalendarHide">
+        </li>
+    </th:block>
+    <th:block th:fragment="doublecalFragment(title, name1, name2)">
+        <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> <span th:text=${title}>Calendar picker From To</span></li>
+        <li class="pl-3 bg-basecolor">
+            <div class="row no-gap">
+                <input name="calendar2" th:attr="name=${name1}" type="text" data-role="calendarpicker" class="input-small" data-size="calc(50% - 11.4px)"
+                data-dialog-mode="false" data-show-week-number="true" data-cls-calendar="compact">
+                &nbsp;~&nbsp;
+                <input name="calendar3" th:attr="name=${name2}" type="text" data-role="calendarpicker" class="input-small" data-size="calc(50% - 11.4px)"
+                data-dialog-mode="false" data-show-week-number="true" data-cls-calendar="compact">
+            </div>
+        </li>
+    </th:block>
+</html>

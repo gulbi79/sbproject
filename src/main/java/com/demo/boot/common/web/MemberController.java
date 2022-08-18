@@ -80,6 +80,8 @@ public class MemberController {
     			pageUrl = url;
     		}
     	}
+    	
+    	model.addAllAttributes(map);
         return pageUrl;
     }
 }

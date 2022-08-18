@@ -22877,7 +22877,7 @@ input[type=reset].loading .load-caption {
 .calendar-content .day,
 .calendar-content .week-day,
 .calendar-content .week-number {
-  height: 39px;
+  height: 30px; /*39px 수정*/
   cursor: pointer;
   font-size: 14px;
   position: relative;
@@ -22973,7 +22973,7 @@ input[type=reset].loading .load-caption {
 .calendar.compact .week-number {
   height: 30px;
   line-height: 30px;
-  width: 30px;
+  /*width: 30px;*/ /*수정*/
   margin: 0;
   font-size: 12px;
 }
