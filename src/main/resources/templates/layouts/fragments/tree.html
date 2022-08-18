@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lagn="ko" xmlns:th="http://www.thymeleaf.org">
+    <!-- Tree -->
+    <th:block th:fragment="treeFragment">
+        <!-- tree -->
+        <div class="mt-0">
+            <ul id="treetabs" data-role="tabs" data-expand="true" data-cls-tabs-list-item-active="fg-orange">
+                <li><a href="#_sales" class="py-1">Sales</a></li>
+                <li><a href="#_product" class="py-1">Product</a></li>
+                <li><a href="#_plant" class="py-1">Plant</a></li>
+            </ul>
+            <div class="border bd-default no-border-top p-0 overflow treeDiv">
+                <div id="_sales">
+                    <ul data-role="treeview">
+                        <li>
+                            <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+                            <ul>
+                                <li class="p-0" data-collapsed="true">
+                                    <input type="checkbox" data-role="checkbox" data-style='2' data-caption="AVI" title="" value="avi" data-level="2" data-uniqval="_sales_avi_">
+                                    <ul>
+                                        <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MPEG3" title="" value="mpeg3" data-level="3" data-uniqval="_sales_avi_mpeg3_"></li>
+                                        <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="VIDX3" title="" value="vidx3" data-level="3" data-uniqval="_sales_avi_vidx3_"></li>        
+                                    </ul>
+                                </li>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MPEG" title="" value="mpeg" data-level="2" data-uniqval="_sales_mpeg_"></li>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="VIDX" title="" value="vidx" data-level="2" data-uniqval="_sales_vidx_"></li>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MP4" title="" value="mp4" data-level="2" data-uniqval="_sales_mp4_"></li>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="XVID" title="" value="xvid" data-level="2" data-uniqval="_sales_xvid_"></li>
+                            </ul>
+                        </li>
+                        <li class="p-0" data-collapsed="true"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Play audio" title="" value="playaudio" data-level="1" data-uniqval="_playaudio_"></li>
+                        <li data-collapsed="true">
+                            <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Subtitles" title="" value="subtitles" data-level="1" data-uniqval="_subtitles_">
+                            <ul>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="English" title="" value="english" data-level="2" data-uniqval="_subtitles_english_"></li>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Ukrainian" title="" value="ukrainian" data-level="2" data-uniqval="_subtitles_ukrainian_"></li>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Dutch" title="" value="dutch" data-level="2" data-uniqval="_subtitles_dutch_"></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div id="_product">
+                    <ul data-role="treeview">
+                        <li>
+                            <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+                            <ul>
+                                <li class="p-0" data-collapsed="true">
+                                    <input type="checkbox" data-role="checkbox" data-style='2' data-caption="AVI" title="" value="avi" data-level="2" data-uniqval="_sales_avi_">
+                                    <ul>
+                                        <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MPEG3" title="" value="mpeg3" data-level="3" data-uniqval="_sales_avi_mpeg3_"></li>
+                                        <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="VIDX3" title="" value="vidx3" data-level="3" data-uniqval="_sales_avi_vidx3_"></li>        
+                                    </ul>
+                                </li>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MP4" title="" value="mp4" data-level="2" data-uniqval="_sales_mp4_"></li>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="XVID" title="" value="xvid" data-level="2" data-uniqval="_sales_xvid_"></li>
+                            </ul>
+                        </li>
+                        <li class="p-0" data-collapsed="true"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Play audio" title="" value="playaudio" data-level="1" data-uniqval="_playaudio_"></li>
+                        <li data-collapsed="true">
+                            <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Subtitles" title="" value="subtitles" data-level="1" data-uniqval="_subtitles_">
+                            <ul>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="English" title="" value="english" data-level="2" data-uniqval="_subtitles_english_"></li>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Ukrainian" title="" value="ukrainian" data-level="2" data-uniqval="_subtitles_ukrainian_"></li>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Dutch" title="" value="dutch" data-level="2" data-uniqval="_subtitles_dutch_"></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div id="_plant">
+                    <ul data-role="treeview">
+                        <li>
+                            <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+                            <ul>
+                                <li class="p-0" data-collapsed="true">
+                                    <input type="checkbox" data-role="checkbox" data-style='2' data-caption="AVI" title="" value="avi" data-level="2" data-uniqval="_sales_avi_">
+                                    <ul>
+                                        <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MPEG3" title="" value="mpeg3" data-level="3" data-uniqval="_sales_avi_mpeg3_"></li>
+                                        <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="VIDX3" title="" value="vidx3" data-level="3" data-uniqval="_sales_avi_vidx3_"></li>        
+                                    </ul>
+                                </li>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="XVID" title="" value="xvid" data-level="2" data-uniqval="_sales_xvid_"></li>
+                            </ul>
+                        </li>
+                        <li class="p-0" data-collapsed="true"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Play audio" title="" value="playaudio" data-level="1" data-uniqval="_playaudio_"></li>
+                        <li data-collapsed="true">
+                            <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Subtitles" title="" value="subtitles" data-level="1" data-uniqval="_subtitles_">
+                            <ul>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="English" title="" value="english" data-level="2" data-uniqval="_subtitles_english_"></li>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Ukrainian" title="" value="ukrainian" data-level="2" data-uniqval="_subtitles_ukrainian_"></li>
+                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Dutch" title="" value="dutch" data-level="2" data-uniqval="_subtitles_dutch_"></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /tree -->
+    </th:block>
+</html>

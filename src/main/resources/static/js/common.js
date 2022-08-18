@@ -226,3 +226,11 @@ function gfn_alertSync(options) {
         });
     });
 }
+
+function gfn_onCalendarShow(el, cal) {
+	console.log(el, cal);
+}
+
+function gfn_onCalendarHide(el, cal) {
+    console.log(el, cal);
+}
