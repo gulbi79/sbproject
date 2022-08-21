@@ -4,40 +4,46 @@
 <!-- 공통 헤드-->
 <th:block th:replace="/layouts/fragments/head :: headFragment"></th:block>
 
-<body class="m4-cloak h-vh-100" >
-    <!-- header -->
-    <th:block th:replace="/layouts/fragments/header :: headerFragment"></th:block>
-    
-    <main id="framebody" class="framebody" data-role="splitter" data-split-sizes="20, 80" data-min-sizes="350, 200" data-gutter-size="5">
-        <!-- Left Filter -->
-        <section id="_divFilter">
-            <!-- Filter -->
-		    <div class="w-100 h-100 filter" style="overflow: auto;">
-		        <ul class="v-menu filterForm">
-		            <th:block layout:fragment="filter"></th:block>
-		        </ul>
-		        <div class="pt-3 pl-3 pr-1">
-		            <button id="apply" class="button primary shadowed w-100">Apply</button>
-		        </div>
-		    </div>
-            
-        </section>
-        <!-- Content -->
-        <section class="d-flex" style="overflow: auto;">
-            <div class="container-fluid">
-                <div class="mt-0"></div>
-                <div id="realgrid1" class="w-100" style="height: calc(100% - 44px);"></div>
-                <!-- 버튼 -->
-                <th:block th:replace="/layouts/fragments/rolebutton :: rolebuttonFragment"></th:block>
-            </div>
-        </section>
-        <!-- /Content -->
-    </main>
-    
-    <!-- script -->
-   	<th:block th:replace="/layouts/fragments/script :: scriptFragment"></th:block>
-    
-    <!-- content script -->
-    <th:block layout:fragment="contentjs"></th:block>
-</body>
+	<body class="m4-cloak h-vh-100" >
+	    <!-- header -->
+	    <th:block th:replace="/layouts/fragments/header :: headerFragment"></th:block>
+	    
+	    <main id="framebody" class="framebody" data-role="splitter" data-split-sizes="20, 80" data-min-sizes="350, 200" data-gutter-size="5">
+	        <!-- Left Filter -->
+	        <section id="_divFilter">
+	            <!-- Filter -->
+			    <div class="w-100 h-100 filter" style="overflow: auto;">
+			        <ul class="v-menu filterForm">
+			            <th:block layout:fragment="filter"></th:block>
+			        </ul>
+			        <div class="pt-3 pl-3 pr-1">
+			            <button id="apply" class="button primary shadowed w-100">Apply</button>
+			        </div>
+			    </div>
+			    <!-- /Filter -->
+	        </section>
+	        <!-- /Left Filter -->
+	        
+	        <!-- Content -->
+	        <section class="d-flex" style="overflow: auto;">
+	            <div class="container-fluid">
+	                <div class="mt-0"></div>
+	                <!-- grid -->
+	                <th:block layout:fragment="content"></th:block>
+	                <!-- 버튼 -->
+	                <th:block th:replace="/layouts/fragments/rolebutton :: rolebuttonFragment"></th:block>
+	            </div>
+	        </section>
+	        <!-- /Content -->
+	    </main>
+	    
+	    <!-- hidden -->
+	    <th:block layout:fragment="hidden"></th:block>
+	    
+	    <!-- script -->
+	   	<th:block th:replace="/layouts/fragments/script :: scriptFragment"></th:block>
+	    
+	    <!-- content script -->
+	    <th:block layout:fragment="contentjs"></th:block>
+	</body>
 </html>

@@ -228,9 +228,9 @@ function gfn_alertSync(options) {
 }
 
 function gfn_onCalendarShow(el, cal) {
-	console.log(el, cal);
+	console.log("gfn_onCalendarShow");
 }
 
 function gfn_onCalendarHide(el, cal) {
-    console.log(el, cal);
+    console.log("gfn_onCalendarHide");
 }

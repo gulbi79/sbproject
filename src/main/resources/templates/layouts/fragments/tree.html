@@ -5,91 +5,68 @@
         <!-- tree -->
         <div class="mt-0">
             <ul id="treetabs" data-role="tabs" data-expand="true" data-cls-tabs-list-item-active="fg-orange">
-                <li><a href="#_sales" class="py-1">Sales</a></li>
-                <li><a href="#_product" class="py-1">Product</a></li>
-                <li><a href="#_plant" class="py-1">Plant</a></li>
+                <li th:if="${salesTree} != null"><a href="#_sales" class="py-1">Sales</a></li>
+                <li th:if="${productTree} != null"><a href="#_product" class="py-1">Product</a></li>
+                <li th:if="${plantTree} != null"><a href="#_plant" class="py-1">Plant</a></li>
             </ul>
             <div class="border bd-default no-border-top p-0 overflow treeDiv">
-                <div id="_sales">
+                <div id="_sales" th:if="${salesTree} != null">
                     <ul data-role="treeview">
-                        <li>
-                            <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
-                            <ul>
-                                <li class="p-0" data-collapsed="true">
-                                    <input type="checkbox" data-role="checkbox" data-style='2' data-caption="AVI" title="" value="avi" data-level="2" data-uniqval="_sales_avi_">
-                                    <ul>
-                                        <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MPEG3" title="" value="mpeg3" data-level="3" data-uniqval="_sales_avi_mpeg3_"></li>
-                                        <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="VIDX3" title="" value="vidx3" data-level="3" data-uniqval="_sales_avi_vidx3_"></li>        
-                                    </ul>
-                                </li>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MPEG" title="" value="mpeg" data-level="2" data-uniqval="_sales_mpeg_"></li>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="VIDX" title="" value="vidx" data-level="2" data-uniqval="_sales_vidx_"></li>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MP4" title="" value="mp4" data-level="2" data-uniqval="_sales_mp4_"></li>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="XVID" title="" value="xvid" data-level="2" data-uniqval="_sales_xvid_"></li>
-                            </ul>
-                        </li>
-                        <li class="p-0" data-collapsed="true"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Play audio" title="" value="playaudio" data-level="1" data-uniqval="_playaudio_"></li>
-                        <li data-collapsed="true">
-                            <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Subtitles" title="" value="subtitles" data-level="1" data-uniqval="_subtitles_">
-                            <ul>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="English" title="" value="english" data-level="2" data-uniqval="_subtitles_english_"></li>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Ukrainian" title="" value="ukrainian" data-level="2" data-uniqval="_subtitles_ukrainian_"></li>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Dutch" title="" value="dutch" data-level="2" data-uniqval="_subtitles_dutch_"></li>
-                            </ul>
-                        </li>
+                		<li th:each="sales1 : ${sales1}" th:if="${sales1.levelCd == 1}">
+                			<input type="checkbox" data-role="checkbox" data-style='2' th:attr="data-caption=${sales1.salesCd}, value=${sales1.salesCd}, data-level=${sales1.levelCd}, data-uniqval=${sales1.path}" data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+                		    <ul>
+                		    	<li th:each="sales2 : ${sales2}" th:if="${sales2.levelCd == 2 && sales1.salesCd == sales2.parentsalesCd}" class="p-0" data-collapsed="true">
+                		    		<input type="checkbox" data-role="checkbox" data-style='2' th:attr="data-caption=${sales2.salesCd}, value=${sales2.salesCd}, data-level=${sales2.levelCd}, data-uniqval=${sales2.path}" data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+                		    		<ul>
+                		    			<li th:each="sales3 : ${sales3}" th:if="${sales3.levelCd == 3 && sales2.salesCd == sales3.parentsalesCd}" class="p-0" data-collapsed="true">
+                		    				<input type="checkbox" data-role="checkbox" data-style='2' th:attr="data-caption=${sales3.salesCd}, value=${sales3.salesCd}, data-level=${sales3.levelCd}, data-uniqval=${sales3.path}" data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+                		    				<ul>
+		                		    			<li th:each="sales4 : ${sales4}" th:if="${sales4.levelCd == 4 && sales3.salesCd == sales4.parentsalesCd}" class="p-0" data-collapsed="true">
+		                		    				<input type="checkbox" data-role="checkbox" data-style='2' th:attr="data-caption=${sales4.salesCd}, value=${sales4.salesCd}, data-level=${sales4.levelCd}, data-uniqval=${sales4.path}" data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+		                		    				<ul>
+				                		    			<li th:each="sales5 : ${sales5}" th:if="${sales5.levelCd == 5 && sales4.salesCd == sales5.parentsalesCd}" class="p-0" data-collapsed="true">
+				                		    				<input type="checkbox" data-role="checkbox" data-style='2' th:attr="data-caption=${sales5.salesCd}, value=${sales5.salesCd}, data-level=${sales5.levelCd}, data-uniqval=${sales5.path}" data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+				                		    			</li>
+		                		    				</ul>
+		                		    			</li>
+                		    				</ul>
+                		    			</li>
+                		    		</ul>
+                		    	</li>
+                		    </ul>
+                		</li>
                     </ul>
                 </div>
-                <div id="_product">
+                <div id="_product" th:if="${productTree} != null">
                     <ul data-role="treeview">
-                        <li>
-                            <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
-                            <ul>
-                                <li class="p-0" data-collapsed="true">
-                                    <input type="checkbox" data-role="checkbox" data-style='2' data-caption="AVI" title="" value="avi" data-level="2" data-uniqval="_sales_avi_">
-                                    <ul>
-                                        <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MPEG3" title="" value="mpeg3" data-level="3" data-uniqval="_sales_avi_mpeg3_"></li>
-                                        <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="VIDX3" title="" value="vidx3" data-level="3" data-uniqval="_sales_avi_vidx3_"></li>        
-                                    </ul>
-                                </li>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MP4" title="" value="mp4" data-level="2" data-uniqval="_sales_mp4_"></li>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="XVID" title="" value="xvid" data-level="2" data-uniqval="_sales_xvid_"></li>
-                            </ul>
-                        </li>
-                        <li class="p-0" data-collapsed="true"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Play audio" title="" value="playaudio" data-level="1" data-uniqval="_playaudio_"></li>
-                        <li data-collapsed="true">
-                            <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Subtitles" title="" value="subtitles" data-level="1" data-uniqval="_subtitles_">
-                            <ul>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="English" title="" value="english" data-level="2" data-uniqval="_subtitles_english_"></li>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Ukrainian" title="" value="ukrainian" data-level="2" data-uniqval="_subtitles_ukrainian_"></li>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Dutch" title="" value="dutch" data-level="2" data-uniqval="_subtitles_dutch_"></li>
-                            </ul>
-                        </li>
+                		<li th:each="prod1 : ${prod1}" th:if="${prod1.levelCd == 1}">
+                			<input type="checkbox" data-role="checkbox" data-style='2' th:attr="data-caption=${prod1.itemCd}, value=${prod1.itemCd}, data-level=${prod1.levelCd}, data-uniqval=${prod1.path}" data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+                		    <ul>
+                		    	<li th:each="prod2 : ${prod2}" th:if="${prod2.levelCd == 2 && prod1.itemCd == prod2.parentCd}" class="p-0" data-collapsed="true">
+                		    		<input type="checkbox" data-role="checkbox" data-style='2' th:attr="data-caption=${prod2.itemCd}, value=${prod2.itemCd}, data-level=${prod2.levelCd}, data-uniqval=${prod2.path}" data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+                		    		<ul>
+                		    			<li th:each="prod3 : ${prod3}" th:if="${prod3.levelCd == 3 && prod2.itemCd == prod3.parentCd}" class="p-0" data-collapsed="true">
+                		    				<input type="checkbox" data-role="checkbox" data-style='2' th:attr="data-caption=${prod3.itemCd}, value=${prod3.itemCd}, data-level=${prod3.levelCd}, data-uniqval=${prod3.path}" data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+                		    				<ul>
+		                		    			<li th:each="prod4 : ${prod4}" th:if="${prod4.levelCd == 4 && prod3.itemCd == prod4.parentCd}" class="p-0" data-collapsed="true">
+		                		    				<input type="checkbox" data-role="checkbox" data-style='2' th:attr="data-caption=${prod4.itemCd}, value=${prod4.itemCd}, data-level=${prod4.levelCd}, data-uniqval=${prod4.path}" data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+		                		    				<ul>
+				                		    			<li th:each="prod5 : ${prod5}" th:if="${prod5.levelCd == 5 && prod4.itemCd == prod5.parentCd}" class="p-0" data-collapsed="true">
+				                		    				<input type="checkbox" data-role="checkbox" data-style='2' th:attr="data-caption=${prod5.itemCd}, value=${prod5.itemCd}, data-level=${prod5.levelCd}, data-uniqval=${prod5.path}" data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
+				                		    			</li>
+		                		    				</ul>
+		                		    			</li>
+                		    				</ul>
+                		    			</li>
+                		    		</ul>
+                		    	</li>
+                		    </ul>
+                		</li>
                     </ul>
                 </div>
-                <div id="_plant">
+                <div id="_plant" th:if="${plantTree} != null">
                     <ul data-role="treeview">
-                        <li>
-                            <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Sales" title="" value="sales" data-level="1" data-uniqval="_sales_">
-                            <ul>
-                                <li class="p-0" data-collapsed="true">
-                                    <input type="checkbox" data-role="checkbox" data-style='2' data-caption="AVI" title="" value="avi" data-level="2" data-uniqval="_sales_avi_">
-                                    <ul>
-                                        <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="MPEG3" title="" value="mpeg3" data-level="3" data-uniqval="_sales_avi_mpeg3_"></li>
-                                        <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="VIDX3" title="" value="vidx3" data-level="3" data-uniqval="_sales_avi_vidx3_"></li>        
-                                    </ul>
-                                </li>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="XVID" title="" value="xvid" data-level="2" data-uniqval="_sales_xvid_"></li>
-                            </ul>
-                        </li>
-                        <li class="p-0" data-collapsed="true"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Play audio" title="" value="playaudio" data-level="1" data-uniqval="_playaudio_"></li>
-                        <li data-collapsed="true">
-                            <input type="checkbox" data-role="checkbox" data-style='2' data-caption="Subtitles" title="" value="subtitles" data-level="1" data-uniqval="_subtitles_">
-                            <ul>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="English" title="" value="english" data-level="2" data-uniqval="_subtitles_english_"></li>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Ukrainian" title="" value="ukrainian" data-level="2" data-uniqval="_subtitles_ukrainian_"></li>
-                                <li class="p-0"><input type="checkbox" data-role="checkbox" data-style='2' data-caption="Dutch" title="" value="dutch" data-level="2" data-uniqval="_subtitles_dutch_"></li>
-                            </ul>
-                        </li>
+                        
                     </ul>
                 </div>
             </div>

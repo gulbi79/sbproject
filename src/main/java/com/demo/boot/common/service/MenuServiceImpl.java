@@ -5,7 +5,6 @@ import java.util.HashMap;
 import org.springframework.stereotype.Service;
 
 import com.demo.boot.common.repository.MenuRepository;
-import com.demo.boot.common.vo.UserVo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,10 +18,5 @@ public class MenuServiceImpl implements MenuService {
     	HashMap<String, String> rtnMap = null;
     	rtnMap = menuRepository.menuInfo(menuCd);
         return rtnMap;
-    }
-
-    public UserVo menuInfo2() {
-    	UserVo uservo = menuRepository.menuInfo2();
-    	return uservo;
     }
 }

@@ -12,11 +12,4 @@
     WHERE MENU_CD = @{menuCd}
     </select>
     
-    <select id="menuInfo2" parameterType="String" resultType="com.demo.boot.common.vo.UserVo">
-    /* menuInfo2 */
-    SELECT USER_ID, USER_NM, USER_PW
-    FROM TB_MST_USER
-    WHERE USER_ID = 'user111'
-    </select>
-
 </mapper>

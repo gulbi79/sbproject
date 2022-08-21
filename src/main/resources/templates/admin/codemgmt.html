@@ -10,6 +10,13 @@
 	<th:block th:replace="/layouts/fragments/filters :: mselectFragment('Multiple','mselect1')"></th:block>
 </th:block>
 
+<th:block layout:fragment="hidden">
+</th:block>
+
+<th:block layout:fragment="content">
+	<div id="realgrid1" class="w-100" style="height: calc(100% - 44px);"></div>
+</th:block>
+
 <th:block layout:fragment="contentjs">
 	<script>
         var Utils = Metro.utils;
@@ -19,14 +26,6 @@
             fn_gridInit(); //그리드초기화
             fn_eventInit(); //이벤트초기화
         });
-
-        function fn_onCalendarShow(el, cal) {
-            console.log($('.filter').css('overflow'));
-        }
-
-        function fn_onCalendarHide(el, cal) {
-            console.log($('.filter').css('overflow'));
-        }
 
         //필터초기화
         function fn_filterInit() {
@@ -90,7 +89,7 @@
             
             //엑셀다운로드
             $("header .mif-file-excel").on("click", function() {
-				exportExcel(grid);
+				gfn_exportExcel(grid);
 			});
         }
         

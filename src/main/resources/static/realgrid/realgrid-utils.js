@@ -84,7 +84,7 @@ GRID.prototype = {
 	        },
 	        display : {
 		        showEmptyMessage : true,
-	        	emptyMessage: "표시할 데이타가 없습니다.",
+	        	emptyMessage: "데이터가 없습니다.",
 	        }
 	    };
 	    
@@ -213,7 +213,7 @@ function paging(totalData, dataPerPage, pageCount, currentPage){
 
 // 엑셀 내보내기 실행
 // 엑셀 내보내기 사용하려면 소스에 jszip.min.js 인크루드해야 함
-function exportExcel(grid){
+function gfn_exportExcel(grid){
     grid.exportGrid({type: 'excel'});
 
 };

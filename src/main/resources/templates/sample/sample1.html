@@ -6,16 +6,56 @@
 <th:block layout:fragment="filter">
 	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Group','f_group')"></th:block>
 	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Code','f_code')"></th:block>
+	<th:block th:replace="/layouts/fragments/filters :: pinputFragment('Popup Input','f_pinput')"></th:block>
 	<th:block th:replace="/layouts/fragments/filters :: selectFragment('Select','f_select')"></th:block>
 	<th:block th:replace="/layouts/fragments/filters :: mselectFragment('Multiple','f_mselect')"></th:block>
 	<th:block th:replace="/layouts/fragments/filters :: singlecalFragment('Calendar','f_cal')"></th:block>
 	<th:block th:replace="/layouts/fragments/filters :: doublecalFragment('From~To','f_fromcal','f_tocal')"></th:block>
+	<li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Check Box</li>
+    <li class="pl-3 bg-basecolor">
+        <input name="f_check1" type="checkbox" data-role="checkbox" data-caption="Check1">
+        <input name="f_check2" type="checkbox" data-role="checkbox" data-caption="Check2" checked>
+        <input name="f_check3" type="checkbox" data-role="checkbox" data-caption="Check3" data-indeterminate="true">
+        <input name="f_check4" ype="checkbox" data-role="checkbox" data-caption="Check4" disabled>
+        <input name="f_check5" type="checkbox" data-role="checkbox" data-caption="Check5" disabled checked>
+    </li>
+    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Radio1</li>
+    <li class="pl-3 bg-basecolor">
+        <input type="radio" data-role="radio" data-caption="Check1" value="r1_a" name="f_radio1">
+        <input type="radio" data-role="radio" data-caption="Check2" value="r1_b" name="f_radio1" checked>
+    </li>
+    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Radio2</li>
+    <li class="pl-3 bg-basecolor">
+        <input type="radio" data-role="radio" data-caption="Check3" value="r2_a" name="f_radio2" disabled>
+        <input type="radio" data-role="radio" data-caption="Check4" value="r2_b" name="f_radio2" checked disabled>
+    </li>
+</th:block>
+
+<th:block layout:fragment="hidden">
+	<div class="dialog" data-role="dialog" id="demoDialog1">
+        <div class="dialog-title py-1">Popup Dialog</div>
+        <div class="dialog-content py-1 px-3 mt-0">
+            <div style="height: 30px;">
+                <button class="button float-right mb-1 small">Search</button>
+            </div>
+            <div id="realgridPopup" class="w-100" style="height: 250px;"></div>
+        </div>
+        <div class="dialog-actions text-right mt-0 px-2">
+            <button class="button js-dialog-close small">Cancel</button>
+            <button class="button primary js-dialog-close small" onclick="fn_clickPopup();">Ok</button>
+        </div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="content">
+	<div id="realgrid1" class="w-100 h-100"></div>
 </th:block>
 
 <th:block layout:fragment="contentjs">
 	<script>
         var Utils = Metro.utils;
         let grid, provider;
+        let gridPopup, providerPopup;
         $(function() {
             fn_filterInit(); //필터초기화
             fn_gridInit(); //그리드초기화
@@ -50,6 +90,10 @@
             const gridInstance = new GRID().init({gridId: "realgrid1", columns: columns, fields: fields, options: options});
             grid = gridInstance.gridview;
             provider = gridInstance.provider;
+
+            const gridPopupInstance = new GRID().init({gridId: "realgridPopup", columns: columns, fields: fields, options: options});
+            gridPopup = gridPopupInstance.gridview;
+            providerPopup = gridPopupInstance.provider;
         }
         
         //이벤트초기화
@@ -58,33 +102,9 @@
                 fn_apply();
             });
 
-            $("#reset").on("click", function() {
-                grid.cancel();
-		        if (provider.getSavePoints().length > 0) provider.rollback(provider.getSavePoints()[0]);
-		    	else provider.clearRows();
-            });
-
-            $("#add").on("click", function() {
-                let row = grid.getCurrent().dataRow;
-                row = row == -1 ? 0 : row;
-				const addVal = { useYn: "Y" };
-				provider.insertRow(row, addVal);
-            });
-
-            $("#delete").on("click", function() {
-                var rows = grid.getCheckedRows();
-				for (var i=rows.length-1; i>=0; i--) {
-					provider.removeRow(rows[i]);
-				}
-            });
-
-            $("#save").on("click", function() {
-				fn_save();
-            });
-            
             //엑셀다운로드
             $("header .mif-file-excel").on("click", function() {
-				exportExcel(grid);
+				gfn_exportExcel(grid);
 			});
         }
         
