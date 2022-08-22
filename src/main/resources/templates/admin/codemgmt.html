@@ -98,6 +98,7 @@
             //필터폼 데이터 생성
             let filterObj = gfn_getFormObj($('.filterForm'));
             filterObj = {...filterObj, ...gfn_getChkTree()}; //체크트리 파라미터 셋
+            filterObj._reqSql = "Y";
             
             //유효성 검증
             if (!fn_validation()) return false;

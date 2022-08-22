@@ -19,5 +19,11 @@
         <typeAlias alias="velocity" type="org.mybatis.scripting.velocity.VelocityLanguageDriver"/>
         <typeAlias alias="mybatis" type="org.apache.ibatis.scripting.xmltags.XMLLanguageDriver"/>
     </typeAliases>
+    
+    <!-- //sql 로그용도로 사용 -->
+    <plugins>
+		<plugin interceptor="com.demo.boot.aop.MybatisLogInterceptor" />
+	</plugins>
+	
 </configuration>
 
