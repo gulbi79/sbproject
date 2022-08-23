@@ -5,7 +5,7 @@ async function gfn_service(pConfigs) {
 	let serviceConfig = {
 		url: '',
 		method: 'post', 
-		headers: { "Content-Type": "application/json" },
+		headers: { "Content-Type": "application/json", "REQ_SQL": pConfigs.reqSql ? "Y" : "N" },
 	    body: null,
 	    successCallback: null,
 	    errorCallback: null
@@ -21,12 +21,18 @@ async function gfn_service(pConfigs) {
 	})
     .then(res => {
 		if (!res.ok) throw res;
+			
 		return res.json(); //응답 결과를 json으로 파싱
 	}) 
     .then(serviceConfig.successCallback)
     .catch(err => {
         err.text().then(async function(msg) {
-			await gfn_alertSync({title: "Error", content: JSON.parse(msg).message});
+			if (serviceConfig.headers.REQ_SQL === "Y") {
+				gfn_alert({title: "Excute SQL", width: 800, content: "<div style='overflow:auto;height:500px;white-space:pre;'>"+JSON.parse(msg).message+"</div>"});
+			} else {
+				await gfn_alertSync({title: "Error", content: JSON.parse(msg).message});
+			}
+			
 		})
     });
 }
@@ -99,6 +105,7 @@ function gfn_confirm(options) {
     var Utils = Metro.utils;
     var alertConfig = {
         title: "Confirm",
+        width: 480,
         content: "",
         okCaption: "OK",
         cancelCaption: "Cancel",
@@ -108,6 +115,7 @@ function gfn_confirm(options) {
     alertConfig = {...alertConfig, ...options};
     Metro.dialog.create({
         title: alertConfig.title,
+        width: alertConfig.width,
         content: alertConfig.content,
         actions: [{
             caption: alertConfig.okCaption,
@@ -136,6 +144,7 @@ function gfn_alert(options) {
     var Utils = Metro.utils;
     var alertConfig = {
         title: "Alert",
+        width: 480,
         content: "",
         okCaption: "OK",
         okCallback: null,
@@ -143,6 +152,7 @@ function gfn_alert(options) {
     alertConfig = {...alertConfig, ...options};
     Metro.dialog.create({
         title: alertConfig.title,
+        width: alertConfig.width,
         content: alertConfig.content,
         actions: [{
             caption: alertConfig.okCaption,
@@ -164,6 +174,7 @@ function gfn_confirmSync(options) {
         var Utils = Metro.utils;
         var alertConfig = {
             title: "Confirm",
+            width: 480,
             content: "",
             okCaption: "OK",
             cancelCaption: "Cancel",
@@ -173,6 +184,7 @@ function gfn_confirmSync(options) {
         alertConfig = {...alertConfig, ...options};
         Metro.dialog.create({
             title: alertConfig.title,
+            width: alertConfig.width,
             content: alertConfig.content,
             actions: [{
                 caption: alertConfig.okCaption,
@@ -205,6 +217,7 @@ function gfn_alertSync(options) {
         var Utils = Metro.utils;
         var alertConfig = {
             title: "Alert",
+            width: 480,
             content: "",
             okCaption: "OK",
             okCallback: null,
@@ -212,6 +225,7 @@ function gfn_alertSync(options) {
         alertConfig = {...alertConfig, ...options};
         Metro.dialog.create({
             title: alertConfig.title,
+            width: alertConfig.width,
             content: alertConfig.content,
             actions: [{
                 caption: alertConfig.okCaption,

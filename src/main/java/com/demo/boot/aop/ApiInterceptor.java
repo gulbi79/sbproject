@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.demo.boot.utils.SqlContextHolder;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,8 +22,7 @@ public class ApiInterceptor implements HandlerInterceptor {
   */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
-        //log.info("pre");
+		SqlContextHolder.THREAD_LOCAL_SQLYN.set("Y".equals(request.getHeader("REQ_SQL")));
         return true;
     }
 
@@ -32,8 +33,7 @@ public class ApiInterceptor implements HandlerInterceptor {
      */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-    	log.info("Request URL : {}", request.getRequestURL());
-    	//log.info("Content-Type {}", request.getHeader("Content-Type"));
+    	//log.info("SqlContextHolder : {}", SqlContextHolder.THREAD_LOCAL_SQL.get());
     }
 
     /*
@@ -42,6 +42,9 @@ public class ApiInterceptor implements HandlerInterceptor {
      */
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        //log.info("after");
+        log.info("afterCompletion [THREAD_LOCAL_SQL, THREAD_LOCAL_SQLYN] remove");
+    	// 스레드 로컬 정보 제거
+    	SqlContextHolder.THREAD_LOCAL_SQL.remove();
+    	SqlContextHolder.THREAD_LOCAL_SQLYN.remove();
     }
 }

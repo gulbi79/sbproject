@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.demo.boot.common.repository.AdminRepository;
+import com.demo.boot.utils.SqlContextHolder;
 
 import lombok.RequiredArgsConstructor;
 

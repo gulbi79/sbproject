@@ -91,14 +91,17 @@
             $("header .mif-file-excel").on("click", function() {
 				gfn_exportExcel(grid);
 			});
+			
+			$("header .mif-motorcycle").on("click", function() {
+				fn_apply(true);
+			});
         }
         
         //조회
-        async function fn_apply() {
+        async function fn_apply(sql = false) {
             //필터폼 데이터 생성
             let filterObj = gfn_getFormObj($('.filterForm'));
             filterObj = {...filterObj, ...gfn_getChkTree()}; //체크트리 파라미터 셋
-            filterObj._reqSql = "Y";
             
             //유효성 검증
             if (!fn_validation()) return false;
@@ -106,6 +109,7 @@
 			//server api 요청
 			const pConfigs = {
 				url: '/admin/codelist',
+				reqSql : sql,
 			    body: JSON.stringify(filterObj),
 			    successCallback: function(data) {
 					try {

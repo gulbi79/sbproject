@@ -16,12 +16,15 @@ import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.session.ResultHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StopWatch;
+
+import com.demo.boot.utils.SqlContextHolder;
+
+import lombok.extern.slf4j.Slf4j;
 
 //import app.com.webservice.common.webutil.SharedInfoHolder;
 
+@Slf4j
 @Intercepts({
     @Signature(type=StatementHandler.class, method="batch", args={Statement.class}),
     @Signature(type=StatementHandler.class, method="update", args={Statement.class}),
@@ -29,7 +32,7 @@ import org.springframework.util.StopWatch;
 })
 public class MybatisLogInterceptor implements Interceptor {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+//    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -113,10 +116,12 @@ public class MybatisLogInterceptor implements Interceptor {
         //logger.info("sql : {}", "\n    ".concat(sql.trim()));
         //logger.info("=====================================================================");
         
-//        if ("Y".equals(SharedInfoHolder.getJobType())) {
-//        	SharedInfoHolder.setJobSql("\n    ".concat(sql.trim().concat(";")));
-//        	return null;
-//        } else {
+        log.info("SqlContextHolder.THREAD_LOCAL_SQLYN : {}",SqlContextHolder.THREAD_LOCAL_SQLYN.get());
+        
+        if (SqlContextHolder.THREAD_LOCAL_SQLYN.get()) {
+        	SqlContextHolder.THREAD_LOCAL_SQL.set("\n    ".concat(sql.trim().concat(";")));
+        	return null;
+        } else {
         	long startTime = System.currentTimeMillis();
         	//String methodName = invocation.getMethod().getName();
         	StopWatch sw = new StopWatch();
@@ -127,22 +132,22 @@ public class MybatisLogInterceptor implements Interceptor {
         	//logger.info("sql end ================");
         	sw.stop();
 //        	logger.info("[LOG] METHOD: " + methodName + " was called.");
-        	logger.info("[SQL] 처리시간 " + sw.getTotalTimeSeconds());
+        	log.info("[SQL] 처리시간 {}", sw.getTotalTimeSeconds());
             
         	return rtnObj;
-//        }
+        }
         
     }
 
     @Override
     public Object plugin(Object target) {
-	// TODO Auto-generated method stub
-	return Plugin.wrap(target, this);
+		// TODO Auto-generated method stub
+		return Plugin.wrap(target, this);
     }
 
     @Override
     public void setProperties(Properties properties) {
-	// TODO Auto-generated method stub
+    	// TODO Auto-generated method stub
 
     }
 
