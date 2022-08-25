@@ -28,7 +28,7 @@ async function gfn_service(pConfigs) {
     .catch(err => {
         err.text().then(async function(msg) {
 			if (serviceConfig.headers.REQ_SQL === "Y") {
-				gfn_alert({title: "Excute SQL", width: 800, content: "<div style='overflow:auto;height:500px;white-space:pre;'>"+JSON.parse(msg).message+"</div>"});
+				gfn_alert({title: "Excute SQL", width: 800, closeButton: true, content: "<div style='overflow:auto;height:500px;white-space:pre;'>"+JSON.parse(msg).message+"</div>"});
 			} else {
 				await gfn_alertSync({title: "Error", content: JSON.parse(msg).message});
 			}
@@ -154,6 +154,7 @@ function gfn_alert(options) {
         title: alertConfig.title,
         width: alertConfig.width,
         content: alertConfig.content,
+        closeButton: alertConfig.closeButton,
         actions: [{
             caption: alertConfig.okCaption,
             cls: "js-dialog-close alert",
@@ -247,4 +248,32 @@ function gfn_onCalendarShow(el, cal) {
 
 function gfn_onCalendarHide(el, cal) {
     console.log("gfn_onCalendarHide");
+}
+
+function gfn_commButton(fType) {
+	console.log("gfn_commButton");
+	switch (fType) {
+		case 'DIMENSION' :
+			break;
+		case 'MEASURE' :
+			break;
+		case 'EXCEL' :
+			if (typeof fn_comExportExcel === 'function') fn_comExportExcel();
+			break;
+		case 'SQL' :
+			if (typeof fn_apply === 'function') fn_apply(true);
+			break;
+	}
+}
+
+function gfn_commPopup(pType) {
+	console.log("gfn_commPopup");
+	switch (pType) {
+		case 'COMM1' :
+			if (typeof fn_comPopup1 === 'function') fn_comPopup1();
+			break;
+		case 'COMM2' :
+			if (typeof fn_comPopup2 === 'function') fn_comPopup2();
+			break;
+	}
 }

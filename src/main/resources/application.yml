@@ -13,9 +13,9 @@ spring:
     cache: false
   mvc:
     static-path-pattern: /static/**
-  web:
-    resources:
-        static-locations: classpath:static/
+#  web:
+#    resources:s
+#        static-locations: classpath:static/
 #    mybatis:
 #        configuration:
 #            map-underscore-to-camel-case: true

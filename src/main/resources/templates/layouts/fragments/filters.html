@@ -10,7 +10,7 @@
 				    <th:block th:fragment="pinputFragment(title, name)">
 					    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> <span th:text=${title}>popup text</span></li>
 					    <li class="pl-3 bg-basecolor">
-					        <input name="f_pinput" th:attr="name=${name}" type="text" data-role="input" data-search-button="true" class="input-small" data-search-button-click="custom" data-on-search-button-click="Metro.dialog.open('#demoDialog1')">
+					        <input name="f_pinput" th:attr="name=${name}, data-on-search-button-click='Metro.dialog.open(\'#'+${name}+'\')'" type="text" data-role="input" data-search-button="true" class="input-small" data-search-button-click="custom" data-on-search-button-click="Metro.dialog.open('#demoDialog1')">
 					        <input type="hidden" name="f_pinputcd" th:attr="name=${name}+'cd'">
 					    </li>
 				    </th:block>

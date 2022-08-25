@@ -3,15 +3,15 @@
 	<!-- 공통으로 쓰이는 script 파일을넣는다.-->
 	<th:block th:fragment="scriptFragment">
 	    <!-- metro4 -->
-		<script src="/static/metro/js/metro.js?ver=@@b-version"></script>
+		<script th:attr="src=@{/static/metro/js/metro.js}" src="/static/metro/js/metro.js?ver=@@b-version"></script>
 		
 	    <!-- RealGrid -->
-	    <script src="/static/realgrid/2.5.3/realgrid-lic.js"></script>
-	    <script src="/static/realgrid/2.5.3/realgrid.2.5.3.min.js"></script>
-	    <script src="/static/realgrid/realgrid-utils.js"></script>
-	    <script src="/static/realgrid/libs/jszip.min.js"></script>
-	    <script src="/static/js/common.js"></script>
-	    <script src="/static/js/data.js"></script>
+	    <script th:attr="src=@{/static/realgrid/2.5.3/realgrid-lic.js}" src="/static/realgrid/2.5.3/realgrid-lic.js"></script>
+	    <script th:attr="src=@{/static/realgrid/2.5.3/realgrid.2.5.3.min.js}" src="/static/realgrid/2.5.3/realgrid.2.5.3.min.js"></script>
+	    <script th:attr="src=@{/static/realgrid/realgrid-utils.js}" src="/static/realgrid/realgrid-utils.js"></script>
+	    <script th:attr="src=@{/static/realgrid/libs/jszip.min.js}" src="/static/realgrid/libs/jszip.min.js"></script>
+	    <script th:attr="src=@{/static/js/common.js}" src="/static/js/common.js"></script>
+	    <script th:attr="src=@{/static/js/data.js}" src="/static/js/data.js"></script>
 	    
 	</th:block>
 </html>

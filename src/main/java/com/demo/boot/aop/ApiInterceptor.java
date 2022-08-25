@@ -22,7 +22,8 @@ public class ApiInterceptor implements HandlerInterceptor {
   */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		SqlContextHolder.THREAD_LOCAL_SQLYN.set("Y".equals(request.getHeader("REQ_SQL")));
+		log.info("getRequestURL : {}", request.getRequestURL());
+    	SqlContextHolder.THREAD_LOCAL_SQLYN.set("Y".equals(request.getHeader("REQ_SQL")));
         return true;
     }
 

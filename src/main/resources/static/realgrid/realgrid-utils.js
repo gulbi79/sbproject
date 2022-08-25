@@ -64,7 +64,6 @@ GRID.prototype = {
             })).values()];
 
             this.provider.setFields(fields);
-            console.log(this.realgridConfig.columns);
             this.gridview.setColumns(this.realgridConfig.columns);
         }
     },

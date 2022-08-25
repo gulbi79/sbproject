@@ -11,28 +11,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class HomeController {
 
-    @GetMapping("/")
-    public String homeView() {
-        return "home";
-    }
-
     @GetMapping("/index")
     public String indexView() {
-        return "index";
-    }
-
-    @GetMapping("/top")
-    public String topView() {
-        return "top";
-    }
-
-    @GetMapping("/inner")
-    public String innerView() {
-        return "inner";
-    }
-
-    @GetMapping("/board/list")
-    public String boardListView() {
-        return "board/list";
+    	return "redirect:/home";
     }
 }

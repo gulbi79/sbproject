@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lagn="ko" xmlns:th="http://www.thymeleaf.org">
+				    <th:block th:fragment="comPopup1Fragment(name)">
+					    <div class="dialog" data-role="dialog,draggable" th:attr="id=${name}" id="f_pinput" data-drag-element=".drag-element">
+					        <div class="dialog-title py-1 drag-element">Popup Dialog</div>
+					        <div class="dialog-content py-1 px-3 mt-0">
+					            <div style="height: 30px;">
+					                <button class="button float-right mb-1 small">Search</button>
+					            </div>
+					            <div id="realgridPopup" class="w-100" style="height: 250px;"></div>
+					        </div>
+					        <div class="dialog-actions text-right mt-0 px-2">
+					            <button class="button js-dialog-close small">Cancel</button>
+					            <button class="button primary js-dialog-close small" onclick="gfn_commPopup('COMM1');">Ok</button>
+					        </div>
+						</div>
+				    </th:block>
+</html>

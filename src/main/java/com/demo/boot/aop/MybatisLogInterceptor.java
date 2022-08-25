@@ -22,7 +22,6 @@ import com.demo.boot.utils.SqlContextHolder;
 
 import lombok.extern.slf4j.Slf4j;
 
-//import app.com.webservice.common.webutil.SharedInfoHolder;
 
 @Slf4j
 @Intercepts({
@@ -112,11 +111,7 @@ public class MybatisLogInterceptor implements Interceptor {
             }
         }
          
-        //logger.info("=====================================================================");
-        //logger.info("sql : {}", "\n    ".concat(sql.trim()));
-        //logger.info("=====================================================================");
-        
-        log.info("SqlContextHolder.THREAD_LOCAL_SQLYN : {}",SqlContextHolder.THREAD_LOCAL_SQLYN.get());
+//        log.info("SqlContextHolder.THREAD_LOCAL_SQLYN : {}",SqlContextHolder.THREAD_LOCAL_SQLYN.get());
         
         if (SqlContextHolder.THREAD_LOCAL_SQLYN.get()) {
         	SqlContextHolder.THREAD_LOCAL_SQL.set("\n    ".concat(sql.trim().concat(";")));
@@ -126,10 +121,7 @@ public class MybatisLogInterceptor implements Interceptor {
         	//String methodName = invocation.getMethod().getName();
         	StopWatch sw = new StopWatch();
         	sw.start("SQL_"+startTime);
-        	//logger.info("[LOG] METHOD: " + methodName + " is calling.");
-        	//logger.info("sql start ================");
         	Object rtnObj = invocation.proceed(); // 쿼리 실행
-        	//logger.info("sql end ================");
         	sw.stop();
 //        	logger.info("[LOG] METHOD: " + methodName + " was called.");
         	log.info("[SQL] 처리시간 {}", sw.getTotalTimeSeconds());

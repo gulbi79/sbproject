@@ -87,6 +87,7 @@
 				fn_save();
             });
             
+            /*
             //엑셀다운로드
             $("header .mif-file-excel").on("click", function() {
 				gfn_exportExcel(grid);
@@ -95,7 +96,13 @@
 			$("header .mif-motorcycle").on("click", function() {
 				fn_apply(true);
 			});
+			*/
         }
+        
+        //공통함수에서 호출되는 영역
+        function fn_comExportExcel() {
+			gfn_exportExcel(grid);
+		}
         
         //조회
         async function fn_apply(sql = false) {

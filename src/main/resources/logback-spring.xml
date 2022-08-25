@@ -21,6 +21,8 @@
     <!-- SQL 결과 조회된 데이터의 table을 로그로 남긴다. -->
     <logger name="jdbc.resultsettable" level="OFF"/>
 
+    <logger name="org.thymeleaf" level="INFO"/>
+    
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>

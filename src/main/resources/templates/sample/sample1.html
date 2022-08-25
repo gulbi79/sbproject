@@ -32,19 +32,7 @@
 </th:block>
 
 <th:block layout:fragment="hidden">
-	<div class="dialog" data-role="dialog" id="demoDialog1">
-        <div class="dialog-title py-1">Popup Dialog</div>
-        <div class="dialog-content py-1 px-3 mt-0">
-            <div style="height: 30px;">
-                <button class="button float-right mb-1 small">Search</button>
-            </div>
-            <div id="realgridPopup" class="w-100" style="height: 250px;"></div>
-        </div>
-        <div class="dialog-actions text-right mt-0 px-2">
-            <button class="button js-dialog-close small">Cancel</button>
-            <button class="button primary js-dialog-close small" onclick="fn_clickPopup();">Ok</button>
-        </div>
-    </div>
+	<th:block th:replace="/layouts/fragments/compopups :: comPopup1Fragment('f_pinput')"></th:block>
 </th:block>
 
 <th:block layout:fragment="content">
@@ -144,8 +132,8 @@
             return true;
         }
 
-        function fn_clickPopup() {
-            console.log("fn_clickPopup!!!!");
+        function fn_comPopup1() {
+            console.log("fn_comPopup1!!!!");
         }
     </script>
 </th:block>

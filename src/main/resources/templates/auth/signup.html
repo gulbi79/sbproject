@@ -7,21 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <!-- Metro 4 -->
-    <link href="/static/metro/css/metro-all.css?ver=@@b-version" rel="stylesheet">
+    <link th:href="@{/static/metro/css/metro-all.css}" href="/static/metro/css/metro-all.css?ver=@@b-version" rel="stylesheet">
 
     <title>Register</title>
 </head>
 <body class="m4-cloak h-vh-100 d-flex flex-justify-center flex-align-center">
 
     <div class="login-box">
-        <form method="post" th:action="@{/signup}"
+        <form method="post" th:action="@{/auth/signupProc}"
               class="bg-white p-4"
               action="javascript:"
               data-role="validator"
               data-clear-invalid="5000"
               data-on-error-form="invalidForm"
         >
-            <img src="/static/images/p-120x120.png" class="place-right mt-4-minus mr-5-minus">
+            <img th:attr="src=@{/static/images/p-120x120.png}" src="/static/images/p-120x120.png" class="place-right mt-4-minus mr-5-minus">
             <h1 class="mb-0">Register</h1>
             <div class="text-muted mb-4">Register a new membership</div>
             <div class="form-group">
@@ -62,13 +62,13 @@
                 </button>
             </div>
             <div class="form-group border-top bd-default pt-2">
-                <a th:href=@{/login} href="#" class="d-block">I already have a membership</a>
+                <a th:href=@{/auth/login} href="#" class="d-block">I already have a membership</a>
             </div>
         </form>
     </div>
 
 
-    <script src="/static/metro/js/metro.js?ver=@@b-version"></script>
+    <script th:attr="src=@{/static/metro/js/metro.js}" src="/static/metro/js/metro.js?ver=@@b-version"></script>
     <script>
         function invalidForm(){
             var form  = $(this);

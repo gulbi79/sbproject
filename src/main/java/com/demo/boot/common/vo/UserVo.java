@@ -2,12 +2,15 @@ package com.demo.boot.common.vo;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
 @Data
+@EqualsAndHashCode(of= {"userId"})
 public class UserVo implements UserDetails {
     private String userId;
     private String userPw;

@@ -2,13 +2,20 @@ package com.demo.boot.config;
 
 import com.demo.boot.common.service.UserService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -20,7 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**");
+        //web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**");
+    	web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
     /**
@@ -31,47 +39,40 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.authorizeRequests()
-                .antMatchers("/member/**").hasAuthority("USER")
-                .antMatchers("/admin/**").hasAuthority("ADMIN")
-                .antMatchers("/**").permitAll();
+    	// 인가정책
+    	http.authorizeRequests()
+	    	.antMatchers("/admin").hasAuthority("ADMIN")
+	    	.antMatchers("/auth/**", "/page/**", "/static/**").permitAll() // 로그인 권한은 누구나, resources파일도 모든권한
+	    	.anyRequest().authenticated();
 
-        http.formLogin()
-                .loginPage("/login")
-                .defaultSuccessUrl("/home")
-                .failureUrl("/denied")
-                .permitAll();
+    	// 인증정책
+    	http.formLogin()
+	    	.loginPage("/auth/login")
+	    	.loginProcessingUrl("/auth/loginProc")
+	    	.defaultSuccessUrl("/home")
+	    	.failureUrl("/auth/denied");
 
-        http.logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login")
-                .invalidateHttpSession(true);
-
-        http.exceptionHandling()
-                .accessDeniedPage("/denied");
-
-        http.headers()
-                .frameOptions().sameOrigin();
-
-        http.csrf()
-                .disable();
-
-        /*
-        http
-                .authorizeRequests()
-                .antMatchers( "/login", "/singUp", "/access_denied", "/resources/**").permitAll() // 로그인 권한은 누구나, resources파일도 모든권한
-                // USER, ADMIN 접근 허용
-                .antMatchers("/user_access").hasRole("USER")
-                .antMatchers("/user_access").hasRole("ADMIN")
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .loginProcessingUrl("/login_proc")
-                .defaultSuccessUrl("/user_access")
-                .failureUrl("/access_denied") // 인증에 실패했을 때 보여주는 화면 url, 로그인 form으로 파라미터값 error=true로 보낸다.
-                .and()
-                .csrf().disable();		//로그인 창
-         */
+    	// 로그아웃
+    	http.logout()
+	    	.logoutRequestMatcher(new AntPathRequestMatcher("/auth/logoutProc"))
+	    	.logoutSuccessUrl("/auth/logout")
+	    	.invalidateHttpSession(true);
+    	
+    	http.exceptionHandling()
+    		.accessDeniedPage("/auth/denied");
+    	
+    	http.headers()
+    		.frameOptions().sameOrigin();
+    	
+    	http.csrf()
+    		.disable();
+    	
+    	// 동시세션 정책
+    	http.sessionManagement()
+	        .maximumSessions(1)
+	        .maxSessionsPreventsLogin(false)
+	        .sessionRegistry(sessionRegistry())
+	        .expiredUrl("/auth/sessionexpired");
     }
 
     /**
@@ -82,5 +83,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder());
+    }
+    
+    // logout 후 login할 때 정상동작을 위함
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
+    }
+
+    // was가 여러개 있을 때(session clustering)
+    @Bean
+    public static ServletListenerRegistrationBean httpSessionEventPublisher() {
+        return new ServletListenerRegistrationBean(new HttpSessionEventPublisher());
     }
 }

@@ -7,21 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <!-- Metro 4 -->
-    <link href="/static/metro/css/metro-all.css?ver=@@b-version" rel="stylesheet">
+    <link th:href="@{/static/metro/css/metro-all.css}" href="/static/metro/css/metro-all.css" rel="stylesheet">
 
     <title>Log in</title>
 </head>
 <body class="m4-cloak h-vh-100 d-flex flex-justify-center flex-align-center">
 
     <div class="login-box">
-        <form th:action="@{/login}" method="post"
+        <form th:action="@{/auth/loginProc}" method="post"
               class="bg-white p-4"
               action="javascript:"
               data-role="validator"
               data-clear-invalid="5000"
               data-on-error-form="invalidForm"
         >
-            <img src="/static/images/p-120x120.png" class="place-right mt-4-minus mr-6-minus">
+            <img th:attr="src=@{/static/images/p-120x120.png}" src="/static/images/p-120x120.png" class="place-right mt-4-minus mr-6-minus">
             <h1 class="mb-0">Login</h1>
             <div class="text-muted mb-4">Sign in to start your session</div>
             <div class="form-group">
@@ -58,10 +58,12 @@
         </form>
     </div>
 
-
-    <!--<script src="vendors/jquery/jquery-3.4.1.min.js"></script>-->
-    <script src="/static/metro/js/metro.js?ver=@@b-version"></script>
+    <script th:attr="src=@{/static/metro/js/metro.js}" src="/static/metro/js/metro.js?ver=@@b-version"></script>
     <script>
+    	$(function() {
+            console.log("this.name",$(this).parent());
+        });
+        
         function invalidForm(){
             var form  = $(this);
             form.addClass("ani-ring");
