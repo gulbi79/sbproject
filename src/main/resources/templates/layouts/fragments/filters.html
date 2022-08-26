@@ -57,12 +57,12 @@
 				        <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> <span th:text=${title}>Calendar picker From To</span></li>
 				        <li class="pl-3 bg-basecolor">
 				            <div class="row no-gap">
-				                <input name="calendar2" th:attr="name=${name1}" type="text" data-role="calendarpicker" class="input-small" data-size="calc(50% - 11.4px)"
-				                data-dialog-mode="false" data-show-week-number="true" data-cls-calendar="compact" 
+				                <input name="calendar2" th:attr="name=${name1}, id=${name1}" type="text" data-role="calendarpicker" class="input-small" data-size="calc(50% - 11.4px)"
+				                data-dialog-mode="false" data-show-week-number="true" data-cls-calendar="compact"
 				            	data-on-calendar-show="gfn_onCalendarShow" data-on-calendar-hide="gfn_onCalendarHide">
 				                &nbsp;~&nbsp;
-				                <input name="calendar3" th:attr="name=${name2}" type="text" data-role="calendarpicker" class="input-small" data-size="calc(50% - 11.4px)"
-				                data-dialog-mode="false" data-show-week-number="true" data-cls-calendar="compact" 
+				                <input name="calendar3" th:attr="name=${name2}, id=${name2}" type="text" data-role="calendarpicker" class="input-small" data-size="calc(50% - 11.4px)"
+				                data-dialog-mode="false" data-show-week-number="true" data-cls-calendar="compact"
 				            	data-on-calendar-show="gfn_onCalendarShow" data-on-calendar-hide="gfn_onCalendarHide">
 				            </div>
 				        </li>

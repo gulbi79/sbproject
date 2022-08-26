@@ -5,30 +5,7 @@
 
 <th:block layout:fragment="filter">
 	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Group','f_group')"></th:block>
-	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Code','f_code')"></th:block>
-	<th:block th:replace="/layouts/fragments/filters :: pinputFragment('Popup Input','f_pinput')"></th:block>
-	<th:block th:replace="/layouts/fragments/filters :: selectFragment('Select','f_select')"></th:block>
-	<th:block th:replace="/layouts/fragments/filters :: mselectFragment('Multiple','f_mselect')"></th:block>
-	<th:block th:replace="/layouts/fragments/filters :: singlecalFragment('Calendar','f_cal')"></th:block>
 	<th:block th:replace="/layouts/fragments/filters :: doublecalFragment('From~To','f_fromcal','f_tocal')"></th:block>
-	<li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Check Box</li>
-    <li class="pl-3 bg-basecolor">
-        <input name="f_check1" type="checkbox" data-role="checkbox" data-caption="Check1">
-        <input name="f_check2" type="checkbox" data-role="checkbox" data-caption="Check2" checked>
-        <input name="f_check3" type="checkbox" data-role="checkbox" data-caption="Check3" data-indeterminate="true">
-        <input name="f_check4" ype="checkbox" data-role="checkbox" data-caption="Check4" disabled>
-        <input name="f_check5" type="checkbox" data-role="checkbox" data-caption="Check5" disabled checked>
-    </li>
-    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Radio1</li>
-    <li class="pl-3 bg-basecolor">
-        <input type="radio" data-role="radio" data-caption="Check1" value="r1_a" name="f_radio1">
-        <input type="radio" data-role="radio" data-caption="Check2" value="r1_b" name="f_radio1" checked>
-    </li>
-    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Radio2</li>
-    <li class="pl-3 bg-basecolor">
-        <input type="radio" data-role="radio" data-caption="Check3" value="r2_a" name="f_radio2" disabled>
-        <input type="radio" data-role="radio" data-caption="Check4" value="r2_b" name="f_radio2" checked disabled>
-    </li>
 </th:block>
 
 <th:block layout:fragment="hidden">
@@ -49,13 +26,11 @@
             fn_gridInit(); //그리드초기화
             fn_eventInit(); //이벤트초기화
         });
-        
+
         //필터초기화
         function fn_filterInit() {
-			$("#mselect").append("<option value=\"6\" data-template=\"<input type='checkbox' data-role='checkbox' data-style='2'> $1\">GitHub222</option>");
-            var mselect = Metro.getPlugin($("#mselect"), "select");
-            mselect.reset();
-            mselect.val(["1","3","6"]);
+			//calendar set
+			$("#f_fromcal").data("calendarpicker").val("2022-12-13");
         }
 
         //그리드초기화
@@ -89,11 +64,6 @@
             $("#apply").on("click", function() {
                 fn_apply();
             });
-
-            //엑셀다운로드
-            $("header .mif-file-excel").on("click", function() {
-				gfn_exportExcel(grid);
-			});
         }
         
         //조회

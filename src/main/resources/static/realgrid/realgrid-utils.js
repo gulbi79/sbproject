@@ -5,6 +5,16 @@
  * 소스 수정 및 배포등 자유롭게 사용하시기 바랍니다.
  */
 
+window.onunload = function() {
+	console.log("window.onunload call...");
+	gfn_gridsDestroy(); //화면에서 생성한 grid destroy
+	if (typeof fn_unload === 'function') fn_unload();
+}
+
+var VIEW_GRID_LIST = {
+	gridview: [],
+	provider: []
+};
 
 var GRID = function() {
     this.gridview;
@@ -19,22 +29,30 @@ var GRID = function() {
 GRID.prototype = {
     init: function(options) {
         this.setConfig(options);
-        this.provider = new RealGrid.LocalDataProvider();
+        this.provider = new RealGrid.LocalDataProvider(true);
         this.gridview = new RealGrid.GridView(this.realgridConfig.gridId);
         this.gridview.setDataSource(this.provider);
+        this.setGlobalGrid();
         this.setColumn();
         this.setOptions();
         return this;
     },
+    
     treeInit: function(options) {
         this.setConfig(options);
-        this.provider = new RealGrid.LocalTreeDataProvider();
+        this.provider = new RealGrid.LocalTreeDataProvider(true);
         this.gridview = new RealGrid.TreeView(this.realgridConfig.gridId);
         this.gridview.setDataSource(this.provider);
+        this.setGlobalGrid();
         this.setColumn();
         this.setOptions();
         return this;
     },
+    
+    setGlobalGrid: function() {
+		VIEW_GRID_LIST.gridview.push(this.gridview);
+		VIEW_GRID_LIST.provider.push(this.provider);
+	},
 
     setConfig: function(options) {
         this.realgridConfig = {...this.realgridConfig, ...options};
@@ -76,6 +94,7 @@ GRID.prototype = {
 	        stateBar: { visible: false },
 	        sorting : { enabled: true  },
 	        sortMode: "explicit",
+	        undoable: true,
 	        edit    : { insertable: true, appendable: false, updatable: true, editable: true, deletable: true},
 	        header  : {
 	            heightFill: "fixed",
@@ -135,6 +154,17 @@ GRID.prototype = {
 	    	softDeleting: true //삭제시 상태값만 바꾼다.
 	    });
 	}
+}
+
+/**
+	그리드 객체 초기화
+ */
+function gfn_gridsDestroy() {
+	try {
+		VIEW_GRID_LIST.provider.forEach(v => v.clearRows());
+	    VIEW_GRID_LIST.gridview.forEach(v => v.destroy());
+	    VIEW_GRID_LIST.provider.forEach(v => v.destroy());
+	} catch(e) {}
 }
 
 // 페이지 네비게이션 생성 및 이동 처리

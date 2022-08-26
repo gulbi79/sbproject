@@ -13,6 +13,13 @@ async function gfn_service(pConfigs) {
 	
 	serviceConfig = {...serviceConfig, ...pConfigs};
 	
+	// loading bar start
+	const activity = Metro.activity.open({
+        type: 'ring',
+        style: 'color',
+        //overlayClickClose: true
+    });
+	
 	//server api 요청
 	fetch(serviceConfig.url, {
 	    method: serviceConfig.method, 
@@ -20,6 +27,9 @@ async function gfn_service(pConfigs) {
 	    body: serviceConfig.body
 	})
     .then(res => {
+		// loading bar end
+		Metro.activity.close(activity);
+	
 		if (!res.ok) throw res;
 			
 		return res.json(); //응답 결과를 json으로 파싱

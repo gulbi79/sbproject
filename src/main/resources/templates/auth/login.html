@@ -60,10 +60,6 @@
 
     <script th:attr="src=@{/static/metro/js/metro.js}" src="/static/metro/js/metro.js?ver=@@b-version"></script>
     <script>
-    	$(function() {
-            console.log("this.name",$(this).parent());
-        });
-        
         function invalidForm(){
             var form  = $(this);
             form.addClass("ani-ring");

@@ -57,7 +57,7 @@ public class MemberController {
     	//1.로그인한 유저의 권한에 따른 메뉴 조회
     	model.addAttribute("menuList", userService.userMenu(uservo.getUserId()));
     	
-        return "top";
+        return "layouts/top";
     }
 
     @GetMapping("/auth/denied")
