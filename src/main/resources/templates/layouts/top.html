@@ -103,15 +103,15 @@
 			            <div class="row">
 			            	<th:block th:each="item2 : ${menuList}">
 			            	<div class="cell-md-2" th:if="${item2.lvl == 2 && item1.menuCd == item2.parentMenuCd}">
-			                    <h6 th:text="${item2.menuNm}">Begin with Metro 4</h6>
+			                    <p class="h5"><small th:text="${item2.menuNm}">Metro 4</small></p>
 			                    <ul class="unstyled-list pl-0">
 			                    	<th:block th:each="item3 : ${menuList}">
                     		 			<li th:if="${item3.lvl == 3 && item2.menuCd == item3.parentMenuCd}">
 				                    		<th:block th:if="${item3.urlYn == 'Y'}">
-                    		 				<a href="#" th:menuCd="${item3.menuCd}" th:menuNm="${item3.menuNm}" th:onclick="fn_clickMenu(this.getAttribute('menuCd'),this.getAttribute('menuNm'))" th:text="${item3.menuNm}">Getting started</a>
+                    		 				<a href="#" th:menuCd="${item3.menuCd}" th:menuNm="${item3.menuNm}" th:onclick="fn_clickMenu(this.getAttribute('menuCd'),this.getAttribute('menuNm'))"><small th:text="${item3.menuNm}">Getting started</small></a>
 				                    		</th:block>
 				                    		<th:block th:if="${item3.urlYn != 'Y'}">
-                    		 				<a href="#" th:text="${item3.menuNm}">Getting started</a>
+                    		 				<a href="#"><small th:text="${item3.menuNm}">Getting started</small></a>
 				                    		</th:block>
                     		 			</li>
 			                    	</th:block>

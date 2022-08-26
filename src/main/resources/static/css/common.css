@@ -26,6 +26,10 @@ body{
 }
 
 .filterForm{
-    height: calc(100% - 52px);
+    height: calc(100% - 42px);
     overflow: auto;
+}
+
+.onegrid{
+	height: calc(100% - 34px);
 }
