@@ -23782,7 +23782,7 @@ input[type=reset].loading .load-caption {
   -webkit-user-select: none;
           user-select: none;
   cursor: pointer;
-  height: 36px;
+  /*height: 36px;*/
 }
 .checkbox input {
   width: 1px;
@@ -25132,8 +25132,8 @@ aside::after {
 }
 [class*=default-icon] {
   display: block;
-  height: 16px;
-  width: 16px;
+  height: 10px;
+  width: 10px;
   border: none!important;
   background-size: cover;
   background-color: transparent;
@@ -28101,8 +28101,8 @@ a.info-button {
   color: #1d1d1d;
   width: 100%;
   font-size: 16px;
-  height: 36px;
-  line-height: 36px;
+  height: 28px;
+  line-height: 28px;
   background: #ffffff none;
   background-clip: padding-box;
   min-width: 0;
@@ -28893,7 +28893,7 @@ input:-ms-input-placeholder {
           flex-grow: 1;
   flex-shrink: 0;
   flex-basis: 0;
-  height: 34px;
+  height: 24px;
   padding: 0 0.75rem;
 }
 .input input:focus {
@@ -29041,17 +29041,17 @@ input.input-large:-ms-input-placeholder {
   font-size: 1.1rem;
 }
 .input.input-small {
-  height: 28px;
+  height: 24px; /*sung*/
 }
 .input.input-small input {
-  height: 26px;
+  height: 22px; /*sung*/
   font-size: 0.9rem;
   padding: 0 4px;
-  line-height: 26px;
+  line-height: 22px; /*sung*/
 }
 .input.input-small .button {
-  height: 26px;
-  min-width: 26px;
+  height: 22px;
+  min-width: 22px;
   font-size: 0.9rem;
   padding: 0;
 }
@@ -29060,12 +29060,12 @@ input.input-large:-ms-input-placeholder {
 }
 .input.input-small .button .default-icon-cross,
 .input.input-small .button .default-icon-eye {
-  width: 14px;
-  height: 14px;
+  width: 10px;
+  height: 10px;
 }
 .input.input-small .input-clear-button,
 .input.input-small .input-reveal-button {
-  width: 26px;
+  width: 22px;
   padding: 0;
 }
 .input.input-small input[placeholder] {
@@ -31422,7 +31422,7 @@ input.input-small:-ms-input-placeholder {
   -webkit-user-select: none;
           user-select: none;
   cursor: pointer;
-  height: 36px;
+  /*height: 36px;*/
 }
 .radio input {
   width: 1px;
@@ -31442,8 +31442,8 @@ input.input-small:-ms-input-placeholder {
 }
 .radio .check {
   border: 2px #d9d9d9 solid;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   flex-shrink: 0;
   line-height: 36px;
@@ -32786,8 +32786,8 @@ input.input-small:-ms-input-placeholder {
 }
 .select .option-list a {
   min-width: auto;
-  height: 32px;
-  line-height: 32px;
+  height: 24px;
+  line-height: 24px;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0 2rem 0 2.5rem;
@@ -32828,8 +32828,8 @@ input.input-small:-ms-input-placeholder {
 .select .button {
   background-color: transparent;
   color: #1d1d1d;
-  height: 34px;
-  min-width: 34px;
+  height: 28px;
+  min-width: 28px;
 }
 .select .button:focus,
 .select .button:active {
@@ -33014,12 +33014,12 @@ input.input-small:-ms-input-placeholder {
   margin-left: -1.3rem;
 }
 .select.input-small {
-  height: 28px;
+  height: 24px;
 }
 .select.input-small .dropdown-toggle,
 .select.input-small > .button-group .button {
-  height: 28px;
-  width: 28px;
+  height: 24px;
+  width: 24px;
 }
 .select.input-small .dropdown-toggle::before {
   margin-left: -1rem;
@@ -33027,21 +33027,21 @@ input.input-small:-ms-input-placeholder {
 .select.input-small .select-input,
 .select.input-small .prepend,
 .select.input-small .append {
-  height: 26px;
+  height: 22px;
   font-size: 0.9rem;
   padding: 0 4px;
-  line-height: 26px;
+  line-height: 22px;
 }
 .select.input-small.multiple {
-  min-height: 28px;
+  min-height: 24px;
   height: auto;
 }
 .select.input-small.multiple .select-input {
   height: auto;
-  min-height: 26px;
+  min-height: 22px;
 }
 .select.input-small.multiple > .button-group {
-  right: 28px;
+  right: 24px;
 }
 .select.input-small.multiple > .button-group:not(.d-none) ~ .select-input {
   margin-right: 56px;

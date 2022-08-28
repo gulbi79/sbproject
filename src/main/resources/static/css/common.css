@@ -26,7 +26,7 @@ body{
 }
 
 .filterForm{
-    height: calc(100% - 42px);
+    height: calc(100% - 35px);
     overflow: auto;
 }
 
