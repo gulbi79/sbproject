@@ -9,7 +9,8 @@ class JasyptApplicationTests {
 
     @Test
     void jasypt() {
-        String url = "jdbc:log4jdbc:oracle:thin:@130.162.132.213:1521/xe";
+//        String url = "jdbc:log4jdbc:oracle:thin:@130.162.132.213:1521/xe";
+        String url = "jdbc:oracle:thin:@130.162.132.213:1521/xe";
         String username = "SUNG";
         String password = "a1234";
 

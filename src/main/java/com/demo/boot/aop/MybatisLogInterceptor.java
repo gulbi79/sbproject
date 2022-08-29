@@ -3,7 +3,6 @@ package com.demo.boot.aop;
 import java.lang.reflect.Field;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -11,12 +10,16 @@ import java.util.regex.Matcher;
 
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Plugin;
 import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.reflection.DefaultReflectorFactory;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.ResultHandler;
 import org.springframework.util.StopWatch;
 
@@ -33,12 +36,16 @@ import lombok.extern.slf4j.Slf4j;
 })
 public class MybatisLogInterceptor implements Interceptor {
 
-//    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
     	
         StatementHandler handler = (StatementHandler)invocation.getTarget();
+        MetaObject metaObject = MetaObject.forObject(handler, SystemMetaObject.DEFAULT_OBJECT_FACTORY,
+                					SystemMetaObject.DEFAULT_OBJECT_WRAPPER_FACTORY, new DefaultReflectorFactory());
+        
+        MappedStatement mappedStatement = (MappedStatement) metaObject.getValue("delegate.mappedStatement");
+        String sqlId = mappedStatement.getId();
+        
         BoundSql boundSql = handler.getBoundSql();
         
         // 쿼리문을 가져온다(이 상태에서의 쿼리는 값이 들어갈 부분에 ?가 있다)
@@ -113,20 +120,20 @@ public class MybatisLogInterceptor implements Interceptor {
             }
         }
          
+        log.info("SQL[{}] : {}",sqlId,"\n    ".concat(sql.trim()));
         
         if (SqlContextHolder.THREAD_LOCAL_SQLYN.get()) {
-        	SqlContextHolder.THREAD_LOCAL_SQL.get().add("\n    ".concat(sql.trim().concat(";")));
+        	SqlContextHolder.THREAD_LOCAL_SQL.get().put(sqlId,"\n    ".concat(sql.trim()));
 //        	SqlContextHolder.THREAD_LOCAL_SQL.set("\n    ".concat(sql.trim().concat(";")));
-        	log.info("SQL : {}","\n    ".concat(sql.trim().concat(";")));
         	return new ArrayList<Object>();
         } else {
         	long startTime = System.currentTimeMillis();
-        	//String methodName = invocation.getMethod().getName();
+//        	String methodName = invocation.getMethod().getName();
         	StopWatch sw = new StopWatch();
         	sw.start("SQL_"+startTime);
         	Object rtnObj = invocation.proceed(); // 쿼리 실행
         	sw.stop();
-//        	logger.info("[LOG] METHOD: " + methodName + " was called.");
+        	log.info("[LOG] SQL ID: " + sqlId + " was called.");
         	log.info("[SQL] 처리시간 {}", sw.getTotalTimeSeconds());
             
         	return rtnObj;

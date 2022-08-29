@@ -1,7 +1,5 @@
 package com.demo.boot.aop;
 
-import static com.demo.boot.utils.ErrorCode.SQL_VIEW;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -27,7 +25,8 @@ public class RestControllerAdvice<T> implements ResponseBodyAdvice<T> {
 
     @Override
     public T beforeBodyWrite(T body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-    	log.info("RestControllerAdvice beforeBodyWrite");
+    	log.info("beforeBodyWrite body => {}", body);
+    	//log.info("sql=> {}", SqlContextHolder.THREAD_LOCAL_SQL);
         // 작업할 내용 작성...
         
         return body;

@@ -1,7 +1,9 @@
 spring:
   datasource:
-    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    jdbc-url: ENC(F569Wb4PMcSPZlENgatqPK4jD1a6m77m3qdL/E3kTnVwZ/ob8vt2fWqe6bg8kiAw5oYcw8wIt6JHorSy8z6Nmg==)
+#    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+#    jdbc-url: ENC(F569Wb4PMcSPZlENgatqPK4jD1a6m77m3qdL/E3kTnVwZ/ob8vt2fWqe6bg8kiAw5oYcw8wIt6JHorSy8z6Nmg==)
+    driver-class-name: oracle.jdbc.OracleDriver
+    jdbc-url: ENC(lbev09K62wfWB4gPZuxVBzdgG4WVN5vB8Uru7jhweYq4/qU1L05JHB6mGBnV9B1d7v63Ak9CM5g=)
     username: ENC(LoVBvkHceiW3h0bJfKGZ4g==)
     password: a1234
   devtools:
