@@ -29,21 +29,33 @@ async function gfn_service(pConfigs) {
     .then(res => {
 		// loading bar end
 		Metro.activity.close(activity);
+		
+		console.log(111);
+		console.log(res);
 	
-		if (!res.ok) throw res;
+		if (!res.ok || serviceConfig.headers.REQ_SQL === "Y") throw res;
+		
+		console.log(222);
 			
 		return res.json(); //응답 결과를 json으로 파싱
 	}) 
     .then(serviceConfig.successCallback)
     .catch(err => {
-        err.text().then(async function(msg) {
-			if (serviceConfig.headers.REQ_SQL === "Y") {
-				gfn_alert({title: "Excute SQL", width: 800, closeButton: true, content: "<div style='overflow:auto;height:500px;white-space:pre;'>"+JSON.parse(msg).message+"</div>"});
-			} else {
-				await gfn_alertSync({title: "Error", content: JSON.parse(msg).message});
-			}
-			
-		})
+		console.log("err",err);
+		if (serviceConfig.headers.REQ_SQL === "Y") {
+			gfn_alert({title: "Excute SQL", width: 800, closeButton: true, content: "<div style='overflow:auto;height:500px;white-space:pre;'>"+JSON.parse(msg).message+"</div>"});
+		} else {
+			err.text().then(async function(msg) {
+				if (serviceConfig.headers.REQ_SQL === "Y") {
+					gfn_alert({title: "Excute SQL", width: 800, closeButton: true, content: "<div style='overflow:auto;height:500px;white-space:pre;'>"+JSON.parse(msg).message+"</div>"});
+				} else {
+					await gfn_alertSync({title: "Error", content: JSON.parse(msg).message});
+				}
+				
+			})
+		}
+		
+        
     });
 }
 

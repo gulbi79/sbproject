@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/basemaster}">
+
+<th:block layout:fragment="filter">
+	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Role','f_role')"></th:block>
+	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Role2','f_role2')"></th:block>
+	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Role3','f_role3')"></th:block>
+</th:block>
+
+<th:block layout:fragment="hidden">
+</th:block>
+
+<th:block layout:fragment="content">
+	<div id="realgrid1" class="w-100 onegrid"></div>
+</th:block>
+
+<th:block layout:fragment="contentjs">
+	<script>
+        var Utils = Metro.utils;
+        let grid, provider;
+        $(function() {
+            fn_filterInit(); //필터초기화
+            fn_gridInit(); //그리드초기화
+            fn_eventInit(); //이벤트초기화
+        });
+
+        //필터초기화
+        function fn_filterInit() {
+        }
+
+        //그리드초기화
+        function fn_gridInit() {
+            //dataType이 text가 아닌경우 tag속성에 지정
+            const fields = [];
+            const columns = [
+                {name: "groupCd",     type: "data", width: "100", header: {text: "Group Code"      }, styleName: "tal-column" }
+              , {name: "groupNm",     type: "data", width: "200", header: {text: "Group Name"      }, styleName: "tal-column" }
+              , {name: "codeCd",      type: "data", width: "100", header: {text: "Code"            }, styleName: "tal-column" }
+              , {name: "codeNm",      type: "data", width: "200", header: {text: "Code Name"       }, styleName: "tal-column" }
+			  , {name: "useYn",       type: "data", width: "100", header: {text: "Use Y/N"         }, styleName: "tac-column" }
+			  , {name: "sort",        type: "data", width: "100", header: {text: "Sort"            }, styleName: "tal-column" }
+            ];
+            const options = {
+				checkBar: { visible: true }
+			  , stateBar: { visible: true }
+			};
+			
+            const gridInstance = new GRID().init({gridId: "realgrid1", columns: columns, fields: fields, options: options});
+            grid = gridInstance.gridview;
+            provider = gridInstance.provider;
+        }
+        
+        //이벤트초기화
+        function fn_eventInit() {
+            $("#apply").on("click", function() {
+                fn_apply();
+            });
+
+            $("#reset").on("click", function() {
+                grid.cancel();
+		        if (provider.getSavePoints().length > 0) provider.rollback(provider.getSavePoints()[0]);
+		    	else provider.clearRows();
+            });
+
+            $("#add").on("click", function() {
+                let row = grid.getCurrent().dataRow;
+                row = row == -1 ? 0 : row;
+				const addVal = { useYn: "Y" };
+				provider.insertRow(row, addVal);
+            });
+
+            $("#delete").on("click", function() {
+                var rows = grid.getCheckedRows();
+				for (var i=rows.length-1; i>=0; i--) {
+					provider.removeRow(rows[i]);
+				}
+            });
+
+            $("#save").on("click", function() {
+				fn_save();
+            });
+        }
+        
+        //공통함수에서 호출되는 영역
+        function fn_comExportExcel() {
+			gfn_exportExcel(grid);
+		}
+        
+        //조회
+        async function fn_apply(sql = false) {
+            //필터폼 데이터 생성
+            let filterObj = gfn_getFormObj($('.filterForm'));
+            filterObj = {...filterObj, ...gfn_getChkTree()}; //체크트리 파라미터 셋
+            
+            //유효성 검증
+            if (!fn_validation()) return false;
+			
+			//server api 요청
+			const pConfigs = {
+				url: '/admin/rolelist',
+				reqSql : sql,
+			    body: JSON.stringify(filterObj),
+			    successCallback: function(data) {
+					console.log("data",data);
+				
+					try {
+						//데이터 초기화 및 그리드 데이터 생성
+			            provider.clearRows();
+			            grid.cancel();
+			            provider.setRows(data);
+			            
+			            provider.clearSavePoints();
+						provider.savePoint(); //초기화 포인트 저장
+					} catch(e) {
+						console.log(e);
+					}
+			    }
+			}; 
+			gfn_service(pConfigs);
+        }
+        
+        async function fn_save() {
+			var uGrdData = gfn_getGrdSavedata(grid);
+			if (uGrdData.length == 0) {
+				gfn_alert({title: "Info", content: "저장 할 데이터가 없습니다."});
+				return;
+	    	}
+	
+			if(!await gfn_confirmSync({title: "Info", content: "저장하시겠습니까?"})) return;
+			
+			//server api 요청
+			const pConfigs = {
+				url: '/admin/rolereg',
+			    body: JSON.stringify({grdData: uGrdData}),
+			    successCallback: async function(data) {
+					//데이터 초기화 및 그리드 데이터 생성
+					await gfn_alertSync({title: "Success", content: "Save success"});
+		            fn_apply();
+			    }
+			}; 
+			gfn_service(pConfigs);
+		}
+
+        function fn_validation() {
+            return true;
+        }
+
+        function fn_clickPopup() {
+            console.log("fn_clickPopup!!!!");
+        }
+    </script>
+</th:block>
+</html>

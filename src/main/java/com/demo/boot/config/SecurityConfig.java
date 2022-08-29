@@ -49,8 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     	http.formLogin()
 	    	.loginPage("/auth/login")
 	    	.loginProcessingUrl("/auth/loginProc")
-	    	.defaultSuccessUrl("/home")
-	    	.failureUrl("/auth/denied");
+	    	.defaultSuccessUrl("/home", true)
+	    	.failureUrl("/auth/denied")
+    		.permitAll();
 
     	// 로그아웃
     	http.logout()

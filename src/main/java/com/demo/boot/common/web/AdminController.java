@@ -38,4 +38,14 @@ public class AdminController {
     public ResponseEntity<?> saveCode(@RequestBody Map<String, Object> params) {
     	return ResponseEntity.ok().body(adminService.saveCode(params));
     }
+
+    @PostMapping("rolelist")
+    public ResponseEntity<?> selectRole(@RequestBody Map<String, Object> params) {
+    	return ResponseEntity.ok().body(adminService.selectRole(params));
+    }
+    
+    @PostMapping("rolereg")
+    public ResponseEntity<?> saveRole(@RequestBody Map<String, Object> params) {
+    	return ResponseEntity.ok().body(adminService.saveRole(params));
+    }
 }

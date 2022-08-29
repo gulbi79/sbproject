@@ -2,6 +2,8 @@ package com.demo.boot.aop;
 
 import java.lang.reflect.Field;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -111,11 +113,12 @@ public class MybatisLogInterceptor implements Interceptor {
             }
         }
          
-//        log.info("SqlContextHolder.THREAD_LOCAL_SQLYN : {}",SqlContextHolder.THREAD_LOCAL_SQLYN.get());
         
         if (SqlContextHolder.THREAD_LOCAL_SQLYN.get()) {
-        	SqlContextHolder.THREAD_LOCAL_SQL.set("\n    ".concat(sql.trim().concat(";")));
-        	return null;
+        	SqlContextHolder.THREAD_LOCAL_SQL.get().add("\n    ".concat(sql.trim().concat(";")));
+//        	SqlContextHolder.THREAD_LOCAL_SQL.set("\n    ".concat(sql.trim().concat(";")));
+        	log.info("SQL : {}","\n    ".concat(sql.trim().concat(";")));
+        	return new ArrayList<Object>();
         } else {
         	long startTime = System.currentTimeMillis();
         	//String methodName = invocation.getMethod().getName();

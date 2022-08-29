@@ -41,12 +41,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
-        //log.error("handleException",e);
-        if (SqlContextHolder.THREAD_LOCAL_SQLYN.get()) {
-    		return ErrorResponse.toResponseEntity(ErrorCode.INTER_SERVER_ERROR, SqlContextHolder.THREAD_LOCAL_SQL.get());
-    	} else {
+        log.error("handleException",e);
+//        if (SqlContextHolder.THREAD_LOCAL_SQLYN.get()) {
+//    		return ErrorResponse.toResponseEntity(ErrorCode.INTER_SERVER_ERROR, SqlContextHolder.THREAD_LOCAL_SQL.get());
+//    	} else {
     		return ErrorResponse.toResponseEntity(ErrorCode.INTER_SERVER_ERROR, "Server Error");
-    	}
+//    	}
     }
 
 }

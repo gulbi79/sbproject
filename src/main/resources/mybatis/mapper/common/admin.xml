@@ -111,4 +111,48 @@
           VALUES (B.GROUP_CD, B.GROUP_NM, B.CODE_CD, B.CODE_NM, B.USE_YN, B.SORT)
     </insert>
 
+    <!-- ROLE 조회 -->
+    <select id="selectRole" parameterType="map" resultType="custommap">
+    /* selectRole */
+    SELECT ROLE_CD, ROLE_NM
+    FROM TB_MST_ROLE
+#where()
+ #if($_parameter.f_role and $_parameter.f_role != "")
+      AND ( UPPER(ROLE_CD) LIKE '%' || UPPER(@{f_role}) || '%' OR UPPER(ROLE_NM) LIKE '%' || UPPER(@{f_role}) || '%' )
+ #end
+#end
+    
+    ORDER BY ROLE_NM
+    </select>
+    
+    <!-- ROLE 조회 -->
+    <select id="selectRole2" parameterType="map" resultType="String">
+    /* selectRole */
+    SELECT ROLE_CD 
+    FROM TB_MST_ROLE
+    WHERE ROLE_CD = 'ADMIN'
+    </select>
+
+    <!-- ROLE 저장 -->
+    <insert id="saveRole" parameterType="map">
+    /* saveRole */
+    MERGE INTO TB_MST_ROLE A
+    USING (
+        SELECT @{roleCd} AS ROLE_CD
+             , @{roleNm} AS ROLE_NM
+             , @{state} AS STATE
+        FROM DUAL
+    ) B
+       ON ( A.ROLE_CD = B.ROLE_CD )
+     WHEN MATCHED THEN
+          UPDATE 
+             SET A.ROLE_NM       = B.ROLE_NM
+               
+          --DELETE WHERE B.STATE = 'deleted'
+          
+     WHEN NOT MATCHED THEN
+          INSERT (A.ROLE_CD, A.ROLE_NM)
+          VALUES (B.ROLE_CD, B.ROLE_NM)
+    </insert>
+
 </mapper>

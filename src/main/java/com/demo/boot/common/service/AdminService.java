@@ -12,5 +12,9 @@ public interface AdminService {
 	List<Map<String, Object>> selectCode(Map<String,Object> paramMap);
 	
 	Map<String, Object> saveCode(Map<String,Object> paramMap);
+
+	Map<String, Object> selectRole(Map<String,Object> paramMap);
+	
+	Map<String, Object> saveRole(Map<String,Object> paramMap);
 	
 }

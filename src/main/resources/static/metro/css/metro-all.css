@@ -29045,18 +29045,18 @@ input.input-large:-ms-input-placeholder {
 }
 .input.input-small input {
   height: 22px; /*sung*/
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   padding: 0 4px;
   line-height: 22px; /*sung*/
 }
 .input.input-small .button {
   height: 22px;
   min-width: 22px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   padding: 0;
 }
 .input.input-small .button [class*=mif-] {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 .input.input-small .button .default-icon-cross,
 .input.input-small .button .default-icon-eye {
@@ -29085,11 +29085,11 @@ input.input-large:-ms-input-placeholder {
   height: 26px;
   line-height: 26px;
   padding: 0 0.5rem;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 input.input-small {
   height: 26px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   padding: 0 4px;
 }
 input.input-small[placeholder] {

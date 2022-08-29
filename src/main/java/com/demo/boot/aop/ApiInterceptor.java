@@ -1,14 +1,15 @@
 package com.demo.boot.aop;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.demo.boot.utils.SqlContextHolder;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
@@ -34,7 +35,18 @@ public class ApiInterceptor implements HandlerInterceptor {
      */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-    	//log.info("SqlContextHolder : {}", SqlContextHolder.THREAD_LOCAL_SQL.get());
+    	//response.setHeader("SQL", null);
+    	//log.info("response -> {}", response.getHeader("Content-Type"));
+    	
+//    	StringBuffer sbSql = new StringBuffer();
+//    	for (String sql : SqlContextHolder.THREAD_LOCAL_SQL.get()) {
+//    		sbSql.append(sql).append("\n__sqlsplit__\n");
+//    	}
+//    	
+//    	if (SqlContextHolder.THREAD_LOCAL_SQLYN.get()) {
+////    		ResponseEntity.ok().body(new Object[] {SqlContextHolder.THREAD_LOCAL_SQL.get()});
+//            throw new CustomException(SQL_VIEW,sbSql.toString());
+//        }
     }
 
     /*

@@ -52,4 +52,23 @@ public class AdminServiceImpl implements AdminService {
     	return rtnMap;
     }
 
+    public Map<String, Object> selectRole(Map<String,Object> paramMap) {
+    	Map<String, Object> rtnMap = new HashMap<String, Object>();
+		rtnMap.put("roleList", adminRepository.selectRole(paramMap));
+		rtnMap.put("role", adminRepository.selectRole2(paramMap));
+    	return rtnMap;
+    }
+    
+    @Transactional
+    public Map<String, Object> saveRole(Map<String,Object> paramMap) {
+    	Map<String, Object> rtnMap = new HashMap<String, Object>();
+    	List<Map<String,Object>> grdData = (List<Map<String,Object>>)paramMap.get("grdData");
+    	for (Map<String,Object> rowMap : grdData) {
+    		adminRepository.saveRole(rowMap);
+    	}
+    	
+    	rtnMap.put("result", "ok");
+    	return rtnMap;
+    }
+
 }
