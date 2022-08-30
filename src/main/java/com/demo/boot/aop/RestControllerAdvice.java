@@ -5,7 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.web.bind.annotation.ControllerAdvice;
+//import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.demo.boot.utils.SqlContextHolder;
@@ -13,8 +13,8 @@ import com.demo.boot.utils.SqlContextHolder;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@ControllerAdvice
-@org.springframework.web.bind.annotation.RestControllerAdvice
+//@ControllerAdvice
+//@RestControllerAdvice
 public class RestControllerAdvice<T> implements ResponseBodyAdvice<T> {
 
     @Override

@@ -77,7 +77,6 @@
       AND ( UPPER(CODE_CD) LIKE '%' || UPPER(@{f_code}) || '%' OR UPPER(CODE_NM) LIKE '%' || UPPER(@{f_code}) || '%' )
  #end
 #end
-    
     ORDER BY GROUP_NM, SORT
     </select>
 
@@ -121,7 +120,6 @@
       AND ( UPPER(ROLE_CD) LIKE '%' || UPPER(@{f_role}) || '%' OR UPPER(ROLE_NM) LIKE '%' || UPPER(@{f_role}) || '%' )
  #end
 #end
-    
     ORDER BY ROLE_NM
     </select>
     
@@ -153,6 +151,43 @@
      WHEN NOT MATCHED THEN
           INSERT (A.ROLE_CD, A.ROLE_NM)
           VALUES (B.ROLE_CD, B.ROLE_NM)
+    </insert>
+
+    <!-- User 조회 -->
+    <select id="selectUser" parameterType="map" resultType="custommap">
+    /* selectUser */
+    SELECT USER_ID, USER_NM, EMAIL
+    FROM TB_MST_USER
+#where()
+ #if($_parameter.f_user and $_parameter.f_user != "")
+      AND ( UPPER(USER_ID) LIKE '%' || UPPER(@{f_user}) || '%' OR UPPER(USER_NM) LIKE '%' || UPPER(@{f_user}) || '%' )
+ #end
+#end
+    ORDER BY USER_NM
+    </select>
+    
+    <!-- User 저장 -->
+    <insert id="saveUser" parameterType="map">
+    /* saveUser */
+    MERGE INTO TB_MST_USER A
+    USING (
+        SELECT @{userId} AS USER_ID
+             , @{userNm} AS USER_NM
+             , @{email} AS EMAIL
+             , @{state} AS STATE
+        FROM DUAL
+    ) B
+       ON ( A.USER_ID = B.USER_ID )
+     WHEN MATCHED THEN
+          UPDATE 
+             SET A.USER_NM       = B.USER_NM
+             SET A.EMAIL         = B.EMAIL
+               
+          --DELETE WHERE B.STATE = 'deleted'
+          
+     WHEN NOT MATCHED THEN
+          INSERT (A.USER_ID, A.USER_NM, A.EMAIL)
+          VALUES (B.USER_ID, B.USER_NM, B.EMAIL)
     </insert>
 
 </mapper>

@@ -54,7 +54,9 @@ public class AdminServiceImpl implements AdminService {
 
     public Map<String, Object> selectRole(Map<String,Object> paramMap) {
     	Map<String, Object> rtnMap = new HashMap<String, Object>();
+    	SqlContextHolder.THREAD_LOCAL_STOP_SQLYN.set(true);
 		rtnMap.put("roleList", adminRepository.selectRole(paramMap));
+		SqlContextHolder.THREAD_LOCAL_STOP_SQLYN.set(false);
 		rtnMap.put("role", adminRepository.selectRole2(paramMap));
     	return rtnMap;
     }
@@ -65,6 +67,22 @@ public class AdminServiceImpl implements AdminService {
     	List<Map<String,Object>> grdData = (List<Map<String,Object>>)paramMap.get("grdData");
     	for (Map<String,Object> rowMap : grdData) {
     		adminRepository.saveRole(rowMap);
+    	}
+    	
+    	rtnMap.put("result", "ok");
+    	return rtnMap;
+    }
+
+    public List<Map<String, Object>> selectUser(Map<String,Object> paramMap) {
+    	return adminRepository.selectUser(paramMap);
+    }
+    
+    @Transactional
+    public Map<String, Object> saveUser(Map<String,Object> paramMap) {
+    	Map<String, Object> rtnMap = new HashMap<String, Object>();
+    	List<Map<String,Object>> grdData = (List<Map<String,Object>>)paramMap.get("grdData");
+    	for (Map<String,Object> rowMap : grdData) {
+    		adminRepository.saveUser(rowMap);
     	}
     	
     	rtnMap.put("result", "ok");

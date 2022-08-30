@@ -59,9 +59,8 @@
         
         //이벤트초기화
         function fn_eventInit() {
-            $("#apply").on("click", function() {
-                fn_apply();
-            });
+            //$("#apply").on("click", function() { fn_apply(); });
+            $("#apply").on("click", () => fn_apply());
 
             $("#reset").on("click", function() {
                 grid.cancel();
@@ -83,20 +82,7 @@
 				}
             });
 
-            $("#save").on("click", function() {
-				fn_save();
-            });
-            
-            /*
-            //엑셀다운로드
-            $("header .mif-file-excel").on("click", function() {
-				gfn_exportExcel(grid);
-			});
-			
-			$("header .mif-motorcycle").on("click", function() {
-				fn_apply(true);
-			});
-			*/
+            $("#save").on("click", () => fn_save());
         }
         
         //공통함수에서 호출되는 영역
@@ -118,12 +104,12 @@
 				url: '/admin/codelist',
 				reqSql : sql,
 			    body: JSON.stringify(filterObj),
-			    successCallback: function(data) {
+			    successCallback: function(res) {
 					try {
 						//데이터 초기화 및 그리드 데이터 생성
 			            provider.clearRows();
 			            grid.cancel();
-			            provider.setRows(data);
+			            provider.setRows(res.data);
 			            
 			            provider.clearSavePoints();
 						provider.savePoint(); //초기화 포인트 저장

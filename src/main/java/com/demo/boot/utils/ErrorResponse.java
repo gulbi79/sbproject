@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ErrorResponse {
+	/*
     private final LocalDateTime timestamp = LocalDateTime.now();
     private final int status;
     private final String error;
@@ -28,4 +29,5 @@ public class ErrorResponse {
                         .build()
                 );
     }
+    */
 }

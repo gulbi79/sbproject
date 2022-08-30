@@ -95,7 +95,7 @@ GRID.prototype = {
 	        sorting : { enabled: true  },
 	        sortMode: "explicit",
 	        undoable: true,
-	        edit    : { insertable: true, appendable: false, updatable: true, editable: true, deletable: true},
+	        edit    : { insertable: true, appendable: false, updatable: true, editable: true, deletable: true, commitWhenLeave: true},
 	        header  : {
 	            heightFill: "fixed",
 	            showTooltip: true

@@ -23,7 +23,7 @@ public class ApiInterceptor implements HandlerInterceptor {
   */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		log.info("getRequestURL : {}", request.getRequestURL());
+//		log.info("getRequestURL : {}", request.getRequestURL());
     	SqlContextHolder.THREAD_LOCAL_SQLYN.set("Y".equals(request.getHeader("REQ_SQL")));
         return true;
     }
@@ -35,18 +35,7 @@ public class ApiInterceptor implements HandlerInterceptor {
      */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-    	//response.setHeader("SQL", null);
     	//log.info("response -> {}", response.getHeader("Content-Type"));
-    	
-//    	StringBuffer sbSql = new StringBuffer();
-//    	for (String sql : SqlContextHolder.THREAD_LOCAL_SQL.get()) {
-//    		sbSql.append(sql).append("\n__sqlsplit__\n");
-//    	}
-//    	
-//    	if (SqlContextHolder.THREAD_LOCAL_SQLYN.get()) {
-////    		ResponseEntity.ok().body(new Object[] {SqlContextHolder.THREAD_LOCAL_SQL.get()});
-//            throw new CustomException(SQL_VIEW,sbSql.toString());
-//        }
     }
 
     /*
@@ -55,9 +44,10 @@ public class ApiInterceptor implements HandlerInterceptor {
      */
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        log.info("afterCompletion [THREAD_LOCAL_SQL, THREAD_LOCAL_SQLYN] remove");
+//        log.info("afterCompletion [THREAD_LOCAL_SQL, THREAD_LOCAL_SQLYN, THREAD_LOCAL_STOP_SQLYN] remove");
     	// 스레드 로컬 정보 제거
     	SqlContextHolder.THREAD_LOCAL_SQL.remove();
     	SqlContextHolder.THREAD_LOCAL_SQLYN.remove();
+    	SqlContextHolder.THREAD_LOCAL_STOP_SQLYN.remove();
     }
 }

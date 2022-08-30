@@ -2,14 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/basemaster}">
-      
+
 <th:block layout:fragment="filter">
-	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Menu Name','f_menuname')"></th:block>
-	<li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Use Y/N</li>
-    <li class="pl-3 bg-basecolor">
-        <input name="f_useyny" type="checkbox" data-role="checkbox" data-caption="Y&nbsp;&nbsp;" checked>
-        <input name="f_useynn" type="checkbox" data-role="checkbox" data-caption="N" checked>
-    </li>
+	<th:block th:replace="/layouts/fragments/filters :: inputFragment('User','f_user')"></th:block>
 </th:block>
 
 <th:block layout:fragment="hidden">
@@ -21,7 +16,7 @@
 
 <th:block layout:fragment="contentjs">
 	<script>
-        const Utils = Metro.utils;
+        var Utils = Metro.utils;
         let grid, provider;
         $(function() {
             fn_filterInit(); //필터초기화
@@ -31,71 +26,63 @@
 
         //필터초기화
         function fn_filterInit() {
-            
         }
 
         //그리드초기화
         function fn_gridInit() {
             //dataType이 text가 아닌경우 tag속성에 지정
-            const fields = [
-            	{fieldName: "treeId", type: "data"}
-            ];
+            const fields = [];
             const columns = [
-                {name: "menuNm",      type: "data", width: "200", header: {text: "Menu Name"       }, styleName: "tal-column" }
-              , {name: "menuCd",      type: "data", width: "100", header: {text: "Menu Code"       }, styleName: "tal-column" }
-              , {name: "parentMenuCd",type: "data", width: "100", header: {text: "Parent Menu Code"}, styleName: "tal-column" }
-			  , {name: "url",         type: "data", width: "100", header: {text: "URL"             }, styleName: "tal-column" }
-			  , {name: "useYn",       type: "data", width: "100", header: {text: "Use Y/N"         }, styleName: "tac-column" }
-			  , {name: "lvl",         type: "data", width: "100", header: {text: "Level"           }, styleName: "tac-column" , editable: false }
-			  , {name: "sort",        type: "data", width: "100", header: {text: "Sort"            }, styleName: "tal-column" }
+                {name: "userId",      type: "data", width: "100", header: {text: "User ID"         }, styleName: "tal-column" }
+              , {name: "userNm",      type: "data", width: "200", header: {text: "User Name"       }, styleName: "tal-column" }
+              , {name: "email",       type: "data", width: "200", header: {text: "E-MAIL"          }, styleName: "tal-column" }
             ];
             const options = {
 				checkBar: { visible: true }
 			  , stateBar: { visible: true }
 			};
 			
-            const gridInstance = new GRID().treeInit({gridId: "realgrid1", columns: columns, fields: fields, options: options});
+            const gridInstance = new GRID().init({gridId: "realgrid1", columns: columns, fields: fields, options: options});
             grid = gridInstance.gridview;
             provider = gridInstance.provider;
         }
         
         //이벤트초기화
         function fn_eventInit() {
-            $("#apply").on("click", () => fn_apply());
+            $("#apply").on("click", function() {
+                fn_apply();
+            });
 
             $("#reset").on("click", function() {
                 grid.cancel();
 		        if (provider.getSavePoints().length > 0) provider.rollback(provider.getSavePoints()[0]);
 		    	else provider.clearRows();
-		    	
-		    	grid.expandAll();
             });
 
             $("#add").on("click", function() {
-                var row = grid.getCurrent().dataRow;
-				var addVal = { 
-					parentMenuCd: provider.getValue(row, "menuCd"),
-					useYn: "Y", 
-				};
-				provider.addChildRow(row, addVal, -1, false);
+                let row = grid.getCurrent().dataRow;
+                row = row == -1 ? 0 : row;
+				const addVal = { useYn: "Y" };
+				provider.insertRow(row, addVal);
             });
 
             $("#delete").on("click", function() {
                 var rows = grid.getCheckedRows();
-				//dataProvider.removeRows(rows, false);
 				for (var i=rows.length-1; i>=0; i--) {
 					provider.removeRow(rows[i]);
 				}
             });
 
-            $("#save").on("click", () => fn_save());
+            $("#save").on("click", function() {
+				fn_save();
+            });
         }
         
         //공통함수에서 호출되는 영역
         function fn_comExportExcel() {
 			gfn_exportExcel(grid);
 		}
-
+        
         //조회
         async function fn_apply(sql = false) {
             //필터폼 데이터 생성
@@ -107,7 +94,7 @@
 			
 			//server api 요청
 			const pConfigs = {
-				url: '/admin/menulist',
+				url: '/admin/userlist',
 				reqSql : sql,
 			    body: JSON.stringify(filterObj),
 			    successCallback: function(res) {
@@ -115,8 +102,7 @@
 						//데이터 초기화 및 그리드 데이터 생성
 			            provider.clearRows();
 			            grid.cancel();
-			            provider.setRows(res.data, "treeId", false, null, "iconField");
-			            grid.expandAll();
+			            provider.setRows(res.data);
 			            
 			            provider.clearSavePoints();
 						provider.savePoint(); //초기화 포인트 저장
@@ -139,23 +125,23 @@
 			
 			//server api 요청
 			const pConfigs = {
-				url: '/admin/menureg',
+				url: '/admin/userreg',
 			    body: JSON.stringify({grdData: uGrdData}),
 			    successCallback: async function(data) {
-					try {
-						//데이터 초기화 및 그리드 데이터 생성
-						await gfn_alertSync({title: "Success", content: "Save success"});
-			            fn_apply();
-		            } catch(e) {
-						console.log(e);
-					}
+					//데이터 초기화 및 그리드 데이터 생성
+					await gfn_alertSync({title: "Success", content: "Save success"});
+		            fn_apply();
 			    }
 			}; 
 			gfn_service(pConfigs);
 		}
-        
+
         function fn_validation() {
             return true;
+        }
+
+        function fn_clickPopup() {
+            console.log("fn_clickPopup!!!!");
         }
     </script>
 </th:block>

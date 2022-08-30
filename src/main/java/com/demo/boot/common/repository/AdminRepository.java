@@ -20,4 +20,8 @@ public interface AdminRepository {
     String selectRole2(Map<String,Object> paramMap);
     
     void saveRole(Map<String,Object> paramMap);
+
+    List<Map<String,Object>> selectUser(Map<String,Object> paramMap);
+    
+    void saveUser(Map<String,Object> paramMap);
 }

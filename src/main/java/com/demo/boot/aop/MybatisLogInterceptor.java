@@ -122,7 +122,7 @@ public class MybatisLogInterceptor implements Interceptor {
          
         log.info("SQL[{}] : {}",sqlId,"\n    ".concat(sql.trim()));
         
-        if (SqlContextHolder.THREAD_LOCAL_SQLYN.get()) {
+        if (SqlContextHolder.THREAD_LOCAL_SQLYN.get() && !SqlContextHolder.THREAD_LOCAL_STOP_SQLYN.get()) {
         	SqlContextHolder.THREAD_LOCAL_SQL.get().put(sqlId,"\n    ".concat(sql.trim()));
 //        	SqlContextHolder.THREAD_LOCAL_SQL.set("\n    ".concat(sql.trim().concat(";")));
         	return new ArrayList<Object>();
