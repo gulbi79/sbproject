@@ -17,9 +17,13 @@ public interface AdminRepository {
 
     List<Map<String,Object>> selectRole(Map<String,Object> paramMap);
 
+    List<Map<String,Object>> selectRoleMenu(Map<String,Object> paramMap);
+
     String selectRole2(Map<String,Object> paramMap);
     
-    void saveRole(Map<String,Object> paramMap);
+    int saveRole(Map<String,Object> paramMap);
+
+    int saveRoleMenu(Map<String,Object> paramMap);
 
     List<Map<String,Object>> selectUser(Map<String,Object> paramMap);
     

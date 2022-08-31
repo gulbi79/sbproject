@@ -15,7 +15,9 @@
 	    <div class="cell flex-align-self-start h-100">
 	    	<div id="realgrid1" class="w-100 h-100"></div>
 	    </div>
-	    <div class="cell flex-align-self-end"></div>
+	    <div class="cell flex-align-self-end">
+			<div id="realgrid2" class="w-100 h-100"></div>
+		</div>
 	</div>
 </th:block>
 
@@ -23,6 +25,7 @@
 	<script>
         var Utils = Metro.utils;
         let grid, provider;
+        let grid2, provider2;
         $(function() {
             fn_filterInit(); //필터초기화
             fn_gridInit(); //그리드초기화
@@ -49,6 +52,48 @@
             const gridInstance = new GRID().init({gridId: "realgrid1", columns: columns, fields: fields, options: options});
             grid = gridInstance.gridview;
             provider = gridInstance.provider;
+            
+            //grid2
+            const fields2 = [ 
+            	{fieldName: "treeId", type: "data"}
+              , {fieldName: "menuCd", type: "data"}
+            ];
+            const columns2 = [
+                {name: "menuNm",      type: "data", width: "200", header: {text: "Menu Name"       }, styleName: "tal-column" , editable: false}
+            ];
+            const options2 = {
+				checkBar: { visible: true }
+			  , stateBar: { visible: true }
+			};
+			
+            const gridInstance2 = new GRID().treeInit({gridId: "realgrid2", columns: columns2, fields: fields2, options: options2});
+            grid2 = gridInstance2.gridview;
+            provider2 = gridInstance2.provider;
+            
+            //그리드 이벤트
+            //role 행변경되면 권한에 맞는 menu 조회
+			grid.onCurrentRowChanged =  function (grid, oldRow, newRow) {
+				grid2.checkAll(false); //전체체크해제
+	            let filterObj = {clickRoleCd : grid.getValue(newRow, "roleCd")};
+				//server api 요청
+				const pConfigs = {
+					url: '/admin/rolemenulist',
+					reqSql : false,
+				    body: JSON.stringify(filterObj),
+				    successCallback: function(res) {
+						try {
+							let arrIdx = [];
+							res.data.forEach(v => {
+								arrIdx.push(grid2.getJsonRows().findIndex((element) => element.menuCd === v.menuCd) + 1);
+							})
+							grid2.checkRows(arrIdx, true);
+						} catch(e) {
+							console.log(e);
+						}
+				    }
+				}; 
+				gfn_service(pConfigs);
+			};
         }
         
         //이벤트초기화
@@ -110,6 +155,15 @@
 			            
 			            provider.clearSavePoints();
 						provider.savePoint(); //초기화 포인트 저장
+						
+						//데이터 초기화 및 그리드 데이터 생성
+			            provider2.clearRows();
+			            grid2.cancel();
+			            provider2.setRows(res.data.menuList, "treeId", false, null, "iconField");
+			            grid2.expandAll();
+			            
+			            provider2.clearSavePoints();
+						provider2.savePoint(); //초기화 포인트 저장
 					} catch(e) {
 						console.log(e);
 					}
@@ -120,17 +174,29 @@
         
         async function fn_save() {
 			var uGrdData = gfn_getGrdSavedata(grid);
+			var roleMenuList = grid2.getJsonRows().filter((el, index) => grid2.getCheckedItems().find(v => v === index) > -1);
+			
+			var roleCd = grid.getValue(grid.getCurrent().itemIndex, "roleCd");
+			const uRoleMenuList = roleMenuList.map(function(v) {
+			    return {...v, ...{roleCd: roleCd}};
+			})
+			
+			//rolemenu 저장데이터 생성
+			//var uRoleMenuList
+			
+			/*
 			if (uGrdData.length == 0) {
 				gfn_alert({title: "Info", content: "저장 할 데이터가 없습니다."});
 				return;
 	    	}
+	    	*/
 	
 			if(!await gfn_confirmSync({title: "Info", content: "저장하시겠습니까?"})) return;
 			
 			//server api 요청
 			const pConfigs = {
 				url: '/admin/rolereg',
-			    body: JSON.stringify({grdData: uGrdData}),
+			    body: JSON.stringify({grdData: uGrdData, uRoleMenuList: uRoleMenuList}),
 			    successCallback: async function(data) {
 					//데이터 초기화 및 그리드 데이터 생성
 					await gfn_alertSync({title: "Success", content: "Save success"});

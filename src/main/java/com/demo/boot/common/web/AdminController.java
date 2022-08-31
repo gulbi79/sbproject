@@ -43,6 +43,11 @@ public class AdminController {
     public ApiResponse<?> selectRole(@RequestBody Map<String, Object> params) {
     	return ApiResponse.createWrap(adminService.selectRole(params));
     }
+
+    @PostMapping("rolemenulist")
+    public ApiResponse<?> selectRoleMenu(@RequestBody Map<String, Object> params) {
+    	return ApiResponse.createWrap(adminService.selectRoleMenu(params));
+    }
     
     @PostMapping("rolereg")
     public ApiResponse<?> saveRole(@RequestBody Map<String, Object> params) {

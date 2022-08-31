@@ -14,8 +14,10 @@ public interface AdminService {
 	Map<String, Object> saveCode(Map<String,Object> paramMap);
 
 	Map<String, Object> selectRole(Map<String,Object> paramMap);
+
+	List<Map<String, Object>> selectRoleMenu(Map<String,Object> paramMap);
 	
-	Map<String, Object> saveRole(Map<String,Object> paramMap);
+	int saveRole(Map<String,Object> paramMap);
 
 	List<Map<String, Object>> selectUser(Map<String,Object> paramMap);
 	

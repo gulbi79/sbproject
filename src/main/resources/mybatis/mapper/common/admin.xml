@@ -122,6 +122,14 @@
 #end
     ORDER BY ROLE_NM
     </select>
+
+    <!-- ROLE MENU 조회 -->
+    <select id="selectRoleMenu" parameterType="map" resultType="custommap">
+    /* selectRoleMenu */
+    SELECT A.MENU_CD
+    FROM TB_MAP_ROLE_MENU A
+    WHERE A.ROLE_CD = @{clickRoleCd}
+    </select>
     
     <!-- ROLE 조회 -->
     <select id="selectRole2" parameterType="map" resultType="String">
@@ -151,6 +159,24 @@
      WHEN NOT MATCHED THEN
           INSERT (A.ROLE_CD, A.ROLE_NM)
           VALUES (B.ROLE_CD, B.ROLE_NM)
+    </insert>
+    
+    <!-- ROLE Menu 저장 -->
+    <insert id="saveRoleMenu" parameterType="map">
+    /* saveRoleMenu */
+    BEGIN
+	    DELETE FROM TB_MAP_ROLE_MENU 
+	    WHERE ROLE_CD = @{roleCd}
+	    ;
+	    
+	    INSERT INTO TB_MAP_ROLE_MENU (ROLE_CD, MENU_CD)
+#foreach($map in $_parameter.uRoleMenuList)
+  #if($velocityCount > 1) UNION ALL #end
+        SELECT '$map.roleCd', '$map.menuCd' FROM DUAL
+#end
+        ;
+
+	END;
     </insert>
 
     <!-- User 조회 -->

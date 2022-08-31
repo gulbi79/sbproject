@@ -54,23 +54,29 @@ public class AdminServiceImpl implements AdminService {
 
     public Map<String, Object> selectRole(Map<String,Object> paramMap) {
     	Map<String, Object> rtnMap = new HashMap<String, Object>();
-    	SqlContextHolder.THREAD_LOCAL_STOP_SQLYN.set(true);
 		rtnMap.put("roleList", adminRepository.selectRole(paramMap));
-		SqlContextHolder.THREAD_LOCAL_STOP_SQLYN.set(false);
-		rtnMap.put("role", adminRepository.selectRole2(paramMap));
+		
+		paramMap.put("f_useyny", "on");
+		rtnMap.put("menuList", adminRepository.selectMenu(paramMap));
     	return rtnMap;
+    }
+
+    public List<Map<String, Object>> selectRoleMenu(Map<String,Object> paramMap) {
+    	return adminRepository.selectRoleMenu(paramMap);
     }
     
     @Transactional
-    public Map<String, Object> saveRole(Map<String,Object> paramMap) {
-    	Map<String, Object> rtnMap = new HashMap<String, Object>();
-    	List<Map<String,Object>> grdData = (List<Map<String,Object>>)paramMap.get("grdData");
-    	for (Map<String,Object> rowMap : grdData) {
-    		adminRepository.saveRole(rowMap);
+    public int saveRole(Map<String,Object> paramMap) {
+    	int rtnInt = 0;
+    	for (Map<String,Object> rowMap : (List<Map<String,Object>>)paramMap.get("grdData")) {
+    		rtnInt += adminRepository.saveRole(rowMap);
     	}
     	
-    	rtnMap.put("result", "ok");
-    	return rtnMap;
+    	//rolemenu 저장
+    	List<Map<String,Object>> uRoleMenuList = (List<Map<String,Object>>)paramMap.get("uRoleMenuList");
+    	if (uRoleMenuList.size() > 0) adminRepository.saveRoleMenu(paramMap);
+    	
+    	return rtnInt;
     }
 
     public List<Map<String, Object>> selectUser(Map<String,Object> paramMap) {
