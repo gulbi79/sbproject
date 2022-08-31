@@ -177,9 +177,11 @@
 			var roleMenuList = grid2.getJsonRows().filter((el, index) => grid2.getCheckedItems().find(v => v === index) > -1);
 			
 			var roleCd = grid.getValue(grid.getCurrent().itemIndex, "roleCd");
+			/*
 			const uRoleMenuList = roleMenuList.map(function(v) {
 			    return {...v, ...{roleCd: roleCd}};
 			})
+			*/
 			
 			//rolemenu 저장데이터 생성
 			//var uRoleMenuList
@@ -196,7 +198,7 @@
 			//server api 요청
 			const pConfigs = {
 				url: '/admin/rolereg',
-			    body: JSON.stringify({grdData: uGrdData, uRoleMenuList: uRoleMenuList}),
+			    body: JSON.stringify({grdData: uGrdData, uRoleMenuList: roleMenuList, roleCd: roleCd}),
 			    successCallback: async function(data) {
 					//데이터 초기화 및 그리드 데이터 생성
 					await gfn_alertSync({title: "Success", content: "Save success"});

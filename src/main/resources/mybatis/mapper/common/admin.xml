@@ -171,8 +171,8 @@
 	    
 	    INSERT INTO TB_MAP_ROLE_MENU (ROLE_CD, MENU_CD)
 #foreach($map in $_parameter.uRoleMenuList)
-  #if($velocityCount > 1) UNION ALL #end
-        SELECT '$map.roleCd', '$map.menuCd' FROM DUAL
+        SELECT '$_parameter.roleCd', '$map.menuCd' FROM DUAL
+  #if($foreach.hasNext) UNION ALL #end
 #end
         ;
 
