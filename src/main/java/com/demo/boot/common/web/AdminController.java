@@ -58,6 +58,11 @@ public class AdminController {
     public ApiResponse<?> selectUser(@RequestBody Map<String, Object> params) {
     	return ApiResponse.createWrap(adminService.selectUser(params));
     }
+
+    @PostMapping("userrole")
+    public ApiResponse<?> selectUserRole(@RequestBody Map<String, Object> params) {
+    	return ApiResponse.createWrap(adminService.selectUserRole(params));
+    }
     
     @PostMapping("userreg")
     public ApiResponse<?> saveUser(@RequestBody Map<String, Object> params) {

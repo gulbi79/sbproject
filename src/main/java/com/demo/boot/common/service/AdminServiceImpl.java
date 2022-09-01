@@ -4,12 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.demo.boot.common.repository.AdminRepository;
-import com.demo.boot.utils.SqlContextHolder;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,15 +23,14 @@ public class AdminServiceImpl implements AdminService {
     }
     
     @Transactional
-    public Map<String, Object> saveMenu(Map<String,Object> paramMap) {
-    	Map<String, Object> rtnMap = new HashMap<String, Object>();
+    public int saveMenu(Map<String,Object> paramMap) {
+    	int rtnInt = 0;
     	List<Map<String,Object>> grdData = (List<Map<String,Object>>)paramMap.get("grdData");
     	for (Map<String,Object> rowMap : grdData) {
-    		adminRepository.saveMenu(rowMap);
+    		rtnInt += adminRepository.saveMenu(rowMap);
     	}
     	
-    	rtnMap.put("result", "ok");
-    	return rtnMap;
+    	return rtnInt;
     }
 
     public List<Map<String, Object>> selectCode(Map<String,Object> paramMap) {
@@ -41,15 +38,15 @@ public class AdminServiceImpl implements AdminService {
     }
     
     @Transactional
-    public Map<String, Object> saveCode(Map<String,Object> paramMap) {
+    public int saveCode(Map<String,Object> paramMap) {
+    	int rtnInt = 0;
     	Map<String, Object> rtnMap = new HashMap<String, Object>();
     	List<Map<String,Object>> grdData = (List<Map<String,Object>>)paramMap.get("grdData");
     	for (Map<String,Object> rowMap : grdData) {
-    		adminRepository.saveCode(rowMap);
+    		rtnInt += adminRepository.saveCode(rowMap);
     	}
     	
-    	rtnMap.put("result", "ok");
-    	return rtnMap;
+    	return rtnInt;
     }
 
     public Map<String, Object> selectRole(Map<String,Object> paramMap) {
@@ -64,6 +61,7 @@ public class AdminServiceImpl implements AdminService {
     public List<Map<String, Object>> selectRoleMenu(Map<String,Object> paramMap) {
     	return adminRepository.selectRoleMenu(paramMap);
     }
+
     
     @Transactional
     public int saveRole(Map<String,Object> paramMap) {
@@ -79,20 +77,33 @@ public class AdminServiceImpl implements AdminService {
     	return rtnInt;
     }
 
-    public List<Map<String, Object>> selectUser(Map<String,Object> paramMap) {
-    	return adminRepository.selectUser(paramMap);
-    }
-    
-    @Transactional
-    public Map<String, Object> saveUser(Map<String,Object> paramMap) {
-    	Map<String, Object> rtnMap = new HashMap<String, Object>();
-    	List<Map<String,Object>> grdData = (List<Map<String,Object>>)paramMap.get("grdData");
-    	for (Map<String,Object> rowMap : grdData) {
-    		adminRepository.saveUser(rowMap);
-    	}
+    public Map<String, Object> selectUser(Map<String,Object> paramMap) {
     	
-    	rtnMap.put("result", "ok");
+    	Map<String, Object> rtnMap = new HashMap<String, Object>();
+		rtnMap.put("userList", adminRepository.selectUser(paramMap));
+		
+//		paramMap.put("f_useyny", "on");
+		rtnMap.put("roleList", adminRepository.selectRole(paramMap));
     	return rtnMap;
     }
+    
+    public List<Map<String, Object>> selectUserRole(Map<String,Object> paramMap) {
+    	return adminRepository.selectUserRole(paramMap);
+    }
 
+    @Transactional
+    public int saveUser(Map<String,Object> paramMap) {
+    	int rtnInt = 0;
+    	/*
+    	for (Map<String,Object> rowMap : (List<Map<String,Object>>)paramMap.get("grdData")) {
+    		rtnInt += adminRepository.saveRole(rowMap);
+    	}
+    	*/
+    	
+    	//usrerole 저장
+    	List<Map<String,Object>> uUserRoleList = (List<Map<String,Object>>)paramMap.get("uUserRoleList");
+    	if (uUserRoleList.size() > 0) adminRepository.saveUserRole(paramMap);
+    	
+    	return rtnInt;
+    }
 }

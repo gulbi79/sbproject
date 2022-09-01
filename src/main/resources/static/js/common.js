@@ -53,6 +53,63 @@ async function gfn_service(pConfigs) {
     });
 }
 
+async function gfn_service2(pConfigs) {
+	let serviceConfig = {
+		url: '',
+		method: 'post', 
+		headers: { "Content-Type": "application/json", "REQ_SQL": pConfigs.reqSql ? "Y" : "N" },
+	    body: null,
+	    successCallback: null,
+	    errorCallback: null
+	};
+	
+	serviceConfig = {...serviceConfig, ...pConfigs};
+	
+	// loading bar start
+	const activity = Metro.activity.open({
+        type: 'ring',
+        style: 'color',
+        //overlayClickClose: true
+    });
+	
+	//server api 요청
+	try {
+        const res = await fetch(serviceConfig.url, {
+		    method: serviceConfig.method, 
+		    headers: serviceConfig.headers,
+		    body: serviceConfig.body
+		});
+									
+		Metro.activity.close(activity);
+		
+		if (!res.ok) throw res;
+		
+		const resData = await res.json();
+		
+		//console.log(serviceConfig.headers.REQ_SQL);
+		if (serviceConfig.headers.REQ_SQL === "Y") {
+			const data = resData.data;
+			let strSql = "";
+			for (key in data) {
+				//console.log("["+key+"]: "+data[key]);
+				strSql += data[key] + "\n\n";
+			}
+			gfn_alert({title: "Excute SQL", width: 800, closeButton: true, content: "<div style='overflow:auto;height:500px;white-space:pre;'>"+strSql+"</div>"});
+			return null;
+		} else {
+			return resData; //응답 결과를 json으로 파싱
+		}					
+									
+    } catch (err) {
+        console.log(err);
+        err.text().then(async function(msg) {
+			await gfn_alertSync({title: "Error", content: JSON.parse(msg).message});
+		})
+    }
+    
+    return null;
+}
+
 /**
  * Tree 체크데이터 배열로 리턴
  */

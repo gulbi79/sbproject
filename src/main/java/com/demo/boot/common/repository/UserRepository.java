@@ -20,5 +20,5 @@ public interface UserRepository {
     // 회원가입
     void saveUser(UserVo userVo);
 
-    List<HashMap<String, String>> userMenu(String userId);
+    List<HashMap<String, String>> userMenu(HashMap<String,Object> paramMap);
 }

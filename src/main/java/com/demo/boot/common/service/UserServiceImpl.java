@@ -51,9 +51,7 @@ public class UserServiceImpl implements UserService {
         return grantedAuthorities;
     }
     
-    public List<HashMap<String, String>> userMenu(String userId) {
-    	List<HashMap<String, String>> rtnList = null;
-    	rtnList = userRepository.userMenu(userId);
-        return rtnList;
+    public List<HashMap<String, String>> userMenu(HashMap<String,Object> paramMap) {
+    	return userRepository.userMenu(paramMap);
     }
 }

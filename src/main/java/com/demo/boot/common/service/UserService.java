@@ -12,5 +12,5 @@ public interface UserService extends UserDetailsService {
 
     UserVo loadUserByUsername(String userId);
     
-    List<HashMap<String, String>> userMenu(String userId);
+    List<HashMap<String, String>> userMenu(HashMap<String,Object> paramMap);
 }

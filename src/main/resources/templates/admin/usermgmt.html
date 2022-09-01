@@ -11,13 +11,22 @@
 </th:block>
 
 <th:block layout:fragment="content">
-	<div id="realgrid1" class="w-100 onegrid"></div>
+	<div data-role="splitter" data-split-sizes="70, 30" data-min-sizes="100, 100" class="onegrid" >
+    	<div id="realgrid1" class="d-flex flex-justify-center flex-align-center w-100 h-100"></div>
+		<div id="realgrid2" class="d-flex flex-justify-center flex-align-center w-100 h-100"></div>
+	</div>
+	<!-- 버튼 -->
+    <div class="mt-1 place-right">
+        <button id="reset" class="button shadowed small info">Reset</button>
+        <button id="save" class="button shadowed small success">Save</button>
+    </div>
 </th:block>
 
 <th:block layout:fragment="contentjs">
 	<script>
         var Utils = Metro.utils;
         let grid, provider;
+        let grid2, provider2;
         $(function() {
             fn_filterInit(); //필터초기화
             fn_gridInit(); //그리드초기화
@@ -33,18 +42,61 @@
             //dataType이 text가 아닌경우 tag속성에 지정
             const fields = [];
             const columns = [
-                {name: "userId",      type: "data", width: "100", header: {text: "User ID"         }, styleName: "tal-column" }
-              , {name: "userNm",      type: "data", width: "200", header: {text: "User Name"       }, styleName: "tal-column" }
-              , {name: "email",       type: "data", width: "200", header: {text: "E-MAIL"          }, styleName: "tal-column" }
+                {name: "userId",      type: "data", width: "100", header: {text: "User ID"      }, styleName: "tal-column" }
+              , {name: "userNm",      type: "data", width: "150", header: {text: "User Name"    }, styleName: "tal-column" }
+              , {name: "email",       type: "data", width: "150", header: {text: "Email"       	}, styleName: "tal-column" }
             ];
             const options = {
-				checkBar: { visible: true }
+				checkBar: { visible: false }
 			  , stateBar: { visible: true }
+			  , edit    : { insertable: false, appendable: false, updatable: false, editable: false, deletable: false, commitWhenLeave: false},
 			};
 			
             const gridInstance = new GRID().init({gridId: "realgrid1", columns: columns, fields: fields, options: options});
             grid = gridInstance.gridview;
             provider = gridInstance.provider;
+            
+            //grid2
+            const fields2 = [ 
+            	{fieldName: "roleCd", type: "data"}
+            ];
+            const columns2 = [
+                {name: "roleNm",      type: "data", width: "150", header: {text: "Role Name"       }, styleName: "tal-column" }
+            ];
+            const options2 = {
+				checkBar: { visible: true }
+			  , stateBar: { visible: true }
+			  , edit    : { insertable: false, appendable: false, updatable: false, editable: false, deletable: false, commitWhenLeave: false},
+			};
+			
+            const gridInstance2 = new GRID().init({gridId: "realgrid2", columns: columns2, fields: fields2, options: options2});
+            grid2 = gridInstance2.gridview;
+            provider2 = gridInstance2.provider;
+            
+            //그리드 이벤트
+            //role 행변경되면 권한에 맞는 menu 조회
+			grid.onCurrentRowChanged =  function (grid, oldRow, newRow) {
+				grid2.checkAll(false); //전체체크해제
+	            let filterObj = {clickUserId : grid.getValue(newRow, "userId")};
+				//server api 요청
+				const pConfigs = {
+					url: '/admin/userrole',
+					reqSql : false,
+				    body: JSON.stringify(filterObj),
+				    successCallback: function(res) {
+						try {
+							let arrIdx = [];
+							res.data.forEach(v => {
+								arrIdx.push(grid2.getJsonRows().findIndex((element) => element.roleCd === v.roleCd));
+							})
+							grid2.checkRows(arrIdx, true);
+						} catch(e) {
+							console.log(e);
+						}
+				    }
+				}; 
+				gfn_service(pConfigs);
+			};
         }
         
         //이벤트초기화
@@ -102,10 +154,22 @@
 						//데이터 초기화 및 그리드 데이터 생성
 			            provider.clearRows();
 			            grid.cancel();
-			            provider.setRows(res.data);
+			            provider.setRows(res.data.userList);
 			            
 			            provider.clearSavePoints();
 						provider.savePoint(); //초기화 포인트 저장
+						
+						//데이터 초기화 및 그리드 데이터 생성
+			            provider2.clearRows();
+			            grid2.cancel();
+			            provider2.setRows(res.data.roleList);
+			            grid2.expandAll();
+			            
+			            provider2.clearSavePoints();
+						provider2.savePoint(); //초기화 포인트 저장
+						
+						//user 리스트 첫행 포커스
+						grid.setCurrent({itemindex:1});
 					} catch(e) {
 						console.log(e);
 					}
@@ -116,17 +180,23 @@
         
         async function fn_save() {
 			var uGrdData = gfn_getGrdSavedata(grid);
+			var userRoleList = grid2.getJsonRows().filter((el, index) => grid2.getCheckedItems().find(v => v === index) > -1);
+			
+			var userId = grid.getValue(grid.getCurrent().itemIndex, "userId");
+			
+			/*
 			if (uGrdData.length == 0) {
 				gfn_alert({title: "Info", content: "저장 할 데이터가 없습니다."});
 				return;
 	    	}
+	    	*/
 	
 			if(!await gfn_confirmSync({title: "Info", content: "저장하시겠습니까?"})) return;
 			
 			//server api 요청
 			const pConfigs = {
 				url: '/admin/userreg',
-			    body: JSON.stringify({grdData: uGrdData}),
+			    body: JSON.stringify({grdData: uGrdData, uUserRoleList: userRoleList, userId: userId}),
 			    successCallback: async function(data) {
 					//데이터 초기화 및 그리드 데이터 생성
 					await gfn_alertSync({title: "Success", content: "Save success"});

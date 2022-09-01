@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.thymeleaf.util.StringUtils;
 
-import com.demo.boot.common.service.MenuService;
 import com.demo.boot.common.service.TreeService;
 import com.demo.boot.common.service.UserService;
 import com.demo.boot.common.vo.UserVo;
@@ -27,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 public class MemberController {
 
     private final UserService userService;
-    private final MenuService menuService;
     private final TreeService treeService;
 
     @GetMapping("/auth/login")
@@ -55,7 +53,9 @@ public class MemberController {
     @GetMapping("/home")
     public String loginAfterView(@AuthenticationPrincipal UserVo uservo, Model model) {
     	//1.로그인한 유저의 권한에 따른 메뉴 조회
-    	model.addAttribute("menuList", userService.userMenu(uservo.getUserId()));
+    	HashMap<String,Object> paramMap = new HashMap<String,Object>();
+    	paramMap.put("userId", uservo.getUserId());
+    	model.addAttribute("menuList", userService.userMenu(paramMap));
     	
         return "layouts/top";
     }
@@ -78,9 +78,13 @@ public class MemberController {
     	if (uservo == null || StringUtils.isEmpty(uservo.getUserId())) return "auth/sessionexpired";
     	
     	//화면에서 받은 menu code로 mapping url을 조회 후 해당 화면을 리턴
-    	HashMap<String, String> map = menuService.menuInfo(menuCd);
+    	HashMap<String,Object> paramMap = new HashMap<String,Object>();
+    	paramMap.put("userId", uservo.getUserId());
+    	paramMap.put("menuCd", menuCd);
+    	List<HashMap<String, String>> menuList = userService.userMenu(paramMap);
     	
-    	if (map != null && !map.isEmpty()) {
+    	if (menuList.size() > 0) {
+    		HashMap<String, String> map = menuList.get(0);
     		String url = map.get("url");
     		if (url != null && !url.isEmpty()) {
     			pageUrl = url;
@@ -108,9 +112,8 @@ public class MemberController {
     			
     			model.addAllAttributes(treeMap); //salesTree, productTree
     		}
+    		model.addAllAttributes(map);
     	}
-    	
-    	model.addAllAttributes(map);
         return pageUrl;
     }
 }

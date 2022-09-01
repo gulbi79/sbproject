@@ -11,14 +11,12 @@
 </th:block>
 
 <th:block layout:fragment="content">
-	<div class="row onegrid">
-	    <div class="cell flex-align-self-start h-100">
-	    	<div id="realgrid1" class="w-100 h-100"></div>
-	    </div>
-	    <div class="cell flex-align-self-end">
-			<div id="realgrid2" class="w-100 h-100"></div>
-		</div>
+	<div data-role="splitter" data-split-sizes="60, 40" data-min-sizes="100, 100" class="onegrid" >
+    	<div id="realgrid1" class="d-flex flex-justify-center flex-align-center w-100 h-100"></div>
+		<div id="realgrid2" class="d-flex flex-justify-center flex-align-center w-100 h-100"></div>
 	</div>
+	<!-- 버튼 -->
+    <th:block th:replace="/layouts/fragments/rolebutton :: rolebuttonFragment"></th:block>
 </th:block>
 
 <th:block layout:fragment="contentjs">
@@ -42,7 +40,7 @@
             const fields = [];
             const columns = [
                 {name: "roleCd",      type: "data", width: "100", header: {text: "Role"            }, styleName: "tal-column" }
-              , {name: "roleNm",      type: "data", width: "200", header: {text: "Role Name"       }, styleName: "tal-column" }
+              , {name: "roleNm",      type: "data", width: "150", header: {text: "Role Name"       }, styleName: "tal-column" }
             ];
             const options = {
 				checkBar: { visible: true }
@@ -59,7 +57,7 @@
               , {fieldName: "menuCd", type: "data"}
             ];
             const columns2 = [
-                {name: "menuNm",      type: "data", width: "200", header: {text: "Menu Name"       }, styleName: "tal-column" , editable: false}
+                {name: "menuNm",      type: "data", width: "300", header: {text: "Menu Name"       }, styleName: "tal-column" , editable: false}
             ];
             const options2 = {
 				checkBar: { visible: true }
@@ -164,6 +162,9 @@
 			            
 			            provider2.clearSavePoints();
 						provider2.savePoint(); //초기화 포인트 저장
+						
+						//role 리스트 첫행 포커스
+						grid.setCurrent({itemindex:1});
 					} catch(e) {
 						console.log(e);
 					}
@@ -182,9 +183,6 @@
 			    return {...v, ...{roleCd: roleCd}};
 			})
 			*/
-			
-			//rolemenu 저장데이터 생성
-			//var uRoleMenuList
 			
 			/*
 			if (uGrdData.length == 0) {

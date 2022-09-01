@@ -1,0 +1,2 @@
+Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal(); 
+UserVo userVo = (UserVo)principal; 
