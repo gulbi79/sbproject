@@ -1,4 +1,4 @@
-package com.demo.boot.common.web;
+package com.demo.boot.biz.common.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

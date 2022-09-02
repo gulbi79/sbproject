@@ -1,4 +1,4 @@
-package com.demo.boot.common.web;
+package com.demo.boot.biz.common.web;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.thymeleaf.util.StringUtils;
 
-import com.demo.boot.common.service.TreeService;
-import com.demo.boot.common.service.UserService;
+import com.demo.boot.biz.common.service.TreeService;
+import com.demo.boot.biz.common.service.UserService;
 import com.demo.boot.common.vo.UserVo;
 
 import lombok.RequiredArgsConstructor;

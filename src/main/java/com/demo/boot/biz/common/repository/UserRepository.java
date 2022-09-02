@@ -1,4 +1,4 @@
-package com.demo.boot.common.repository;
+package com.demo.boot.biz.common.repository;
 
 import com.demo.boot.common.vo.UserVo;
 import org.apache.ibatis.annotations.Mapper;

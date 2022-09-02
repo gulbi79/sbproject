@@ -5,6 +5,7 @@
 
 <th:block layout:fragment="filter">
 	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Group','f_group')"></th:block>
+	<th:block th:replace="/layouts/fragments/filters :: pinputFragment('Popup Input','f_pinput')"></th:block>
 	<th:block th:replace="/layouts/fragments/filters :: doublecalFragment('From~To','f_fromcal','f_tocal')"></th:block>
 </th:block>
 
@@ -19,8 +20,8 @@
 <th:block layout:fragment="contentjs">
 	<script>
         var Utils = Metro.utils;
-        let grid, provider;
-        let gridPopup, providerPopup;
+        let gridInstance, grid, provider;
+        let gridPopupInstance, gridPopup, providerPopup;
         $(function() {
             fn_filterInit(); //필터초기화
             fn_gridInit(); //그리드초기화
@@ -51,11 +52,11 @@
 			  , stateBar: { visible: true }
 			};
 			
-            const gridInstance = new GRID().init({gridId: "realgrid1", columns: columns, fields: fields, options: options});
+            gridInstance = new GRID().init({gridId: "realgrid1", draw: false, columns: columns, fields: fields, options: options});
             grid = gridInstance.gridview;
             provider = gridInstance.provider;
 
-            const gridPopupInstance = new GRID().init({gridId: "realgridPopup", columns: columns, fields: fields, options: options});
+            gridPopupInstance = new GRID().init({gridId: "realgridPopup", columns: columns, fields: fields, options: options});
             gridPopup = gridPopupInstance.gridview;
             providerPopup = gridPopupInstance.provider;
         }
@@ -78,18 +79,21 @@
             
 			//server api 요청
 			const pConfigs = {
-				url: '/admin/codelist',
-				reqSql : sql,
+				url: '/sample/samplemain',
+				reqSql: sql,
 			    body: JSON.stringify(filterObj),
 			}; 
-			const res = await gfn_service2(pConfigs);
+			const res = await gfn_service(pConfigs);
 			
 			if (sql) return;
+			
+			//디멘전, 고정컬럼, bucket을 이용해서 그리드 컬럼정보를 만든다.
+			gfn_drawGridBucket(gridInstance, res.data.bucketList);
 			
 			//데이터 초기화 및 그리드 데이터 생성
             provider.clearRows();
             grid.cancel();
-            provider.setRows(res.data);
+            provider.setRows(res.data.sampleList);
             
             provider.clearSavePoints();
 			provider.savePoint(); //초기화 포인트 저장

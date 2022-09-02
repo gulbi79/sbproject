@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.demo.boot.biz.common.repository.CommonRepository">
+
+    <!-- calendar 조회 -->
+    <select id="selectCalBase" parameterType="map" resultType="custommap">
+    /* selectCalBase */
+    SELECT DATEID, YEAR, QUARTER, MONTH, YEARWEEK, DAY
+    FROM TB_MST_CALENDAR
+    WHERE DATEID BETWEEN @{f_fromcal} AND @{f_tocal}
+    ORDER BY DATEID
+    </select>
+
+    <select id="selectCalYearMonth" parameterType="map" resultType="custommap">
+    /* selectCalYearMonth */
+    SELECT YEAR, QUARTER, MONTH
+         , YEAR || MONTH AS FULL_MONTH
+         , MIN(YEARWEEK) AS START_WEEK
+         , MAX(YEARWEEK) AS END_WEEK
+    FROM TB_MST_CALENDAR
+    WHERE DATEID BETWEEN @{f_fromcal} AND @{f_tocal}
+    GROUP BY YEAR, QUARTER, MONTH
+    ORDER BY YEAR, QUARTER, MONTH
+    </select>
+
+    <select id="selectCalMonthWeek" parameterType="map" resultType="custommap">
+    /* selectCalMonthWeek */
+    SELECT YEAR, QUARTER, MONTH, YEARWEEK
+         , YEAR || MONTH AS FULL_MONTH
+         , MIN(DATEID) AS START_DATE
+         , MAX(DATEID) AS END_DATE
+         , ROW_NUMBER() OVER(PARTITION BY YEAR, MONTH ORDER BY YEAR, MONTH) AS MONTH_RNUM
+    FROM TB_MST_CALENDAR
+    WHERE DATEID BETWEEN @{f_fromcal} AND @{f_tocal}
+    GROUP BY YEAR, QUARTER, MONTH, YEARWEEK
+    ORDER BY YEARWEEK
+    </select>
+
+    <select id="selectCalWeekDate" parameterType="map" resultType="custommap">
+    /* selectCalWeekDate */
+    SELECT YEAR, QUARTER, MONTH, YEARWEEK, DATEID, DAY
+    FROM TB_MST_CALENDAR
+    WHERE DATEID BETWEEN @{f_fromcal} AND @{f_tocal}
+    ORDER BY DATEID
+    </select>
+    
+</mapper>

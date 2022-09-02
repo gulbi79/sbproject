@@ -1,4 +1,4 @@
-package com.demo.boot.common.service;
+package com.demo.boot.biz.common.service;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.demo.boot.common.repository.AdminRepository;
+import com.demo.boot.biz.common.repository.AdminRepository;
 
 import lombok.RequiredArgsConstructor;
 

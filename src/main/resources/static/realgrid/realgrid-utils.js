@@ -19,10 +19,11 @@ var VIEW_GRID_LIST = {
 var GRID = function() {
     this.gridview;
     this.provider;
-    this.realgridConfig = {
-        gridId : "realgrid",
-        fields : null,
-        columns : null,
+    this.defConfig = {
+        gridId: "realgrid",
+        fields: null,
+        columns: null,
+        draw: true,
     };
 };
 
@@ -30,63 +31,39 @@ GRID.prototype = {
     init: function(options) {
         this.setConfig(options);
         this.provider = new RealGrid.LocalDataProvider(true);
-        this.gridview = new RealGrid.GridView(this.realgridConfig.gridId);
+        this.gridview = new RealGrid.GridView(this.defConfig.gridId);
         this.gridview.setDataSource(this.provider);
         this.setGlobalGrid();
-        this.setColumn();
         this.setOptions();
+        
+        if (this.defConfig.draw) this.setDraw();
+        
         return this;
     },
     
     treeInit: function(options) {
         this.setConfig(options);
         this.provider = new RealGrid.LocalTreeDataProvider(true);
-        this.gridview = new RealGrid.TreeView(this.realgridConfig.gridId);
+        this.gridview = new RealGrid.TreeView(this.defConfig.gridId);
         this.gridview.setDataSource(this.provider);
         this.setGlobalGrid();
-        this.setColumn();
         this.setOptions();
+        
+        if (this.defConfig.draw) this.setDraw();
+        
         return this;
+    },
+    
+    setConfig: function(options) {
+        this.defConfig = {...this.defConfig, ...options};
     },
     
     setGlobalGrid: function() {
 		VIEW_GRID_LIST.gridview.push(this.gridview);
 		VIEW_GRID_LIST.provider.push(this.provider);
 	},
-
-    setConfig: function(options) {
-        this.realgridConfig = {...this.realgridConfig, ...options};
-    },
-
-    setColumn: function() {
-		var fields = [];
-		
-		//추가 fields
-		if (this.realgridConfig.fields) {
-			fields = [...this.realgridConfig.fields];
-		}
-		
-        if (this.realgridConfig.columns) {
-            this.realgridConfig.columns = this.realgridConfig.columns.map(function(v) {
-                var f = {fieldName: v.name};
-                if (v.tag) f = {...f, ...v.tag};
-                v = {...v, ...f};
-                fields.push({fieldName: v.fieldName, ...v.tag});
-                return v;
-            });
-
-            //fieldsName으로 중복제거
-            //fields = [...new Map(fields.map(item => [item["fieldName"], item])).values()]; //es6문법
-            fields = [...new Map(fields.map(function(item) {
-                return [item["fieldName"], item];
-            })).values()];
-
-            this.provider.setFields(fields);
-            this.gridview.setColumns(this.realgridConfig.columns);
-        }
-    },
-    
-    setOptions : function() {
+	
+	setOptions : function() {
 		let defaultOptions = {
 	        panel	: { visible: false },
 	        footer	: { visible: false },
@@ -106,7 +83,7 @@ GRID.prototype = {
 	        }
 	    };
 	    
-	    defaultOptions = {...defaultOptions, ...this.realgridConfig.options};
+	    defaultOptions = {...defaultOptions, ...this.defConfig.options};
 	    
 		this.gridview.setOptions(defaultOptions);
 	    
@@ -153,7 +130,39 @@ GRID.prototype = {
 			restoreMode: "auto",
 	    	softDeleting: true //삭제시 상태값만 바꾼다.
 	    });
-	}
+	},
+
+    setDraw: function() {
+		this.gridview.setColumns(null);
+		this.provider.setFields(null);
+		
+		var fields = [];
+		
+		//추가 fields
+		if (this.defConfig.fields) {
+			fields = [...this.defConfig.fields];
+		}
+		
+        if (this.defConfig.columns) {
+            this.defConfig.columns = this.defConfig.columns.map(function(v) {
+                var f = {fieldName: v.name};
+                if (v.tag) f = {...f, ...v.tag};
+                v = {...v, ...f};
+                fields.push({fieldName: v.fieldName, ...v.tag});
+                return v;
+            });
+
+            //fieldsName으로 중복제거
+            //fields = [...new Map(fields.map(item => [item["fieldName"], item])).values()]; //es6문법
+            fields = [...new Map(fields.map(function(item) {
+                return [item["fieldName"], item];
+            })).values()];
+
+            this.provider.setFields(fields);
+            this.gridview.setColumns(this.defConfig.columns);
+        }
+    }
+    
 }
 
 /**
@@ -479,3 +488,36 @@ function gfn_getGrdSavedata(objGrid) {
     return jRowsData;
 }
 
+function gfn_drawGridBucket(gridInstance, bucketlist) {
+	const gridview = gridInstance.gridview;
+	const dycolumns = bucketlist.map(function(v) {
+		return {name: "w"+v.yearweek, type: "data", width: "90", header: {text: "w"+v.yearweek.substr(4,2)}, styleName: "tar-column" }
+	});
+	
+	//dycolumns 앞뒤로 디멘전, 고정컬럼 처리
+	
+	gridInstance.defConfig.columns = dycolumns;
+	gridInstance.setDraw(); //그리드를 그린다.
+	
+	const rbucketlist = bucketlist.filter(v => v.monthRnum === 1)
+        .map(v => {
+			return { ...v, items : bucketlist.filter(vv => vv.fullMonth === v.fullMonth ) }      
+  		});
+	
+	const layout = rbucketlist.map(function(v) {
+		return {
+			name: "m"+v.fullMonth,
+		    expandable: true,
+		    direction: "horizontal",
+		    items: v.items.map(function(vv) {
+				return {column: "w"+vv.yearweek, groupShowMode: vv.monthRnum === 1 ? "always" : "expand"};
+			}),
+		    header: {
+		      text: "m"+v.fullMonth,
+		    }
+		};
+	});
+	
+	//드룹핑되지 않는 컬럼정보 layout 앞뒤로 처리 - 디멘전, 고정컬럼
+	gridview.setColumnLayout(layout);
+}

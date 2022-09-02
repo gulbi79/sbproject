@@ -97,7 +97,7 @@
         }
         
         //조회
-        async function fn_apply() {
+        async function fn_apply(sql = false) {
             //필터폼 데이터 생성
             let filterObj = gfn_getFormObj($('.filterForm'));
             filterObj = {...filterObj, ...gfn_getChkTree()}; //체크트리 파라미터 셋

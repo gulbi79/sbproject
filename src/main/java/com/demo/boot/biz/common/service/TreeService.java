@@ -1,4 +1,4 @@
-package com.demo.boot.common.service;
+package com.demo.boot.biz.common.service;
 
 import java.util.HashMap;
 

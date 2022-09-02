@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan(basePackages="com.demo.boot.*.repository",sqlSessionFactoryRef="sqlSessionFactory")/*멀티DB사용시 mapper클래스파일 스켄용 basePackages를 DB별로 따로설정*/
+@MapperScan(basePackages="com.demo.boot.**.repository",sqlSessionFactoryRef="sqlSessionFactory")/*멀티DB사용시 mapper클래스파일 스켄용 basePackages를 DB별로 따로설정*/
 @EnableTransactionManagement
 public class DbConfig {
 

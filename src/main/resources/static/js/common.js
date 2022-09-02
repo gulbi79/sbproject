@@ -12,58 +12,6 @@ async function gfn_service(pConfigs) {
 	};
 	
 	serviceConfig = {...serviceConfig, ...pConfigs};
-	if (serviceConfig.headers.REQ_SQL === "Y") {
-		serviceConfig.successCallback = function(res) {
-			const data = res.data;
-			let strSql = "";
-			for (key in data) {
-				//console.log("["+key+"]: "+data[key]);
-				strSql += data[key] + "\n\n";
-			}
-			gfn_alert({title: "Excute SQL", width: 800, closeButton: true, content: "<div style='overflow:auto;height:500px;white-space:pre;'>"+strSql+"</div>"});
-		}
-	}
-	
-	// loading bar start
-	const activity = Metro.activity.open({
-        type: 'ring',
-        style: 'color',
-        //overlayClickClose: true
-    });
-	
-	//server api 요청
-	fetch(serviceConfig.url, {
-	    method: serviceConfig.method, 
-	    headers: serviceConfig.headers,
-	    body: serviceConfig.body
-	})
-    .then(res => {
-		// loading bar end
-		Metro.activity.close(activity);
-		
-		if (!res.ok) throw res;
-		
-		return res.json(); //응답 결과를 json으로 파싱
-	})
-    .then(serviceConfig.successCallback)
-    .catch(err => {
-		err.text().then(async function(msg) {
-			await gfn_alertSync({title: "Error", content: JSON.parse(msg).message});
-		})
-    });
-}
-
-async function gfn_service2(pConfigs) {
-	let serviceConfig = {
-		url: '',
-		method: 'post', 
-		headers: { "Content-Type": "application/json", "REQ_SQL": pConfigs.reqSql ? "Y" : "N" },
-	    body: null,
-	    successCallback: null,
-	    errorCallback: null
-	};
-	
-	serviceConfig = {...serviceConfig, ...pConfigs};
 	
 	// loading bar start
 	const activity = Metro.activity.open({
@@ -86,12 +34,10 @@ async function gfn_service2(pConfigs) {
 		
 		const resData = await res.json();
 		
-		//console.log(serviceConfig.headers.REQ_SQL);
 		if (serviceConfig.headers.REQ_SQL === "Y") {
 			const data = resData.data;
 			let strSql = "";
 			for (key in data) {
-				//console.log("["+key+"]: "+data[key]);
 				strSql += data[key] + "\n\n";
 			}
 			gfn_alert({title: "Excute SQL", width: 800, closeButton: true, content: "<div style='overflow:auto;height:500px;white-space:pre;'>"+strSql+"</div>"});

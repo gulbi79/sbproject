@@ -1,4 +1,4 @@
-package com.demo.boot.common.web;
+package com.demo.boot.biz.common.web;
 
 import java.util.Map;
 
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.demo.boot.common.service.AdminService;
+import com.demo.boot.biz.common.service.AdminService;
 import com.demo.boot.utils.ApiResponse;
 
 import lombok.RequiredArgsConstructor;

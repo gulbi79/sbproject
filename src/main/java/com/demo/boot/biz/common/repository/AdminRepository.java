@@ -1,4 +1,4 @@
-package com.demo.boot.common.repository;
+package com.demo.boot.biz.common.repository;
 
 import java.util.List;
 import java.util.Map;

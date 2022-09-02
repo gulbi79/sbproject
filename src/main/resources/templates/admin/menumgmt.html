@@ -110,27 +110,10 @@
 			//server api 요청
 			const pConfigs = {
 				url: '/admin/menulist',
-				reqSql : sql,
+				reqSql: sql,
 			    body: JSON.stringify(filterObj),
-			    /*
-			    successCallback: function(res) {
-					try {
-						//데이터 초기화 및 그리드 데이터 생성
-			            provider.clearRows();
-			            grid.cancel();
-			            provider.setRows(res.data, "treeId", false, null, "iconField");
-			            grid.expandAll();
-			            
-			            provider.clearSavePoints();
-						provider.savePoint(); //초기화 포인트 저장
-					} catch(e) {
-						console.log(e);
-					}
-			    }
-			    */
 			}; 
-			//gfn_service(pConfigs);
-			const res = await gfn_service2(pConfigs);
+			const res = await gfn_service(pConfigs);
 			
 			if (sql) return;
 			
@@ -157,17 +140,12 @@
 			const pConfigs = {
 				url: '/admin/menureg',
 			    body: JSON.stringify({grdData: uGrdData}),
-			    successCallback: async function(data) {
-					try {
-						//데이터 초기화 및 그리드 데이터 생성
-						await gfn_alertSync({title: "Success", content: "Save success"});
-			            fn_apply();
-		            } catch(e) {
-						console.log(e);
-					}
-			    }
 			}; 
-			gfn_service(pConfigs);
+			const res = await gfn_service(pConfigs);
+			
+			//데이터 초기화 및 그리드 데이터 생성
+			await gfn_alertSync({title: "Success", content: "Save success"});
+            fn_apply();
 		}
         
         function fn_validation() {

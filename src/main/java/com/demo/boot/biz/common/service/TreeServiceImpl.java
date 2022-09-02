@@ -1,11 +1,10 @@
-package com.demo.boot.common.service;
+package com.demo.boot.biz.common.service;
 
 import java.util.HashMap;
-import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.demo.boot.common.repository.TreeRepository;
+import com.demo.boot.biz.common.repository.TreeRepository;
 
 import lombok.RequiredArgsConstructor;
 

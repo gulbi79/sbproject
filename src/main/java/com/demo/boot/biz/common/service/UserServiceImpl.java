@@ -1,8 +1,9 @@
-package com.demo.boot.common.service;
+package com.demo.boot.biz.common.service;
 
-import com.demo.boot.common.repository.UserRepository;
-import com.demo.boot.common.vo.UserVo;
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,9 +11,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.demo.boot.biz.common.repository.UserRepository;
+import com.demo.boot.common.vo.UserVo;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

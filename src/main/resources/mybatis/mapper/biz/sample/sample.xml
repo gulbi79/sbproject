@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.demo.boot.biz.sample.repository.SampleRepository">
+
+    <!-- sample select -->
+    <select id="selectSampleMain" parameterType="map" resultType="custommap">
+    /* selectSampleMain */
+    SELECT
+#foreach($bucket in $_parameter.bucketList)
+ #if($foreach.index == 0)
+           10 AS w$bucket.yearweek 
+ #else
+         , 10 AS w$bucket.yearweek 
+ #end
+#end
+    FROM DUAL
+    </select>
+
+</mapper>

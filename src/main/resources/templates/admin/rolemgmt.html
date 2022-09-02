@@ -70,7 +70,7 @@
             
             //그리드 이벤트
             //role 행변경되면 권한에 맞는 menu 조회
-			grid.onCurrentRowChanged =  function (grid, oldRow, newRow) {
+			grid.onCurrentRowChanged = async function(grid, oldRow, newRow) {
 				grid2.checkAll(false); //전체체크해제
 	            let filterObj = {clickRoleCd : grid.getValue(newRow, "roleCd")};
 				//server api 요청
@@ -78,19 +78,14 @@
 					url: '/admin/rolemenulist',
 					reqSql : false,
 				    body: JSON.stringify(filterObj),
-				    successCallback: function(res) {
-						try {
-							let arrIdx = [];
-							res.data.forEach(v => {
-								arrIdx.push(grid2.getJsonRows().findIndex((element) => element.menuCd === v.menuCd) + 1);
-							})
-							grid2.checkRows(arrIdx, true);
-						} catch(e) {
-							console.log(e);
-						}
-				    }
 				}; 
-				gfn_service(pConfigs);
+				const res = await gfn_service(pConfigs);
+				
+				let arrIdx = [];
+				res.data.forEach(v => {
+					arrIdx.push(grid2.getJsonRows().findIndex((element) => element.menuCd === v.menuCd) + 1);
+				})
+				grid2.checkRows(arrIdx, true);
 			};
         }
         
@@ -144,33 +139,30 @@
 				url: '/admin/rolelist',
 				reqSql : sql,
 			    body: JSON.stringify(filterObj),
-			    successCallback: function(res) {
-					try {
-						//데이터 초기화 및 그리드 데이터 생성
-			            provider.clearRows();
-			            grid.cancel();
-			            provider.setRows(res.data.roleList);
-			            
-			            provider.clearSavePoints();
-						provider.savePoint(); //초기화 포인트 저장
-						
-						//데이터 초기화 및 그리드 데이터 생성
-			            provider2.clearRows();
-			            grid2.cancel();
-			            provider2.setRows(res.data.menuList, "treeId", false, null, "iconField");
-			            grid2.expandAll();
-			            
-			            provider2.clearSavePoints();
-						provider2.savePoint(); //초기화 포인트 저장
-						
-						//role 리스트 첫행 포커스
-						grid.setCurrent({itemindex:1});
-					} catch(e) {
-						console.log(e);
-					}
-			    }
 			}; 
-			gfn_service(pConfigs);
+			const res = await gfn_service(pConfigs);
+			
+			if (sql) return;
+			
+			//데이터 초기화 및 그리드 데이터 생성
+            provider.clearRows();
+            grid.cancel();
+            provider.setRows(res.data.roleList);
+            
+            provider.clearSavePoints();
+			provider.savePoint(); //초기화 포인트 저장
+			
+			//데이터 초기화 및 그리드 데이터 생성
+            provider2.clearRows();
+            grid2.cancel();
+            provider2.setRows(res.data.menuList, "treeId", false, null, "iconField");
+            grid2.expandAll();
+            
+            provider2.clearSavePoints();
+			provider2.savePoint(); //초기화 포인트 저장
+			
+			//role 리스트 첫행 포커스
+			grid.setCurrent({itemindex:1});
         }
         
         async function fn_save() {
@@ -197,13 +189,12 @@
 			const pConfigs = {
 				url: '/admin/rolereg',
 			    body: JSON.stringify({grdData: uGrdData, uRoleMenuList: roleMenuList, roleCd: roleCd}),
-			    successCallback: async function(data) {
-					//데이터 초기화 및 그리드 데이터 생성
-					await gfn_alertSync({title: "Success", content: "Save success"});
-		            fn_apply();
-			    }
 			}; 
-			gfn_service(pConfigs);
+			const res = await gfn_service(pConfigs);
+			
+			//데이터 초기화 및 그리드 데이터 생성
+			await gfn_alertSync({title: "Success", content: "Save success"});
+            fn_apply();
 		}
 
         function fn_validation() {
