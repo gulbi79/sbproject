@@ -35,7 +35,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<?> handleSqlException(Exception e) {
         //log.error("handleSqlException",e);
 //        return ErrorResponse.toResponseEntity(ErrorCode.INTER_SERVER_ERROR, "SQL Error");
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.createError(e.getMessage()));
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.createError("SQL Error"));
     }
 
     @ExceptionHandler(Exception.class)

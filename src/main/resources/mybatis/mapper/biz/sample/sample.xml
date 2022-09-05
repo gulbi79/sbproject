@@ -10,9 +10,9 @@
     SELECT
 #foreach($bucket in $_parameter.bucketList)
  #if($foreach.index == 0)
-           10 AS w$bucket.yearweek 
+           10 AS w$bucket.week 
  #else
-         , 10 AS w$bucket.yearweek 
+         , 10 AS w$bucket.week 
  #end
 #end
     FROM DUAL

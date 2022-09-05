@@ -9,9 +9,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface CommonRepository {
     List<Map<String,Object>> selectCalBase(Map<String,Object> paramMap);
 
-    List<Map<String,Object>> selectCalYearMonth(Map<String,Object> paramMap);
-
-    List<Map<String,Object>> selectCalMonthWeek(Map<String,Object> paramMap);
-
-    List<Map<String,Object>> selectCalWeekDate(Map<String,Object> paramMap);
+    List<Map<String,Object>> selectCalBucket(Map<String,Object> paramMap);
 }

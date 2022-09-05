@@ -87,6 +87,9 @@
 			
 			if (sql) return;
 			
+			
+			//fn_stest(res.data.bucketList);
+			
 			//디멘전, 고정컬럼, bucket을 이용해서 그리드 컬럼정보를 만든다.
 			gfn_drawGridBucket(gridInstance, res.data.bucketList);
 			
@@ -98,6 +101,26 @@
             provider.clearSavePoints();
 			provider.savePoint(); //초기화 포인트 저장
         }
+        
+        function fn_stest(bucketlist) {
+			let blist = bucketlist.filter(v => v.calType === "YEAR");
+			
+			//2단헤더
+			blist = blist.map(v => {
+				return {...v, items: bucketlist.filter(vv => vv.parent === v.uiqcol)};
+			});
+			
+			//3단헤더
+			blist = blist.map(v => {
+				return {...v, items : v.items
+					.map(vv => {
+						return { ...vv, items: bucketlist.filter(vvv => vvv.parent === vv.uiqcol) };
+					})
+				};
+			});
+			
+			console.log("blist",blist);
+		}
         
         function fn_validation() {
             return true;

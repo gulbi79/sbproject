@@ -488,10 +488,27 @@ function gfn_getGrdSavedata(objGrid) {
     return jRowsData;
 }
 
-function gfn_drawGridBucket(gridInstance, bucketlist) {
+function gfn_drawGridBucket(gridInstance, bucketlist, options) {
+	let defConfig = {
+		bucketType: "MONTH_WEEK",
+	};
+	
+	defConfig = {...defConfig, ...options};
+	
+	let rawdata1, rawdata2, rawdata3, rawdata4;
+	let rawcol1, rawcol2, rawcol3, rawcol4;
+	if (defConfig.bucketType == "MONTH_WEEK") {
+		rawdata1 = "WEEK";
+		rawcol1 = "week";
+	} else if (defConfig.bucketType == "YEAR_MONTH_WEEK") {
+		rawdata1 = "WEEK";
+		rawcol1 = "week";
+	}
+	
+	
 	const gridview = gridInstance.gridview;
-	const dycolumns = bucketlist.map(function(v) {
-		return {name: "w"+v.yearweek, type: "data", width: "90", header: {text: "w"+v.yearweek.substr(4,2)}, styleName: "tar-column" }
+	const dycolumns = bucketlist.filter(v => v.calType === rawdata1).map(function(vv) {
+		return {name: vv.prefix+vv[rawcol1], type: "data", width: "90", header: {text: vv.prefix+vv[rawcol1]}, styleName: "tar-column" }
 	});
 	
 	//dycolumns 앞뒤로 디멘전, 고정컬럼 처리
@@ -499,25 +516,77 @@ function gfn_drawGridBucket(gridInstance, bucketlist) {
 	gridInstance.defConfig.columns = dycolumns;
 	gridInstance.setDraw(); //그리드를 그린다.
 	
-	const rbucketlist = bucketlist.filter(v => v.monthRnum === 1)
-        .map(v => {
-			return { ...v, items : bucketlist.filter(vv => vv.fullMonth === v.fullMonth ) }      
-  		});
+	//1단헤더
+	let blist = bucketlist.filter(v => v.calType === "YEAR");
+			
+	//2단헤더
+	blist = blist.map(v => {
+		return { ...v, items: bucketlist.filter(vv => vv.parent === v.uiqcol) };
+	});
 	
-	const layout = rbucketlist.map(function(v) {
+	//3단헤더
+	blist = blist.map(v => {
+		return { 
+			...v, 
+			items : v.items.map(vv => {
+						return { ...vv, items: bucketlist.filter(vvv => vvv.parent === vv.uiqcol) };
+					})
+		};
+	});
+	
+	//최종적으로 그리드 정보 생성
+	const layout = blist.map(v => {
+		return {
+			...v, 
+			name: "y"+v.year,
+			column: "y"+v.year,
+			expandable: true,
+			direction: "horizontal",
+			
+			//2단헤더 그리드정보
+			items : v.items.map(vv => {
+						return { 
+							...vv,
+							name: "m"+vv.month,
+							column: "m"+vv.month,
+							expandable: true,
+							//groupShowMode: vv.monthLastNum === 1 ? "always" : "expand",
+							
+							//3단헤더 그리드정보
+							items: vv.items.map(vvv => {
+								return { 
+									...vvv,
+									column: "w"+vvv.week,
+									//expandable: true,
+									groupShowMode: vvv.weekLastNum === 1 ? "always" : "expand",
+								};
+							})
+						};
+					})
+		};
+	});
+  		
+  	
+  	console.log("layout",layout);
+  	gridview.setColumnLayout(layout);
+	
+	/*
+	//실제 layout 구성
+	const layout = blist.map(function(v) {
 		return {
 			name: "m"+v.fullMonth,
 		    expandable: true,
 		    direction: "horizontal",
 		    items: v.items.map(function(vv) {
-				return {column: "w"+vv.yearweek, groupShowMode: vv.monthRnum === 1 ? "always" : "expand"};
+				return {column: "w"+vv.yearweek, groupShowMode: vv.monthLastNum === 1 ? "always" : "expand"};
 			}),
 		    header: {
 		      text: "m"+v.fullMonth,
 		    }
 		};
 	});
+	*/
 	
 	//드룹핑되지 않는 컬럼정보 layout 앞뒤로 처리 - 디멘전, 고정컬럼
-	gridview.setColumnLayout(layout);
+	//gridview.setColumnLayout(layout);
 }

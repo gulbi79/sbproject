@@ -7,43 +7,110 @@
     <!-- calendar 조회 -->
     <select id="selectCalBase" parameterType="map" resultType="custommap">
     /* selectCalBase */
-    SELECT DATEID, YEAR, QUARTER, MONTH, YEARWEEK, DAY
+    SELECT DATEID, YEAR, QUARTER, MONTH, YEARWEEK, WEEK, DAY
     FROM TB_MST_CALENDAR
     WHERE DATEID BETWEEN @{f_fromcal} AND @{f_tocal}
     ORDER BY DATEID
     </select>
 
-    <select id="selectCalYearMonth" parameterType="map" resultType="custommap">
-    /* selectCalYearMonth */
-    SELECT YEAR, QUARTER, MONTH
-         , YEAR || MONTH AS FULL_MONTH
-         , MIN(YEARWEEK) AS START_WEEK
-         , MAX(YEARWEEK) AS END_WEEK
-    FROM TB_MST_CALENDAR
-    WHERE DATEID BETWEEN @{f_fromcal} AND @{f_tocal}
-    GROUP BY YEAR, QUARTER, MONTH
-    ORDER BY YEAR, QUARTER, MONTH
-    </select>
-
-    <select id="selectCalMonthWeek" parameterType="map" resultType="custommap">
-    /* selectCalMonthWeek */
-    SELECT YEAR, QUARTER, MONTH, YEARWEEK
-         , YEAR || MONTH AS FULL_MONTH
-         , MIN(DATEID) AS START_DATE
-         , MAX(DATEID) AS END_DATE
-         , ROW_NUMBER() OVER(PARTITION BY YEAR, MONTH ORDER BY YEAR, MONTH) AS MONTH_RNUM
-    FROM TB_MST_CALENDAR
-    WHERE DATEID BETWEEN @{f_fromcal} AND @{f_tocal}
-    GROUP BY YEAR, QUARTER, MONTH, YEARWEEK
-    ORDER BY YEARWEEK
-    </select>
-
-    <select id="selectCalWeekDate" parameterType="map" resultType="custommap">
-    /* selectCalWeekDate */
-    SELECT YEAR, QUARTER, MONTH, YEARWEEK, DATEID, DAY
-    FROM TB_MST_CALENDAR
-    WHERE DATEID BETWEEN @{f_fromcal} AND @{f_tocal}
-    ORDER BY DATEID
+    <select id="selectCalBucket" parameterType="map" resultType="custommap">
+    /* selectCalBucket */
+    WITH W_RAW AS (
+    	SELECT *
+    	FROM TB_MST_CALENDAR
+    	WHERE DATEID BETWEEN @{f_fromcal} AND @{f_tocal}
+    )
+    SELECT A.*
+         , DECODE(A.CAL_TYPE, 'YEAR', 'y', 'QUARTER', 'q', 'MONTH', 'm', 'WEEK', 'w', 'DATE', 'd') AS PREFIX
+    FROM 
+    (
+        SELECT NULL AS CAL_TYPE
+    	     , NULL AS YEAR
+    	     , NULL AS QUARTER
+    	     , NULL AS MONTH
+    	     , NULL AS WEEK
+    	     , NULL AS FULL_MONTH
+    	     , NULL AS START_DATE
+    	     , NULL AS END_DATE
+    	     , NULL AS PARENT
+    	     , NULL AS UIQCOL
+    	     , NULL AS WEEK_FIRST_NUM
+    	     , NULL AS WEEK_LAST_NUM
+    	FROM DUAL
+#if($_parameter.bucketType.indexOf("_YEAR_") != -1)
+    	UNION ALL
+    	SELECT 'YEAR' AS CAL_TYPE
+    	     , YEAR
+    	     , NULL AS QUARTER
+    	     , NULL AS MONTH
+    	     , NULL AS WEEK
+    	     , NULL AS FULL_MONTH
+    	     , MIN(DATEID) AS START_DATE
+    	     , MAX(DATEID) AS END_DATE
+    	     , NULL AS PARENT
+    	     , $_parameter.yearUniq AS UIQCOL
+    	     , NULL AS MONTH_FIRST_NUM
+    	     , NULL AS MONTH_LAST_NUM
+    	FROM W_RAW
+    	GROUP BY YEAR
+#end
+#if($_parameter.bucketType.indexOf("_QUARTER_") != -1)
+    	UNION ALL
+    	SELECT 'QUARTER' AS CAL_TYPE
+    	     , YEAR
+    	     , QUARTER
+    	     , NULL AS MONTH
+    	     , NULL AS WEEK
+    	     , NULL AS FULL_MONTH
+    	     , MIN(DATEID) AS START_DATE
+    	     , MAX(DATEID) AS END_DATE
+    	     , $_parameter.quarterParent AS PARENT
+    	     , $_parameter.quarterUniq AS UIQCOL
+    	     , NULL AS MONTH_FIRST_NUM
+    	     , NULL AS MONTH_LAST_NUM
+    	FROM W_RAW
+    	GROUP BY YEAR, QUARTER
+#end
+#if($_parameter.bucketType.indexOf("_MONTH_") != -1)
+    	UNION ALL
+    	SELECT 'MONTH' AS CAL_TYPE
+    	     , YEAR
+    	     , QUARTER
+    	     , MONTH
+    	     , NULL AS WEEK
+    	     , YEAR || MONTH AS FULL_MONTH
+    	     , MIN(DATEID) AS START_DATE
+    	     , MAX(DATEID) AS END_DATE
+    	     , $_parameter.monthParent AS PARENT
+    	     , $_parameter.monthUniq AS UIQCOL
+    	     , NULL AS MONTH_FIRST_NUM
+    	     , NULL AS MONTH_LAST_NUM
+    	FROM W_RAW
+    	GROUP BY YEAR, QUARTER, MONTH
+#end
+#if($_parameter.bucketType.indexOf("_WEEK_") != -1)
+    	UNION ALL
+    	SELECT 'WEEK' AS CAL_TYPE
+    	     , YEAR
+    	     , QUARTER
+    	     , MONTH
+    	     , WEEK
+    	     , YEAR || MONTH AS FULL_MONTH
+    	     , MIN(DATEID) AS START_DATE
+    	     , MAX(DATEID) AS END_DATE
+    	     , $_parameter.weekParent AS PARENT
+    	     , $_parameter.weekUniq AS UIQCOL
+    	     , ROW_NUMBER() OVER(PARTITION BY YEAR, MONTH ORDER BY YEAR, MONTH, WEEK) AS WEEK_FIRST_NUM
+    	     , ROW_NUMBER() OVER(PARTITION BY YEAR, MONTH ORDER BY YEAR, MONTH, WEEK DESC) AS WEEK_LAST_NUM
+    	FROM W_RAW
+    	GROUP BY YEAR, QUARTER, MONTH, WEEK
+#end
+    ) A
+    WHERE A.CAL_TYPE IS NOT NULL
+    ORDER BY YEAR NULLS FIRST
+           , QUARTER NULLS FIRST
+           , FULL_MONTH NULLS FIRST
+           , WEEK NULLS FIRST
     </select>
     
 </mapper>
