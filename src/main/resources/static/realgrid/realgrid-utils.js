@@ -24,6 +24,7 @@ var GRID = function() {
         fields: null,
         columns: null,
         draw: true,
+        dimensions: [],
     };
 };
 
@@ -161,8 +162,13 @@ GRID.prototype = {
             this.provider.setFields(fields);
             this.gridview.setColumns(this.defConfig.columns);
         }
-    }
+    },
     
+    setDimension : function(arrDim = []) {
+		this.defConfig.dimensions = arrDim.map(v => {
+			return v;
+		})
+	}
 }
 
 /**
@@ -489,104 +495,188 @@ function gfn_getGrdSavedata(objGrid) {
 }
 
 function gfn_drawGridBucket(gridInstance, bucketlist, options) {
+	
 	let defConfig = {
 		bucketType: "MONTH_WEEK",
+		bTotal1: false,
+		bTotal2: false,
+		bTotal3: false,
 	};
 	
 	defConfig = {...defConfig, ...options};
 	
-	let rawdata1, rawdata2, rawdata3, rawdata4;
-	let rawcol1, rawcol2, rawcol3, rawcol4;
-	if (defConfig.bucketType == "MONTH_WEEK") {
-		rawdata1 = "WEEK";
-		rawcol1 = "week";
-	} else if (defConfig.bucketType == "YEAR_MONTH_WEEK") {
-		rawdata1 = "WEEK";
-		rawcol1 = "week";
-	}
+	const arrBucketType    = defConfig.bucketType.split('_');
+	const firstBucketType  = arrBucketType[0];
+	const lastBucketType   = arrBucketType[arrBucketType.length-1];
+	const arrLowBucketType = arrBucketType.map(v => v.toLowerCase());
 	
-	
-	const gridview = gridInstance.gridview;
-	const dycolumns = bucketlist.filter(v => v.calType === rawdata1).map(function(vv) {
-		return {name: vv.prefix+vv[rawcol1], type: "data", width: "90", header: {text: vv.prefix+vv[rawcol1]}, styleName: "tar-column" }
+	//dycolumns 앞뒤로 디멘전, 고정컬럼  --------------------------------
+	//디멘전
+	const dimcolumns = gridInstance.defConfig.dimensions.map(v => {
+		return { name: v, type: "data", width: "90", header: {text: v, styleName: "vam-column"}, styleName: "tal-column", sortable : false };
+	})
+
+	//dycolumns Bucket --------------------------------
+	let bucketcolumns = bucketlist.filter(v => v.calType === lastBucketType).map(function(vv) {
+		return { name: vv.prefix+vv.bucketcol, type: "data", width: "90", header: {text: vv.prefix+vv.bucketcol}, styleName: "tar-column" }
 	});
 	
-	//dycolumns 앞뒤로 디멘전, 고정컬럼 처리
+	//bucket sub total - 최상위 ------------------
+	if (defConfig.bTotal1) {
+		bucketcolumns = [...bucketcolumns, { name: "bucketTotal", type: "data", width: "90", header: {text: "전체 Total"}, styleName: "tar-column" }];
+	}
+
+	//bucket sub total - 최상위 ------------------
+	if (defConfig.bTotal2 && arrBucketType.length > 1) {
+		const stbucketcolumns1 = bucketlist.filter(v => v.calType === arrBucketType[0]).map(function(vv) {
+			return { name: vv.prefix+vv.bucketcol, type: "data", width: "90", header: {text: vv.prefix+vv.bucketcol+" Total"}, styleName: "tar-column" }
+		});
+		bucketcolumns = [...bucketcolumns, ...stbucketcolumns1];
+	}
+
+	//bucket sub total - 최하위 상위 상위 ------------------
+	if (defConfig.bTotal3 && arrBucketType.length > 2) {
+		const stbucketcolumns2 = bucketlist.filter(v => v.calType === arrBucketType[1]).map(function(vv) {
+			return { name: vv.prefix+vv.bucketcol, type: "data", width: "90", header: {text: vv.prefix+vv.bucketcol+" Total"}, styleName: "tar-column" }
+		});
+		bucketcolumns = [...bucketcolumns, ...stbucketcolumns2];
+	}
+	
+	//최종 columns
+	const dycolumns = [...dimcolumns, ...bucketcolumns];
+	
+	console.log("dycolumns", dycolumns);
 	
 	gridInstance.defConfig.columns = dycolumns;
 	gridInstance.setDraw(); //그리드를 그린다.
 	
-	//1단헤더
-	let blist = bucketlist.filter(v => v.calType === "YEAR");
-			
-	//2단헤더
-	blist = blist.map(v => {
-		return { ...v, items: bucketlist.filter(vv => vv.parent === v.uiqcol) };
-	});
+	const layoutOptions = {
+		arrBucketType: arrBucketType,
+		arrLowBucketType: arrLowBucketType,
+		lastBucketType: lastBucketType,
+		firstBucketType: firstBucketType,
+		bTotal1: defConfig.bTotal1,
+		bTotal2: defConfig.bTotal2,
+		bTotal3: defConfig.bTotal3,
+	};
+	gfn_com_getGridLayout(gridInstance, bucketlist, layoutOptions);
+}
+
+//2단헤더 이상의 그리드 처리
+function gfn_com_getGridLayout(gridInstance, bucketlist, layoutOptions) {
 	
-	//3단헤더
-	blist = blist.map(v => {
-		return { 
-			...v, 
-			items : v.items.map(vv => {
-						return { ...vv, items: bucketlist.filter(vvv => vvv.parent === vv.uiqcol) };
-					})
-		};
-	});
-	
-	//최종적으로 그리드 정보 생성
-	const layout = blist.map(v => {
-		return {
-			...v, 
-			name: "y"+v.year,
-			column: "y"+v.year,
-			expandable: true,
-			direction: "horizontal",
-			
-			//2단헤더 그리드정보
-			items : v.items.map(vv => {
+	try {
+		const gridview = gridInstance.gridview;
+		const iBucketTypeLen = layoutOptions.arrBucketType.length;
+		const arrLowBucketType = layoutOptions.arrLowBucketType;
+		
+		//1단헤더
+		let blist = bucketlist.filter(v => v.calType === layoutOptions.firstBucketType);
+		
+		//2단헤더
+		if (iBucketTypeLen > 1) {
+			blist = blist.map(v => {
+				return { 
+					...v,
+					items: bucketlist.filter(vv => vv.parent === v.uiqcol)
+				};
+			});
+		}
+		
+		
+		//3단헤더
+		if (iBucketTypeLen > 2) {
+			blist = blist.map(v => {
+				return { 
+					...v,
+					items : v.items.map(vv => {
 						return { 
 							...vv,
-							name: "m"+vv.month,
-							column: "m"+vv.month,
-							expandable: true,
-							//groupShowMode: vv.monthLastNum === 1 ? "always" : "expand",
-							
-							//3단헤더 그리드정보
-							items: vv.items.map(vvv => {
-								return { 
-									...vvv,
-									column: "w"+vvv.week,
-									//expandable: true,
-									groupShowMode: vvv.weekLastNum === 1 ? "always" : "expand",
-								};
-							})
+							items: bucketlist.filter(vvv => vvv.parent === vv.uiqcol)
 						};
 					})
-		};
-	});
-  		
-  	
-  	console.log("layout",layout);
-  	gridview.setColumnLayout(layout);
-	
-	/*
-	//실제 layout 구성
-	const layout = blist.map(function(v) {
-		return {
-			name: "m"+v.fullMonth,
-		    expandable: true,
-		    direction: "horizontal",
-		    items: v.items.map(function(vv) {
-				return {column: "w"+vv.yearweek, groupShowMode: vv.monthLastNum === 1 ? "always" : "expand"};
-			}),
-		    header: {
-		      text: "m"+v.fullMonth,
-		    }
-		};
-	});
-	*/
-	
-	//드룹핑되지 않는 컬럼정보 layout 앞뒤로 처리 - 디멘전, 고정컬럼
-	//gridview.setColumnLayout(layout);
+				};
+			});
+		}
+
+		//최종적으로 그리드 정보 생성
+		//1단 헤더정보
+		let layout;
+		let headerIdx = 0;
+		if (iBucketTypeLen > 1) {
+			layout = blist.map(v => {
+				return { 
+					...v,
+					name: v.prefix+v.bucketcol,
+					column: v.prefix+v.bucketcol,
+					//header: { text: "y"+v.year },
+					expandable: true,
+					direction: "horizontal",
+				};
+			})
+			
+			if (layoutOptions.bTotal1) layout.push({ name: "bucketTotal", column: "bucketTotal" });
+			
+			headerIdx++;
+		}
+		
+		//2단 헤더정보
+		if (iBucketTypeLen > 1) {
+			layout = layout.map(v => {
+				let items = v.items?.map(vv => {
+					return { 
+						...vv,
+						name: vv.prefix+vv.bucketcol,
+						column: vv.prefix+vv.bucketcol,
+						//header: { text: "m"+vv.month },
+						expandable: true,
+						groupShowMode: vv[arrLowBucketType[headerIdx]+"LastNum"] === 1 && !layoutOptions.bTotal2 ? "always" : "expand",
+					};
+				})
+				
+				if (layoutOptions.bTotal2) items?.push({ name: v.prefix+v.bucketcol, column: v.prefix+v.bucketcol });
+				
+				return { 
+					...v,
+					items: items
+				};
+			});
+			headerIdx++;
+		}
+		
+		//3단 헤더정보
+		if (iBucketTypeLen > 2) {
+			layout = layout.map(v => { //year
+				return { 
+					...v,
+					items : v.items?.map(vv => { //month
+						let items = vv.items?.map(vvv => { //week
+							return { 
+								...vvv,
+								column: vvv.prefix+vvv.bucketcol,
+								groupShowMode: vvv[arrLowBucketType[headerIdx]+"LastNum"] === 1 && !layoutOptions.bTotal3 ? "always" : "expand",
+							};
+						})
+						
+						if (layoutOptions.bTotal3) items?.push({ name: vv.prefix+vv.bucketcol, column: vv.prefix+vv.bucketcol });
+						
+						return { 
+							...vv,
+							items : items
+						};
+					})
+				};
+			});
+			headerIdx++;
+		}
+	  	
+		//드룹핑되지 않는 컬럼정보 layout 앞뒤로 처리 - 디멘전, 고정컬럼
+		layout = [...gridInstance.defConfig.dimensions, ...layout];
+		
+	  	console.log("layout",layout);
+	  	gridview.setColumnLayout(layout);
+	  	
+	} catch(e) {
+		console.error("gfn_com_getGridLayout Error!!",e);
+	}
 }

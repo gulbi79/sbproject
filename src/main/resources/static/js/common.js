@@ -16,7 +16,8 @@ async function gfn_service(pConfigs) {
 	// loading bar start
 	const activity = Metro.activity.open({
         type: 'ring',
-        style: 'color',
+        overlayColor: '#fff',
+        //style: 'color',
         //overlayClickClose: true
     });
 	

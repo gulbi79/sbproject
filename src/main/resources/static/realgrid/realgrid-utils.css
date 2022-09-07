@@ -9,3 +9,7 @@
 .tar-column {
   text-align: right;
 }
+
+.vam-column {
+	vertical-align: middle;
+}

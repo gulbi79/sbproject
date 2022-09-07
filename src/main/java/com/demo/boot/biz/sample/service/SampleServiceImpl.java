@@ -29,10 +29,11 @@ public class SampleServiceImpl implements SampleService {
     	// 1. 조회조건에 따른 bucket 구간 조회
     	Map<String, Object> rtnMap = new HashMap<String, Object>();
     	SqlContextHolder.THREAD_LOCAL_STOP_SQLYN.set(true);
-    	paramMap.put("bucketType", "_YEAR_MONTH_WEEK_");
-    	
+
+    	String bucketType = "_YEAR_MONTH_WEEK_";
+    	paramMap.put("bucketType", bucketType);
     	String strParentBucket = null;
-    	for (String tmpBucket : StringUtils.tokenizeToStringArray("_YEAR_MONTH_WEEK_", "_")) {
+    	for (String tmpBucket : StringUtils.tokenizeToStringArray(bucketType, "_")) {
     		paramMap.put(tmpBucket.toLowerCase().concat("Parent"), strParentBucket);
     		
     		if (strParentBucket == null) {

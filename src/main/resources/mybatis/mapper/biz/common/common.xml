@@ -25,6 +25,7 @@
     FROM 
     (
         SELECT NULL AS CAL_TYPE
+    	     , NULL AS BUCKETCOL
     	     , NULL AS YEAR
     	     , NULL AS QUARTER
     	     , NULL AS MONTH
@@ -34,12 +35,15 @@
     	     , NULL AS END_DATE
     	     , NULL AS PARENT
     	     , NULL AS UIQCOL
+    	     , NULL AS MONTH_FIRST_NUM
+    	     , NULL AS MONTH_LAST_NUM
     	     , NULL AS WEEK_FIRST_NUM
     	     , NULL AS WEEK_LAST_NUM
     	FROM DUAL
 #if($_parameter.bucketType.indexOf("_YEAR_") != -1)
     	UNION ALL
     	SELECT 'YEAR' AS CAL_TYPE
+    	     , YEAR AS BUCKETCOL
     	     , YEAR
     	     , NULL AS QUARTER
     	     , NULL AS MONTH
@@ -51,12 +55,15 @@
     	     , $_parameter.yearUniq AS UIQCOL
     	     , NULL AS MONTH_FIRST_NUM
     	     , NULL AS MONTH_LAST_NUM
+    	     , NULL AS WEEK_FIRST_NUM
+    	     , NULL AS WEEK_LAST_NUM
     	FROM W_RAW
     	GROUP BY YEAR
 #end
 #if($_parameter.bucketType.indexOf("_QUARTER_") != -1)
     	UNION ALL
     	SELECT 'QUARTER' AS CAL_TYPE
+    	     , QUARTER AS BUCKETCOL
     	     , YEAR
     	     , QUARTER
     	     , NULL AS MONTH
@@ -64,16 +71,19 @@
     	     , NULL AS FULL_MONTH
     	     , MIN(DATEID) AS START_DATE
     	     , MAX(DATEID) AS END_DATE
-    	     , $_parameter.quarterParent AS PARENT
-    	     , $_parameter.quarterUniq AS UIQCOL
+    	     , #if($_parameter.quarterParent) $_parameter.quarterParent #else NULL #end AS PARENT
+    	     , #if($_parameter.quarterUniq) $_parameter.quarterUniq #else NULL #end AS UIQCOL
     	     , NULL AS MONTH_FIRST_NUM
     	     , NULL AS MONTH_LAST_NUM
+    	     , NULL AS WEEK_FIRST_NUM
+    	     , NULL AS WEEK_LAST_NUM
     	FROM W_RAW
     	GROUP BY YEAR, QUARTER
 #end
 #if($_parameter.bucketType.indexOf("_MONTH_") != -1)
     	UNION ALL
     	SELECT 'MONTH' AS CAL_TYPE
+    	     , MONTH AS BUCKETCOL
     	     , YEAR
     	     , QUARTER
     	     , MONTH
@@ -81,27 +91,42 @@
     	     , YEAR || MONTH AS FULL_MONTH
     	     , MIN(DATEID) AS START_DATE
     	     , MAX(DATEID) AS END_DATE
-    	     , $_parameter.monthParent AS PARENT
-    	     , $_parameter.monthUniq AS UIQCOL
+    	     , #if($_parameter.monthParent) $_parameter.monthParent #else NULL #end AS PARENT
+    	     , #if($_parameter.monthUniq) $_parameter.monthUniq #else NULL #end AS UIQCOL
+#if($_parameter.monthParent)
+    	     , ROW_NUMBER() OVER(PARTITION BY $_parameter.monthParent ORDER BY $_parameter.monthUniq.replace("||",",")     ) AS MONTH_FIRST_NUM
+    	     , ROW_NUMBER() OVER(PARTITION BY $_parameter.monthParent ORDER BY $_parameter.monthUniq.replace("||",",") DESC) AS MONTH_LAST_NUM
+#else
     	     , NULL AS MONTH_FIRST_NUM
     	     , NULL AS MONTH_LAST_NUM
+#end
+    	     , NULL AS WEEK_FIRST_NUM
+    	     , NULL AS WEEK_LAST_NUM
     	FROM W_RAW
     	GROUP BY YEAR, QUARTER, MONTH
 #end
 #if($_parameter.bucketType.indexOf("_WEEK_") != -1)
     	UNION ALL
     	SELECT 'WEEK' AS CAL_TYPE
+    	     , YEAR || WEEK AS BUCKETCOL
     	     , YEAR
     	     , QUARTER
     	     , MONTH
-    	     , WEEK
+    	     , YEAR || WEEK AS WEEK
     	     , YEAR || MONTH AS FULL_MONTH
     	     , MIN(DATEID) AS START_DATE
     	     , MAX(DATEID) AS END_DATE
-    	     , $_parameter.weekParent AS PARENT
-    	     , $_parameter.weekUniq AS UIQCOL
-    	     , ROW_NUMBER() OVER(PARTITION BY YEAR, MONTH ORDER BY YEAR, MONTH, WEEK) AS WEEK_FIRST_NUM
-    	     , ROW_NUMBER() OVER(PARTITION BY YEAR, MONTH ORDER BY YEAR, MONTH, WEEK DESC) AS WEEK_LAST_NUM
+    	     , #if($_parameter.weekParent) $_parameter.weekParent #else NULL #end AS PARENT
+    	     , #if($_parameter.weekUniq) $_parameter.weekUniq #else NULL #end AS UIQCOL
+    	     , NULL AS MONTH_FIRST_NUM
+    	     , NULL AS MONTH_LAST_NUM
+#if($_parameter.weekParent)
+    	     , ROW_NUMBER() OVER(PARTITION BY $_parameter.weekParent ORDER BY $_parameter.weekUniq.replace("||",",")     ) AS WEEK_FIRST_NUM
+    	     , ROW_NUMBER() OVER(PARTITION BY $_parameter.weekParent ORDER BY $_parameter.weekUniq.replace("||",",") DESC) AS WEEK_LAST_NUM
+#else
+    	     , NULL AS WEEK_FIRST_NUM
+    	     , NULL AS WEEK_LAST_NUM
+#end
     	FROM W_RAW
     	GROUP BY YEAR, QUARTER, MONTH, WEEK
 #end
@@ -109,7 +134,7 @@
     WHERE A.CAL_TYPE IS NOT NULL
     ORDER BY YEAR NULLS FIRST
            , QUARTER NULLS FIRST
-           , FULL_MONTH NULLS FIRST
+           , MONTH NULLS FIRST
            , WEEK NULLS FIRST
     </select>
     

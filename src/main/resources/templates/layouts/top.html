@@ -127,7 +127,7 @@
 
         <!-- tabs data-tabs-type : text, group, pills.-->
         <ul id="tabs" data-role="tabs" data-tabs-type="" data-expand="true" data-cls-tabs-list-item-active="bg-gray fg-white text-light"></ul>
-        <div id="content-wrapper" class=""></div>
+        <div id="content-wrapper" class=""><div id="dashboard" style="display:block;">Dashboard!!!!</div></div>
     </div>
 </div>
 
@@ -170,6 +170,8 @@
         var tabs = Metro.getPlugin($("#tabs"), "tabs");
         var li = $("#tabs").find('li');
         tabs.open(li[li.length-1]);
+        
+        $("#dashboard").hide(); // dashboard 내용 숨김
     }
 
     function fn_removeMenu(obj,uniqMenuCd) {
@@ -185,6 +187,8 @@
 
         $('#_'+uniqMenuCd).remove(); //iframe 상위 div 삭제
         li.remove(); //tab 삭제
+        
+        if ($("#tabs li").length === 0) $("#dashboard").show(); // dashboard 내용 보임
     }
 
 </script>
