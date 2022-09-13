@@ -274,6 +274,7 @@ function gfn_commButton(fType) {
 	console.log("gfn_commButton");
 	switch (fType) {
 		case 'DIMENSION' :
+			gfn_comDimensionPopup();
 			break;
 		case 'MEASURE' :
 			break;
@@ -289,11 +290,106 @@ function gfn_commButton(fType) {
 function gfn_commPopup(pType) {
 	console.log("gfn_commPopup");
 	switch (pType) {
-		case 'COMM1' :
-			if (typeof fn_comPopup1 === 'function') fn_comPopup1();
+		case 'COMM_DIMENSION' :
+			_gfn_commDimension();
 			break;
 		case 'COMM2' :
 			if (typeof fn_comPopup2 === 'function') fn_comPopup2();
 			break;
 	}
 }
+
+function _gfn_commDimension() {
+	console.log("call _gfn_commDimension");
+	
+	//if (typeof fn_comPopup1 === 'function') fn_comPopup1();
+}
+
+function gfn_comDimensionPopup() {
+	console.log("gfn_comDimensionPopup");
+	
+    //데이터 초기화 및 그리드 데이터 생성
+    com_viewinfo.selDimProvider.clearRows();
+    com_viewinfo.selDimGrid.cancel();
+    
+	const dAllData = com_viewinfo.arrAllDim.map(v => { 
+	    return {dimCd: v, dimNm: v}
+	})
+
+	const dSelData = com_viewinfo.arrDim.map(v => { 
+	    return {dimCd: v, dimNm: v}
+	})
+    
+    com_viewinfo.allDimProvider.setRows(dAllData);
+    com_viewinfo.selDimProvider.setRows(dSelData);
+    
+    //이미 선택된 디멘전 체크
+    let arrIdx = [];
+	dSelData.forEach(v => {
+		arrIdx.push(com_viewinfo.allDimGrid.getJsonRows().findIndex((element) => element.dimCd === v.dimCd));
+	})
+	com_viewinfo.allDimGrid.checkRows(arrIdx, true);
+
+	Metro.dialog.open('#c_dimension')
+}
+
+function gfn_formInit() {
+	//디멘전 팝업 생성
+	if (com_viewinfo.dimension) {
+		const fields = [ {fieldName: "dimCd", type: "data"} ];
+	    const columns = [
+	        {name: "dimNm",     type: "data", width: "150", header: {text: "Dimension"      }, styleName: "tal-column" }
+	    ];
+	    const options = {
+			checkBar: { visible: true }
+		  , stateBar: { visible: false }
+		};
+		
+	    const gridInstanceAllDim = new GRID().init({gridId: "dimensionPopupAllGrid", draw: true, columns: columns, fields: fields, options: options});
+        com_viewinfo.allDimGrid = gridInstanceAllDim.gridview;
+        com_viewinfo.allDimProvider = gridInstanceAllDim.provider;
+
+	    const gridInstanceSelDim = new GRID().init({gridId: "dimensionPopupSelGrid", draw: true, columns: columns, fields: fields, options: options});
+        com_viewinfo.selDimGrid = gridInstanceSelDim.gridview;
+        com_viewinfo.selDimProvider = gridInstanceSelDim.provider;
+        
+        com_viewinfo.selDimProvider.softDeleting = false; //바로삭제
+        
+        //체크박스 이벤트 등록
+        com_viewinfo.allDimGrid.onItemChecked = function (grid, itemIndex, checked) {
+    		let sDimCd = grid.getValue(itemIndex, "dimCd");
+    		
+    		//1. 체크시 추가 - 상위체크항목을 찾아서 바로 아래 추가, 체크된 항목이 없으면 첫번째 추가
+    		if (checked) {
+				let row = grid.getDataRow(itemIndex);
+				let addIdx = 0;
+				let checkedRows = grid.getCheckedRows();
+				let fPIdx = checkedRows.findIndex(v => v === row);
+				if (fPIdx > 0) {
+					fPIdx = checkedRows[fPIdx-1];
+					addIdx = com_viewinfo.selDimGrid.getJsonRows().findIndex(v => v.dimCd === com_viewinfo.allDimProvider.getValue(fPIdx,"dimCd")) + 1;
+				}
+				let jsonRow = com_viewinfo.allDimProvider.getJsonRow(row);
+				com_viewinfo.selDimProvider.insertRow(addIdx, jsonRow);
+
+    		//2. 체크해제시 삭제
+    		} else {
+	    		let fRow = com_viewinfo.selDimGrid.getJsonRows().findIndex(v => v.dimCd === sDimCd);
+	    		com_viewinfo.selDimProvider.removeRow(fRow);
+			}
+		};
+		
+		com_viewinfo.allDimGrid.onItemAllChecked = function (grid, checked) {
+		    console.log('All checked as ' + checked);
+		    if (checked) {
+				com_viewinfo.selDimProvider.clearRows();
+				let jsonrows = com_viewinfo.AllDimGrid.getJsonRows();
+				com_viewinfo.selDimProvider.setRows(jsonrows);
+			} else {
+				com_viewinfo.selDimProvider.clearRows();
+			}
+		};
+	}
+}
+
+

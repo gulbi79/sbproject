@@ -80,7 +80,7 @@ GRID.prototype = {
 	        },
 	        display : {
 		        showEmptyMessage : true,
-	        	emptyMessage: "데이터가 없습니다.",
+	        	emptyMessage: "no data.",
 	        }
 	    };
 	    
@@ -544,8 +544,7 @@ function gfn_drawGridBucket(gridInstance, bucketlist, options) {
 	
 	//최종 columns
 	const dycolumns = [...dimcolumns, ...bucketcolumns];
-	
-	console.log("dycolumns", dycolumns);
+	//console.log("dycolumns", dycolumns);
 	
 	gridInstance.defConfig.columns = dycolumns;
 	gridInstance.setDraw(); //그리드를 그린다.
@@ -673,7 +672,7 @@ function gfn_com_getGridLayout(gridInstance, bucketlist, layoutOptions) {
 		//드룹핑되지 않는 컬럼정보 layout 앞뒤로 처리 - 디멘전, 고정컬럼
 		layout = [...gridInstance.defConfig.dimensions, ...layout];
 		
-	  	console.log("layout",layout);
+	  	//console.log("layout",layout);
 	  	gridview.setColumnLayout(layout);
 	  	
 	} catch(e) {

@@ -22,11 +22,13 @@
         var Utils = Metro.utils;
         let gridInstance, grid, provider;
         let gridPopupInstance, gridPopup, providerPopup;
-        let viewInfo = {
-        	arrAllDim : ["dim01","dim02","dim03"], //화면에서 사용될 전체 디멘전
-        	arrDim : ["dim01","dim02"], //그리드에 그려질 실제 디멘전 - 기본디멘전 정의 후 디멘전 선택 팝업에서 선택한 디멘전을 갖고있는다.
+        let com_viewinfo = {
+			dimension: true,
+        	arrAllDim: ["dim01","dim02","dim03"], //화면에서 사용될 전체 디멘전
+        	arrDim: ["dim01","dim02"], //그리드에 그려질 실제 디멘전 - 기본디멘전 정의 후 디멘전 선택 팝업에서 선택한 디멘전을 갖고있는다.
 }		;
         $(function() {
+			gfn_formInit(); //폼 공통로직 처리
             fn_filterInit(); //필터초기화
             fn_gridInit(); //그리드초기화
             fn_eventInit(); //이벤트초기화
@@ -79,13 +81,13 @@
             filterObj = {...filterObj, ...gfn_getChkTree()}; //체크트리 파라미터 셋
             
             //dimension parameter set 
-            filterObj.dimensions = viewInfo.arrDim;
+            filterObj.dimensions = com_viewinfo.arrDim;
             
             //유효성 검증
             if (!fn_validation()) return false;
 
 			//그리드정보에 디멘전정보를 설정
-			gridInstance.setDimension(viewInfo.arrDim);
+			gridInstance.setDimension(com_viewinfo.arrDim);
             
 			//server api 요청
 			const pConfigs = {

@@ -48,6 +48,6 @@ public class ApiInterceptor implements HandlerInterceptor {
     	// 스레드 로컬 정보 제거
     	SqlContextHolder.THREAD_LOCAL_SQL.remove();
     	SqlContextHolder.THREAD_LOCAL_SQLYN.remove();
-    	SqlContextHolder.THREAD_LOCAL_STOP_SQLYN.remove();
+    	SqlContextHolder.THREAD_LOCAL_NONE_SQL.remove();
     }
 }
