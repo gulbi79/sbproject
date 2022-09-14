@@ -6,16 +6,65 @@
 
     <!-- sample select -->
     <select id="selectSampleMain" parameterType="map" resultType="custommap">
+    <![CDATA[
     /* selectSampleMain */
-    SELECT
-#foreach($bucket in $_parameter.bucketList)
- #if($foreach.index == 0)
-           10 AS w$bucket.week 
- #else
-         , 10 AS w$bucket.week 
+    WITH W_TMP AS (
+        SELECT DIM01 || ROUND(DBMS_RANDOM.VALUE(1,100)) AS DIM01
+             , DIM02 || ROUND(DBMS_RANDOM.VALUE(1,100)) AS DIM02
+             , DIM03 || ROUND(DBMS_RANDOM.VALUE(1,100)) AS DIM03
+             , QTY
+             , '2022' || LPAD(ROUND(DBMS_RANDOM.VALUE(1,52)),2,'0') AS WEEK
+        FROM (
+        	SELECT 'A' AS DIM01, 'AA' AS DIM02, 'AAA' AS DIM03
+        	     , ROUND(DBMS_RANDOM.VALUE(0,100) * ROWNUM) AS QTY
+        	FROM DUAL
+        	CONNECT BY ROWNUM < 5000
+        ) A
+    )
+    , W_RAW AS (
+        SELECT NULL AS TMPCOL
+#foreach($dim in $_parameter.dimensionList)
+ #if($dim.dimCd == "DIM01")
+             , DIM01 AS $dim.dimCd
+ #elseif($dim.dimCd == "DIM02")
+             , DIM02 AS $dim.dimCd
+ #elseif($dim.dimCd == "DIM03")
+             , DIM03 AS $dim.dimCd
  #end
 #end
-    FROM DUAL
+             , WEEK
+             , QTY
+        FROM W_TMP
+    )
+    SELECT TMPCOL
+#set($lastDim = "")
+#foreach($dim in $_parameter.dimensionList)
+         , NVL($dim.dimCd, 'Total') AS $dim.dimCd
+#end
+#foreach($dim in $_parameter.dimensionList)
+ #set($lastDim = $dim.dimCd)
+         , GROUPING($dim.dimCd) AS GRP_ID_$dim.dimCd
+#end
+         , GROUPING($lastDim) AS GRP_ID
+#foreach($bucket in $_parameter.bucketList)
+         , SUM(CASE WHEN $bucket.bucketcol = WEEK THEN QTY END) AS w$bucket.week
+#end
+    FROM W_RAW A
+    GROUP BY TMPCOL
+           , ROLLUP (
+#foreach($dim in $_parameter.dimensionList)
+ #if($foreach.index == 0)
+                 ($dim.dimCd)
+ #else
+               , ($dim.dimCd)
+ #end
+#end
+            )
+    ORDER BY NULL
+#foreach($dim in $_parameter.dimensionList)
+           , A.$dim.dimCd NULLS FIRST
+#end
+    ]]>
     </select>
 
 </mapper>

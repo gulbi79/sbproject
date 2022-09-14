@@ -33,3 +33,7 @@ body{
 .onegrid{
 	height: calc(100% - 34px);
 }
+
+.orange-column{
+  background: #ff8b00;
+}

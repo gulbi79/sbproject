@@ -19,14 +19,13 @@
 
 <th:block layout:fragment="contentjs">
 	<script>
-        var Utils = Metro.utils;
+        var com_viewinfo = {
+			dimension: true,
+        	arrAllDim: ["DIM01","DIM02","DIM03"], //화면에서 사용될 전체 디멘전
+        	arrDim: ["DIM01","DIM02"], //그리드에 그려질 실제 디멘전 - 기본디멘전 정의 후 디멘전 선택 팝업에서 선택한 디멘전을 갖고있는다.
+		};
         let gridInstance, grid, provider;
         let gridPopupInstance, gridPopup, providerPopup;
-        let com_viewinfo = {
-			dimension: true,
-        	arrAllDim: ["dim01","dim02","dim03"], //화면에서 사용될 전체 디멘전
-        	arrDim: ["dim01","dim02"], //그리드에 그려질 실제 디멘전 - 기본디멘전 정의 후 디멘전 선택 팝업에서 선택한 디멘전을 갖고있는다.
-}		;
         $(function() {
 			gfn_formInit(); //폼 공통로직 처리
             fn_filterInit(); //필터초기화
@@ -54,8 +53,8 @@
 			  , {name: "sort",        type: "data", width: "100", header: {text: "Sort"            }, styleName: "tal-column" }
             ];
             const options = {
-				checkBar: { visible: true }
-			  , stateBar: { visible: true }
+				checkBar: { visible: false }
+			  , stateBar: { visible: false }
 			};
 			
             gridInstance = new GRID().init({gridId: "realgrid1", draw: false, columns: columns, fields: fields, options: options});
@@ -76,12 +75,8 @@
         
         //조회
         async function fn_apply(sql = false) {
-            //필터폼 데이터 생성
-            let filterObj = gfn_getFormObj($('.filterForm'));
-            filterObj = {...filterObj, ...gfn_getChkTree()}; //체크트리 파라미터 셋
-            
-            //dimension parameter set 
-            filterObj.dimensions = com_viewinfo.arrDim;
+            //service parameter set
+            let filterObj = gfn_setComParams();
             
             //유효성 검증
             if (!fn_validation()) return false;
@@ -100,16 +95,18 @@
 			
 			if (sql) return;
 			
-			//디멘전, 고정컬럼, bucket을 이용해서 그리드 컬럼정보를 만든다.
-			gfn_drawGridBucket(gridInstance, res.data.bucketList, {bucketType: "YEAR_MONTH_WEEK", bTotal1: true, bTotal2: true, bTotal3: true});
-			
-			//데이터 초기화 및 그리드 데이터 생성
-            provider.clearRows();
-            grid.cancel();
-            provider.setRows(res.data.sampleList);
-            
-            provider.clearSavePoints();
-			provider.savePoint(); //초기화 포인트 저장
+			try {
+				//디멘전, 고정컬럼, bucket을 이용해서 그리드 컬럼정보를 만든다.
+				gfn_drawGridBucket(gridInstance, res.data.bucketList, {bucketType: "YEAR_MONTH_WEEK", bTotal1: false, bTotal2: false, bTotal3: false});
+				
+				//데이터 초기화 및 그리드 데이터 생성
+	            provider.clearRows();
+	            grid.cancel();
+	            provider.setRows(res.data.sampleList);
+	            
+	            provider.clearSavePoints();
+				provider.savePoint(); //초기화 포인트 저장
+			} catch(e) { console.log(e); }
         }
         
         function fn_validation() {

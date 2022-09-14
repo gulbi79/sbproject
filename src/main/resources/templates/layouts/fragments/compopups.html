@@ -16,12 +16,11 @@
 						</div>
 				    </th:block>
 				    
-				    <th:block th:fragment="comDimensionPopupFragment()">
-					    <div class="dialog" data-role="dialog,draggable" id="c_dimension" data-drag-element=".drag-element" data-width="800">
+				    <th:block th:fragment="comHiddenPopupFragment()">
+					    <div class="dialog" data-role="dialog,draggable" id="c_popup" data-drag-element=".drag-element" data-width="800">
 					        <div class="dialog-title py-1 drag-element">Dimension Popup</div>
-					        <div class="dialog-content py-1 px-3 mt-0 row flex-justify-around">
-				            	<div id="dimensionPopupAllGrid" class="cell-5" style="height: 400px;"></div>
-				            	<div id="dimensionPopupSelGrid" class="cell-5" style="height: 400px;"></div>
+					        <div class="dialog-content py-1 px-3 mt-0">
+					        	<iframe id="comm_popup" class="" src="_blank" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 					        </div>
 					        <div class="dialog-actions text-right mt-0 px-2">
 					            <button class="button js-dialog-close small">Cancel</button>

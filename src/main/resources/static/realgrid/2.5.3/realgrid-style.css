@@ -40,7 +40,7 @@ THEME : Realgrid light(Default)
   color: #000000;
   font-size: 32px;
   text-align: center; }
-  .rg-empty-grid span {
+.rg-empty-grid span {
     display: table-cell;
     vertical-align: middle; }
 
@@ -222,7 +222,8 @@ THEME : Realgrid light(Default)
     border-top: none;
     border-right: 1px solid #bcc0c8;
     border-bottom: 1px solid #bcc0c8;
-    border-left: none; }
+    border-left: none; 
+    vertical-align: middle; }
 
 .rg-sum {
   text-align: center;
@@ -367,8 +368,10 @@ THEME : Realgrid light(Default)
 .rg-data-row {
   background: none; }
 
+/* 
 .rg-alternate-row {
   background: #fafafa; }
+*/ 
 
 .rg-fixed-row {
   background-color: #ededed; }

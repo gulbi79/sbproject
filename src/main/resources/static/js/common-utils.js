@@ -18,3 +18,7 @@ function gfn_util_decode() {
 	
 	return rtnval;
 }
+
+function gfn_util_camelCase(str) {
+  return str.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
+}
