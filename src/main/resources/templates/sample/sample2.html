@@ -64,6 +64,10 @@
             gridPopupInstance = new GRID().init({gridId: "realgridPopup", columns: columns, fields: fields, options: options});
             gridPopup = gridPopupInstance.gridview;
             providerPopup = gridPopupInstance.provider;
+            
+            grid.onSelectionChanged = function (grid) {
+			     console.log("sum",gfn_getSelectionSummary(grid));
+			}
         }
         
         //이벤트초기화

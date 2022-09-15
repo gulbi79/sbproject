@@ -11,6 +11,8 @@ window.onunload = function() {
 	if (typeof fn_unload === 'function') fn_unload();
 }
 
+const GRID_TOTAL_COLOR = ["#f7e9e9","#f7f3e9","#f0f7e9","#e9f7f3","#eae9f7","#f7e9f6"];
+
 var VIEW_GRID_LIST = {
 	gridview: [],
 	provider: []
@@ -139,11 +141,11 @@ GRID.prototype = {
 		this.gridview.setColumns(null);
 		this.provider.setFields(null);
 		
-		var fields = [];
+		var fields = ["grpId"];
 		
 		//추가 fields
 		if (this.defConfig.fields) {
-			fields = [...this.defConfig.fields];
+			fields = [...fields, ...this.defConfig.fields];
 		}
 		
         if (this.defConfig.columns) {
@@ -196,12 +198,13 @@ function gfn_gridsDestroy() {
 
 // 엑셀 내보내기 실행
 // 엑셀 내보내기 사용하려면 소스에 jszip.min.js 인크루드해야 함
-function gfn_exportExcel(grid, options){
+function gfn_exportExcel(grid, options) {
 	let exportDef = {
 	    type: 'excel',
 	    target: 'local',
 	    fileName: 'export.xlsx',
 	    layoutExpand: "current",
+	    indicator: 'hidden',
 	    showProgress: true,
 	    applyDynamicStyles: true,
 	    done: function () {  
@@ -219,15 +222,15 @@ function gfn_exportExcel(grid, options){
 };
 
 // 선택된 dataType이 "number"인 셀들의 합계를 반환 한다.
-function getSelectionSummary(grid) {
+function gfn_getSelectionSummary(objGrid) {
     var sum = 0;
     var cnt = 0;
-    var selectData = grid.getSelectionData();
+    var selectData = objGrid.getSelectionData();
 
     for(var rows in selectData){
       for(var col in selectData[rows]){
-        if(grid.columnByName(col).valueType == "number"){
-          sum += selectData[rows][col];
+        if(objGrid.columnByName(col)?.valueType == "number"){
+          sum += selectData[rows][col] ?? 0;
           cnt ++;
         };
       };
@@ -286,9 +289,11 @@ function gfn_drawGridBucket(gridInstance, bucketlist, options) {
 	const lastBucketType   = arrBucketType[arrBucketType.length-1];
 	const arrLowBucketType = arrBucketType.map(v => v.toLowerCase());
 	
-	//dycolumns 앞뒤로 디멘전, 고정컬럼  --------------------------------
+	//dyco1lumns 앞뒤로 디멘전, 고정컬럼  --------------------------------
+	
+	
 	//디멘전
-	const dimcolumns = gridInstance.defConfig.dimensions.map(v => {
+	let dimcolumns = gridInstance.defConfig.dimensions.map(v => {
 		return { name: v, type: "data", width: "90", header: {text: v, styleName: "vam-column"}, styleName: "tal-column", sortable : false };
 	})
 
@@ -318,9 +323,31 @@ function gfn_drawGridBucket(gridInstance, bucketlist, options) {
 		bucketcolumns = [...bucketcolumns, ...stbucketcolumns2];
 	}
 	
+	//style 적용
+	const dimStyleCallback = function(grid, dataCell) {
+		var ret = {};
+  		var grpId = grid.getValue(dataCell.index.itemIndex, "grpId");
+  		if (grpId > 0 && dataCell.value === "Total") ret.styleName = "dyl"+grpId+"-column";
+  		return ret;
+	}
+
+	const bucketStyleCallback = function(grid, dataCell) {
+		var ret = {};
+  		var grpId = grid.getValue(dataCell.index.itemIndex, "grpId");
+  		if (grpId > 0) ret.styleName = "dyr"+grpId+"-column";
+  		return ret;
+	}
+	
+	dimcolumns = dimcolumns.map(v => {
+		return {...v, styleCallback: dimStyleCallback};
+	})
+
+	bucketcolumns = bucketcolumns.map(v => {
+		return {...v, styleCallback: bucketStyleCallback};
+	})
+
 	//최종 columns
 	const dycolumns = [...dimcolumns, ...bucketcolumns];
-	//console.log("dycolumns", dycolumns);
 	
 	gridInstance.defConfig.columns = dycolumns;
 	gridInstance.setDraw(); //그리드를 그린다.

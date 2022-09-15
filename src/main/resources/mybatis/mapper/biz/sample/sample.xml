@@ -36,22 +36,17 @@
              , QTY
         FROM W_TMP
     )
-    SELECT TMPCOL
+    SELECT NULL AS TMPCOL
 #set($lastDim = "")
 #foreach($dim in $_parameter.dimensionList)
          , NVL($dim.dimCd, 'Total') AS $dim.dimCd
 #end
-#foreach($dim in $_parameter.dimensionList)
- #set($lastDim = $dim.dimCd)
-         , GROUPING($dim.dimCd) AS GRP_ID_$dim.dimCd
-#end
-         , GROUPING($lastDim) AS GRP_ID
+         , 0 #foreach($dim in $_parameter.dimensionList) + GROUPING($dim.dimCd) #end AS GRP_ID
 #foreach($bucket in $_parameter.bucketList)
          , SUM(CASE WHEN $bucket.bucketcol = WEEK THEN QTY END) AS w$bucket.week
 #end
     FROM W_RAW A
-    GROUP BY TMPCOL
-           , ROLLUP (
+    GROUP BY ROLLUP (
 #foreach($dim in $_parameter.dimensionList)
  #if($foreach.index == 0)
                  ($dim.dimCd)
