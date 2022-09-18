@@ -127,14 +127,12 @@
         
         //공통함수에서 호출되는 영역
         function fn_comExportExcel() {
-			gfn_exportExcel(grid);
+			gfn_exportExcel(grid, {exportGrids: [{ grid: grid, sheetName: 'User' }, { grid: grid2, sheetName: 'Role' }]});
 		}
         
         //조회
         async function fn_apply(sql = false) {
-            //필터폼 데이터 생성
-            let filterObj = gfn_getFormObj($('.filterForm'));
-            filterObj = {...filterObj, ...gfn_getChkTree()}; //체크트리 파라미터 셋
+            let filterObj = gfn_setComParams(); //service parameter set
             
             //유효성 검증
             if (!fn_validation()) return false;

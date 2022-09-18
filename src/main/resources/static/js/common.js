@@ -6,7 +6,9 @@ function gfn_formInit() {
 }
 
 function gfn_setComParams() {
+	const viewinfo = this.com_viewinfo ?? {};
 	let rtnParams = {};
+	
 	// 1. 체크 트리정보
 	rtnParams = {...rtnParams, ...gfn_getChkTree()};
 
@@ -14,9 +16,70 @@ function gfn_setComParams() {
 	rtnParams = {...rtnParams, ...gfn_getFormObj($('.filterForm'))};
             
     // 3.dimension
-    rtnParams.dimensionList = com_viewinfo?.arrDim.map(v => { return { dimCd: v, dimNm: v } });
+    rtnParams.dimensionList = viewinfo?.arrDim?.map(v => { return { dimCd: v, dimNm: v } });
     
     return rtnParams;
+}
+
+/**
+ * Tree 체크데이터 배열로 리턴
+ */
+function gfn_getChkTree() {
+    const rtnObj = {};
+    Array.from($("#treetabs li a")).forEach(function(vt) {
+        const treeId = $(vt).attr("href");
+        const chkNodes = Array.from($(treeId+" input[type=checkbox]:checked"));
+        let arrChkVals = chkNodes.filter(function(v) {
+            return $($(v).parent().siblings("ul")).find(".check").length === 0;
+        }).map(function(v) {
+            return v.dataset.uniqval; //v.value;
+        });
+
+        rtnObj[treeId] = arrChkVals;
+    });
+	return rtnObj;
+}
+
+/**
+ * input 값을 object로 리턴
+ * @param {*} $ele
+ */
+function gfn_getFormObj($ele) {
+    var o = {};
+    //var elements = $('.filterForm').find('input, select');
+    var elements = $ele.find('input, select');
+    elements.each(function() {
+        if (this.name === null || this.name === undefined || this.name === '') return;
+
+        var elemValue = null;
+        var $this = $(this);
+        if ($this.is('select')) {
+            var select = Metro.getPlugin(this, "select");
+            elemValue = select.val();
+        } else {
+            if ($this.attr("type") === "checkbox" || $this.attr("type") === "radio") {
+                if (!$this.prop("checked")) return;
+
+                elemValue = this.value;
+
+            } else if ($this.attr("data-role") === "calendarpicker") {
+                elemValue = this.value.replace(/-/g, '');
+            } else {
+                elemValue = this.value;
+            }
+        }
+
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(elemValue || '');
+        } else {
+            o[this.name] = elemValue || '';
+        }
+    });
+
+    return o;
 }
 
 /**
@@ -76,67 +139,6 @@ async function gfn_service(pConfigs) {
     }
     
     return null;
-}
-
-/**
- * Tree 체크데이터 배열로 리턴
- */
-function gfn_getChkTree() {
-    var rtnObj = {};
-    Array.from($("#treetabs li a")).forEach(function(vt) {
-        var treeId = $(vt).attr("href");
-        var chkNodes = Array.from($(treeId+" input[type=checkbox]:checked"));
-        var arrChkVals = chkNodes.filter(function(v) {
-            return $($(v).parent().siblings("ul")).find(".check").length === 0;
-        }).map(function(v) {
-            return v.dataset.uniqval; //v.value;
-        });
-
-        rtnObj[treeId] = arrChkVals;
-    });
-   return rtnObj;
-}
-
-/**
- * input 값을 object로 리턴
- * @param {*} $ele
- */
-function gfn_getFormObj($ele) {
-    var o = {};
-    //var elements = $('.filterForm').find('input, select');
-    var elements = $ele.find('input, select');
-    elements.each(function() {
-        if (this.name === null || this.name === undefined || this.name === '') return;
-
-        var elemValue = null;
-        var $this = $(this);
-        if ($this.is('select')) {
-            var select = Metro.getPlugin(this, "select");
-            elemValue = select.val();
-        } else {
-            if ($this.attr("type") === "checkbox" || $this.attr("type") === "radio") {
-                if (!$this.prop("checked")) return;
-
-                elemValue = this.value;
-
-            } else if ($this.attr("data-role") === "calendarpicker") {
-                elemValue = this.value.replace(/-/g, '');
-            } else {
-                elemValue = this.value;
-            }
-        }
-
-        if (o[this.name] !== undefined) {
-            if (!o[this.name].push) {
-                o[this.name] = [o[this.name]];
-            }
-            o[this.name].push(elemValue || '');
-        } else {
-            o[this.name] = elemValue || '';
-        }
-    });
-
-    return o;
 }
 
 /**
@@ -284,7 +286,24 @@ function gfn_alertSync(options) {
 }
 
 function gfn_onCalendarShow(el, cal) {
-	console.log("gfn_onCalendarShow");
+	//console.log("gfn_onCalendarShow",el,cal);
+	const adjFix = 3;
+	const obj = $(el[0]);
+	const parentObj = $(el[0]).parent();
+	let divRight = $(".filterForm").width() - 10;
+	let right = parentObj.left() + obj.width() + adjFix;
+	let pRight = parentObj.left() + parentObj.width();
+	
+	//console.log("divRight",divRight,"right",right);
+	
+	//부모넓이가 자식보다 크면 우측에 붙임
+	if(parentObj.width() > obj.width()) {
+		obj.left(parentObj.width() - obj.width() - adjFix);
+	} else if (divRight < right) {
+		obj.left((right - pRight)*-1);
+	} else {
+		obj.left(0);
+	}
 }
 
 function gfn_onCalendarHide(el, cal) {
