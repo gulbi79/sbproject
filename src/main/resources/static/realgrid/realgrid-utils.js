@@ -82,7 +82,7 @@ GRID.prototype = {
 	        },
 	        display : {
 		        showEmptyMessage : true,
-	        	emptyMessage: "no data.",
+	        	emptyMessage: "Data Not Found",
 	        }
 	    };
 	    

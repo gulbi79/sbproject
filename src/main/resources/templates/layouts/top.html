@@ -47,6 +47,9 @@
     </style>
 </head>
 <body class="m4-cloak">
+	<script th:inline="javascript">
+    	const GV_CONTEXT_PATH = [[@{/}]];
+    </script>
 <div class="h-vh-100">
 	<!-- top -->
     <div data-role="appbar" class="pos-absolute bg-black fg-white">
@@ -148,22 +151,6 @@
         frameHtml += `<iframe name="_${uniqMenuCd}" id="_${uniqMenuCd}_frame" title="Inline Frame Example" width="100%" ></iframe>`; //src="../html/inner1.html"
         frameHtml += `</div>`;
         $('#content-wrapper').append(frameHtml);
-
-        var srcUrl = '../html/inner1.html';
-        switch(menucd) {
-            case 'd' :
-                srcUrl = '../html/inner2.html';
-                break;
-            case 'e' :
-                srcUrl = '../html/inner3.html';
-                break;
-            case 'f' :
-            	srcUrl = '/inner';
-                break;
-            default :
-                srcUrl = '../html/inner1.html';
-                break;
-        }
 
         $(`#_${uniqMenuCd}_frame`).attr('src', `/page/${menucd}`);
 

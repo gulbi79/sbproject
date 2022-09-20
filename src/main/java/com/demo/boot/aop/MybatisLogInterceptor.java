@@ -22,6 +22,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.ResultHandler;
 import org.springframework.util.StopWatch;
+import org.springframework.util.StringUtils;
 
 import com.demo.boot.utils.SqlContextHolder;
 
@@ -119,12 +120,16 @@ public class MybatisLogInterceptor implements Interceptor {
 	        	}
             }
         }
-         
-        log.info("SQL[{}] : {}",sqlId,"\n    ".concat(sql.trim()));
+        
+        //console 
+        //sqlId.
+        
+        String[] splitSql = StringUtils.tokenizeToStringArray(sqlId, ".");
+        String strPrintSql = "\n    /* ".concat(splitSql[splitSql.length-1]).concat(" */").concat("\n    ").concat(sql.trim());
+        log.info("{}",strPrintSql);
         
         if (SqlContextHolder.THREAD_LOCAL_SQLYN.get() && !SqlContextHolder.THREAD_LOCAL_NONE_SQL.get()) {
-        	SqlContextHolder.THREAD_LOCAL_SQL.get().put(sqlId,"\n    ".concat(sql.trim()));
-//        	SqlContextHolder.THREAD_LOCAL_SQL.set("\n    ".concat(sql.trim().concat(";")));
+        	SqlContextHolder.THREAD_LOCAL_SQL.get().put(sqlId, strPrintSql);
         	return new ArrayList<Object>();
         } else {
         	long startTime = System.currentTimeMillis();

@@ -33028,7 +33028,7 @@ input.input-small:-ms-input-placeholder {
 .select.input-small .prepend,
 .select.input-small .append {
   height: 22px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   padding: 0 4px;
   line-height: 22px;
 }

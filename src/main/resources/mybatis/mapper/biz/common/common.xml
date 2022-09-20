@@ -4,9 +4,15 @@
 
 <mapper namespace="com.demo.boot.biz.common.repository.CommonRepository">
 
+    <!-- common code 조회 -->
+    <select id="selectCode" parameterType="map" resultType="custommap">
+    SELECT GROUP_CD, GROUP_NM, CODE_CD, CODE_NM, SORT, USE_YN
+    FROM TB_MST_CODE
+    WHERE GROUP_CD IN (#repeat($_parameter.groupCd $_id ",") '$_id' #end)
+    </select>
+
     <!-- calendar 조회 -->
     <select id="selectCalBase" parameterType="map" resultType="custommap">
-    /* selectCalBase */
     SELECT DATEID, YEAR, QUARTER, MONTH, YEARWEEK, WEEK, DAY
     FROM TB_MST_CALENDAR
     WHERE DATEID BETWEEN @{f_fromcal} AND @{f_tocal}
@@ -14,7 +20,6 @@
     </select>
 
     <select id="selectCalBucket" parameterType="map" resultType="custommap">
-    /* selectCalBucket */
     WITH W_RAW AS (
     	SELECT *
     	FROM TB_MST_CALENDAR

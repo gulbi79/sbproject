@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.thymeleaf.util.StringUtils;
 
-import com.demo.boot.biz.common.service.TreeService;
+import com.demo.boot.biz.common.service.CommonService;
 import com.demo.boot.biz.common.service.UserService;
 import com.demo.boot.common.vo.UserVo;
 
@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberController {
 
     private final UserService userService;
-    private final TreeService treeService;
+    private final CommonService commonService;
 
     @GetMapping("/auth/login")
     public String loginView(@AuthenticationPrincipal UserVo uservo) {
@@ -90,7 +90,7 @@ public class MemberController {
     			pageUrl = url;
     			
     			//tree 조회
-    			HashMap<String, Object> treeMap = treeService.selectTree();
+    			HashMap<String, Object> treeMap = commonService.selectTree();
     			
     			List<HashMap<String, String>> salesList = (List<HashMap<String, String>>)treeMap.get("salesTree");
     			List<HashMap<String, String>> prodList = (List<HashMap<String, String>>)treeMap.get("productTree");

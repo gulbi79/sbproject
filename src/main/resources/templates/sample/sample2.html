@@ -5,7 +5,8 @@
 
 <th:block layout:fragment="filter">
 	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Group','f_group')"></th:block>
-	<th:block th:replace="/layouts/fragments/filters :: pinputFragment('Popup Input','f_pinput')"></th:block>
+	<th:block th:replace="/layouts/fragments/filters :: pinputFragment('Popup Input','f_puser')"></th:block>
+	<th:block th:replace="/layouts/fragments/filters :: pinputFragment('Popup Code','f_pcode')"></th:block>
 	<th:block th:replace="/layouts/fragments/filters :: doublecalFragment('From~To','f_fromcal','f_tocal')"></th:block>
 	<th:block th:replace="/layouts/fragments/filters :: selectFragment('Select','f_select')"></th:block>
 </th:block>
@@ -26,7 +27,6 @@
         	arrDim: ["DIM01","DIM02"], //그리드에 그려질 실제 디멘전 - 기본디멘전 정의 후 디멘전 선택 팝업에서 선택한 디멘전을 갖고있는다.
 		};
         let gridInstance, grid, provider;
-        let gridPopupInstance, gridPopup, providerPopup;
         $(function() {
 			gfn_formInit(); //폼 공통로직 처리
             fn_filterInit(); //필터초기화
@@ -35,37 +35,31 @@
         });
 
         //필터초기화
-        function fn_filterInit() {
+        async function fn_filterInit() {
+			//공통코드조회 후 필터 set
+			const comCode = await gfn_getCommonCode({groupCd: ['CITY']});
+	
 			//calendar set
 			$("#f_fromcal").data("calendarpicker").val("2022-08-15");
 			$("#f_tocal").data("calendarpicker").val("2022-12-31");
+			
+			//dropdown set
+			comCode.filter(v => v.groupCd === 'CITY').forEach(vv => $("#f_select").append('<option value="'+vv.codeCd+'">'+vv.codeNm+'</option>'));
+            const select = Metro.getPlugin($("#f_select"), "select");
+            select.reset();
         }
 
         //그리드초기화
         function fn_gridInit() {
-            //dataType이 text가 아닌경우 tag속성에 지정
-            const fields = [];
-            const columns = [
-                {name: "groupCd",     type: "data", width: "100", header: {text: "Group Code"      }, styleName: "tal-column" }
-              , {name: "groupNm",     type: "data", width: "200", header: {text: "Group Name"      }, styleName: "tal-column" }
-              , {name: "codeCd",      type: "data", width: "100", header: {text: "Code"            }, styleName: "tal-column" }
-              , {name: "codeNm",      type: "data", width: "200", header: {text: "Code Name"       }, styleName: "tal-column" }
-			  , {name: "useYn",       type: "data", width: "100", header: {text: "Use Y/N"         }, styleName: "tac-column" }
-			  , {name: "sort",        type: "data", width: "100", header: {text: "Sort"            }, styleName: "tal-column" }
-            ];
             const options = {
 				checkBar: { visible: false }
 			  , stateBar: { visible: false }
 			};
 			
-            gridInstance = new GRID().init({gridId: "realgrid1", draw: false, columns: columns, fields: fields, options: options});
+            gridInstance = new GRID().init({gridId: "realgrid1", draw: false, columns: [], fields: [], options: options});
             grid = gridInstance.gridview;
             provider = gridInstance.provider;
 
-            gridPopupInstance = new GRID().init({gridId: "realgridPopup", columns: columns, fields: fields, options: options});
-            gridPopup = gridPopupInstance.gridview;
-            providerPopup = gridPopupInstance.provider;
-            
             /*
             grid.onSelectionChanged = function (grid) {
 			     console.log("sum",gfn_getSelectionSummary(grid));
@@ -93,7 +87,7 @@
             
 			//server api 요청
 			const pConfigs = {
-				url: '/sample/samplemain',
+				url: 'sample/samplemain',
 				reqSql: sql,
 			    body: JSON.stringify(filterObj),
 			};
@@ -120,9 +114,26 @@
             return true;
         }
 
-        function fn_comPopup1() {
-            console.log("fn_comPopup1!!!!");
-        }
+		//filter 팝업에서 호출됨
+        function fn_comPopup(pType) {
+			console.log('fn_comPopup',pType);
+			switch (pType) {
+				case 'f_puser' :
+					$("#comm_popup").css("width", "100%").css("height", "400px").attr("src", GV_CONTEXT_PATH+"popup/user");
+					$('#c_popup').css('width','400px');
+					setTimeout(function() {
+						Metro.dialog.open('#c_popup',undefined,'사용자');
+					},10);
+					break;
+				case 'f_pcode' :
+					$("#comm_popup").css("width", "100%").css("height", "400px").attr("src", GV_CONTEXT_PATH+"popup/code");
+					$('#c_popup').css('width','400px');
+					setTimeout(function() {
+						Metro.dialog.open('#c_popup',undefined,'공통코드');
+					},10);
+					break;
+			}
+		}
     </script>
 </th:block>
 </html>

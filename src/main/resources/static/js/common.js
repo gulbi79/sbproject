@@ -81,6 +81,16 @@ function gfn_getFormObj($ele) {
 
     return o;
 }
+			
+/**
+ */
+async function gfn_getCommonCode(params = {}) {
+	const res = await gfn_service({
+		url: 'common/code',
+	    body: JSON.stringify({groupCd: params.groupCd}),
+	});
+	return res.data;
+}
 
 /**
  * 공통 서비스 함수
@@ -107,13 +117,13 @@ async function gfn_service(pConfigs) {
 	
 	//server api 요청
 	try {
-        const res = await fetch(serviceConfig.url, {
+        const res = await fetch(GV_CONTEXT_PATH + serviceConfig.url, {
 		    method: serviceConfig.method, 
 		    headers: serviceConfig.headers,
 		    body: serviceConfig.body
 		});
 									
-		Metro.activity.close(activity);
+		//Metro.activity.close(activity);
 		
 		if (!res.ok) throw res;
 		
@@ -136,7 +146,9 @@ async function gfn_service(pConfigs) {
         err.text().then(async function(msg) {
 			await gfn_alertSync({title: "Error", content: JSON.parse(msg).message});
 		})
-    }
+    } finally {
+		Metro.activity.close(activity);
+	}
     
     return null;
 }
@@ -343,6 +355,11 @@ function gfn_commPopup(pType) {
 	}
 }
 
+function gfn_localPopup(pType) {
+	console.log("gfn_localPopup");
+	if (typeof fn_comPopup === 'function') fn_comPopup(pType);
+}
+
 function _gfn_commDimension() {
 	console.log("call _gfn_commDimension");
 	//iframe의 함수를 호출
@@ -352,9 +369,8 @@ function _gfn_commDimension() {
 function gfn_comDimensionPopup() {
 	console.log("gfn_comDimensionPopup");
 	$("#comm_popup").css("width", "100%").css("height", "400px").attr("src", GV_CONTEXT_PATH+"popup/dimension");
-	Metro.dialog.open('#c_popup');
+	$('#c_popup').css('width','800px');
+	Metro.dialog.open('#c_popup',undefined,'디멘전 팝업');
 }
-
-
 
 

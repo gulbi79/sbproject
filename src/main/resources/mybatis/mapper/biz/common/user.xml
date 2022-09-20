@@ -6,7 +6,6 @@
 
     <!-- 로그인 -->
     <select id="getUserAccount" parameterType="String" resultType="com.demo.boot.common.vo.UserVo">
-    /* getUserAccount */
     SELECT USER_ID, USER_NM, USER_PW
     FROM TB_MST_USER
     WHERE USER_ID= @{userId}
@@ -14,7 +13,6 @@
 
     <!-- 권한조회 -->
     <select id="getUserAuthorities" parameterType="String" resultType="String">
-    /* getUserAuthorities */
     SELECT ROLE_CD
     FROM TB_MAP_ROLE
     WHERE USER_ID = @{userId}
@@ -22,7 +20,6 @@
 
     <!-- 회원가입 -->
     <insert id="saveUser" parameterType="com.demo.boot.common.vo.UserVo">
-    /* saveUser */
     INSERT INTO TB_MST_USER (
       USER_ID, USER_PW, USER_NM, EMAIL
     ) VALUES (
@@ -32,7 +29,6 @@
     
     <!-- 메뉴조회 -->
     <select id="userMenu" parameterType="map" resultType="custommap">
-    /* userMenu */
     -- 전체메뉴 트리
     WITH W_MENU AS (
         SELECT MENU_CD, MENU_NM, PARENT_MENU_CD, URL, USE_YN

@@ -80,7 +80,7 @@
 	            let filterObj = {clickUserId : grid.getValue(newRow, "userId")};
 				//server api 요청
 				const pConfigs = {
-					url: '/admin/userrole',
+					url: 'admin/userrole',
 					reqSql : false,
 				    body: JSON.stringify(filterObj),
 				}; 
@@ -139,7 +139,7 @@
 			
 			//server api 요청
 			const pConfigs = {
-				url: '/admin/userlist',
+				url: 'admin/userlist',
 				reqSql : sql,
 			    body: JSON.stringify(filterObj),
 			}; 
@@ -185,7 +185,7 @@
 			
 			//server api 요청
 			const pConfigs = {
-				url: '/admin/userreg',
+				url: 'admin/userreg',
 			    body: JSON.stringify({grdData: uGrdData, uUserRoleList: userRoleList, userId: userId}),
 			}; 
 			const res = await gfn_service(pConfigs);

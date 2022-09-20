@@ -6,7 +6,6 @@
 
     <!-- sales tree 조회 -->
     <select id="sales" parameterType="String" resultType="custommap">
-    /* sales */
     SELECT SALES_CD, PARENTSALES_CD, AP2_CD, AP1_CD, LEVEL AS LEVEL_CD
          , SYS_CONNECT_BY_PATH(SALES_CD, '_') || '_' AS PATH
     FROM TB_MST_SALES
@@ -16,7 +15,6 @@
 
     <!-- product tree 조회 -->
     <select id="product" parameterType="String" resultType="custommap">
-    /* product */
     SELECT ITEM_CD, PRODUCTGROUP_CD, PRODUCT_CD, PARENT_CD, LEVEL AS LEVEL_CD
          , SYS_CONNECT_BY_PATH(ITEM_CD, '_') || '_' AS PATH
     FROM TB_MST_PRODUCT

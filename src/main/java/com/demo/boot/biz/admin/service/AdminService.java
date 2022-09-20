@@ -1,4 +1,4 @@
-package com.demo.boot.biz.common.service;
+package com.demo.boot.biz.admin.service;
 
 import java.util.List;
 import java.util.Map;

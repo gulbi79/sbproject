@@ -7,7 +7,6 @@
     <!-- sample select -->
     <select id="selectSampleMain" parameterType="map" resultType="custommap">
     <![CDATA[
-    /* selectSampleMain */
     WITH W_TMP AS (
         SELECT DIM01 || ROUND(DBMS_RANDOM.VALUE(1,100)) AS DIM01
              , DIM02 || ROUND(DBMS_RANDOM.VALUE(1,100)) AS DIM02

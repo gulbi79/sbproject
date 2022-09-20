@@ -10,4 +10,6 @@ public interface CommonRepository {
     List<Map<String,Object>> selectCalBase(Map<String,Object> paramMap);
 
     List<Map<String,Object>> selectCalBucket(Map<String,Object> paramMap);
+
+    List<Map<String,Object>> selectCode(Map<String,Object> paramMap);
 }

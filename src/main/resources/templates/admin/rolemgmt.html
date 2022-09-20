@@ -75,7 +75,7 @@
 	            let filterObj = {clickRoleCd : grid.getValue(newRow, "roleCd")};
 				//server api 요청
 				const pConfigs = {
-					url: '/admin/rolemenulist',
+					url: 'admin/rolemenulist',
 					reqSql : false,
 				    body: JSON.stringify(filterObj),
 				}; 
@@ -134,7 +134,7 @@
 			
 			//server api 요청
 			const pConfigs = {
-				url: '/admin/rolelist',
+				url: 'admin/rolelist',
 				reqSql : sql,
 			    body: JSON.stringify(filterObj),
 			}; 
