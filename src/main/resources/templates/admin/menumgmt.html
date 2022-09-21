@@ -23,22 +23,25 @@
 
 <th:block layout:fragment="contentjs">
 	<script>
-        const Utils = Metro.utils;
         let grid, provider;
-        $(function() {
-            fn_filterInit(); //필터초기화
+        let comCode;
+        $(async function() {
+            await fn_filterInit(); //필터초기화 //내부 조회로직처리
             fn_gridInit(); //그리드초기화
             fn_eventInit(); //이벤트초기화
         });
 
         //필터초기화
-        function fn_filterInit() {
-            
+        async function fn_filterInit() {
+            //공통코드조회
+			comCode = await gfn_getCommonCode({groupCd: ['TREE']});
         }
 
         //그리드초기화
         function fn_gridInit() {
-            //dataType이 text가 아닌경우 tag속성에 지정
+	
+			console.log("fn_gridInit");
+            
             const fields = [
             	{fieldName: "treeId", type: "data"}
             ];
@@ -67,10 +70,11 @@
         }
         
         function fn_addColumnConfig(columns) {
+			const treeList = comCode.filter(v => v.groupCd === "TREE");
 			columns.forEach(v => {
 				if (v.name === "tree") {
-					v.values = ['value1', 'value2', 'value3'];
-					v.labels = ['label1', 'label2', 'label3'];
+					v.values = treeList.map(v => v.codeCd);
+					v.labels = treeList.map(v => v.codeNm);
 					v.lookupDisplay = true;
 					v.editor = {
 						type: "checklist", 

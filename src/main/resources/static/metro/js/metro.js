@@ -7382,8 +7382,8 @@ $.noConflict = function() {
         },
 
         info: function(){
-            console.info("Metro 4 - v" + Metro.version +". "+ Metro.showCompileTime());
-            console.info("m4q - " + m4q.version);
+            //console.info("Metro 4 - v" + Metro.version +". "+ Metro.showCompileTime());
+            //console.info("m4q - " + m4q.version);
         },
 
         showCompileTime: function(){

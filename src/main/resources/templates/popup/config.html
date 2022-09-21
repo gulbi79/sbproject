@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/basepopup}">
+
+<th:block layout:fragment="hidden">
+</th:block>
+
+<th:block layout:fragment="content">
+	<div class="row flex-align-start flex-justify-around w-100 h-50">
+    	<div id="dimGrid" class="cell-5 h-100"></div>
+    	<div id="meaGrid" class="cell-5 h-100"></div>
+    </div>
+	<div class="row w-100 h-50">
+    	<div id="previewGrid" class="cell w-100 h-100"></div>
+    </div>
+</th:block>
+
+<th:block layout:fragment="contentjs">
+	<script>
+		const lv_parent = this.parent;
+        let dimGrid, dimProvider;
+        let meaGrid, meaProvider;
+        let previewGrid, previewProvider;
+        $(function() {
+            fn_gridInit(); //그리드초기화
+            //fn_setGridData();
+            //fn_eventInit(); //이벤트초기화
+        });
+
+        //그리드초기화
+        function fn_gridInit() {
+            const dimFields = [ {fieldName: "dimCd", type: "data"} ];
+            const dimColumns = [
+                {name: "dimNm",     type: "data", width: "150", header: {text: "Dimension"      }, styleName: "tal-column" }
+            ];
+            const options = {
+				checkBar: { visible: true }
+			  , stateBar: { visible: false }
+			};
+            const dimInstance = new GRID().init({gridId: "dimGrid", draw: true, columns: dimColumns, fields: dimFields, options: options});
+	        dimGrid = dimInstance.gridview;
+	        dimProvider = dimInstance.provider;
+
+            const meaFields = [ {fieldName: "meaCd", type: "data"} ];
+            const meaColumns = [
+                {name: "meaNm",     type: "data", width: "150", header: {text: "Measure"      }, styleName: "tal-column" }
+            ];
+            const meaInstance = new GRID().init({gridId: "meaGrid", draw: true, columns: meaColumns, fields: meaFields, options: options});
+	        meaGrid = meaInstance.gridview;
+	        meaProvider = meaInstance.provider;
+
+            const previewFields = [];
+            const previewColumns = [];
+            const previewInstance = new GRID().init({gridId: "previewGrid", draw: true, columns: previewColumns, fields: previewFields, options: options});
+	        previewGrid = previewInstance.gridview;
+	        previewProvider = previewInstance.provider;
+			
+        }
+        
+        function fn_setGridData() {
+			//데이터 초기화 및 그리드 데이터 생성
+		    selProvider.clearRows();
+		    selGrid.cancel();
+		    
+			const dAllData = lv_parent.com_viewinfo.arrAllDim.map(v => v)
+			const dSelData = lv_parent.com_viewinfo.arrDim.map(v => v)
+		    
+		    allProvider.setRows(dAllData);
+		    selProvider.setRows(dSelData);
+		    
+		    //이미 선택된 디멘전 체크
+		    let arrIdx = [];
+			dSelData.forEach(v => {
+				arrIdx.push(allGrid.getJsonRows().findIndex((element) => element.dimCd === v.dimCd));
+			})
+			allGrid.checkRows(arrIdx, true);
+		}
+        
+        //이벤트초기화
+        function fn_eventInit() {
+        }
+        
+        //닫힐때 호출
+        function fn_apply() {
+			console.log("Config iframe의 fn_apply calls");
+			
+			//선택된 데이터 부모창에 셋
+			lv_parent.com_viewinfo.arrDim = selProvider.getJsonRows().map(v => v);
+		}
+        
+    </script>
+</th:block>
+</html>

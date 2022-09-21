@@ -5,9 +5,9 @@
         <!-- tree -->
         <div class="mt-0">
             <ul id="treetabs" data-role="tabs" data-expand="true" data-cls-tabs-list-item-active="fg-orange">
-                <li th:if="${salesTree} != null"><a href="#_sales" class="py-1">Sales</a></li>
-                <li th:if="${productTree} != null"><a href="#_product" class="py-1">Product</a></li>
-                <li th:if="${plantTree} != null"><a href="#_plant" class="py-1">Plant</a></li>
+                <li th:if="${sales1} != null"><a href="#_sales" class="py-1">Sales</a></li>
+                <li th:if="${prod1} != null"><a href="#_product" class="py-1">Product</a></li>
+                <li th:if="${plant1} != null"><a href="#_plant" class="py-1">Plant</a></li>
             </ul>
             <div class="border bd-default no-border-top p-0 overflow treeDiv">
                 <div id="_sales" th:if="${salesTree} != null">
@@ -66,7 +66,29 @@
                 </div>
                 <div id="_plant" th:if="${plantTree} != null">
                     <ul data-role="treeview">
-                        
+                        <li th:each="plant1 : ${plant1}" th:if="${plant1.levelCd == 1}">
+                			<input type="checkbox" data-role="checkbox" data-style='2' th:attr="data-caption=${plant1.plantCd}, value=${plant1.plantCd}, data-level=${plant1.levelCd}, data-uniqval=${plant1.path}" data-caption="Plant" title="" value="plant" data-level="1" data-uniqval="_plant_">
+                		    <ul>
+                		    	<li th:each="plant2 : ${plant2}" th:if="${plant2.levelCd == 2 && plant1.plantCd == plant2.parentCd}" class="p-0" data-collapsed="true">
+                		    		<input type="checkbox" data-role="checkbox" data-style='2' th:attr="data-caption=${plant2.plantCd}, value=${plant2.plantCd}, data-level=${plant2.levelCd}, data-uniqval=${plant2.path}" data-caption="Plant" title="" value="plant" data-level="1" data-uniqval="_plant_">
+                		    		<ul>
+                		    			<li th:each="plant3 : ${plant3}" th:if="${plant3.levelCd == 3 && plant2.plantCd == plant3.parentCd}" class="p-0" data-collapsed="true">
+                		    				<input type="checkbox" data-role="checkbox" data-style='2' th:attr="data-caption=${plant3.plantCd}, value=${plant3.plantCd}, data-level=${plant3.levelCd}, data-uniqval=${plant3.path}" data-caption="Plant" title="" value="plant" data-level="1" data-uniqval="_plant_">
+                		    				<ul>
+		                		    			<li th:each="plant4 : ${plant4}" th:if="${plant4.levelCd == 4 && plant3.plantCd == plant4.parentCd}" class="p-0" data-collapsed="true">
+		                		    				<input type="checkbox" data-role="checkbox" data-style='2' th:attr="data-caption=${plant4.plantCd}, value=${plant4.plantCd}, data-level=${plant4.levelCd}, data-uniqval=${plant4.path}" data-caption="Plant" title="" value="plant" data-level="1" data-uniqval="_plant_">
+		                		    				<ul>
+				                		    			<li th:each="plant5 : ${plant5}" th:if="${plant5.levelCd == 5 && plant4.plantCd == plant5.parentCd}" class="p-0" data-collapsed="true">
+				                		    				<input type="checkbox" data-role="checkbox" data-style='2' th:attr="data-caption=${plant5.plantCd}, value=${plant5.plantCd}, data-level=${plant5.levelCd}, data-uniqval=${plant5.path}" data-caption="Plant" title="" value="plant" data-level="1" data-uniqval="_plant_">
+				                		    			</li>
+		                		    				</ul>
+		                		    			</li>
+                		    				</ul>
+                		    			</li>
+                		    		</ul>
+                		    	</li>
+                		    </ul>
+                		</li>
                     </ul>
                 </div>
             </div>

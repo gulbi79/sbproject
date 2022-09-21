@@ -84,3 +84,8 @@ async function fn_apply(sql = false) {
 	}; 
 	gfn_service(pConfigs);
 }
+
+//그리드 드래그 합계
+grid.onSelectionChanged = function (grid) {
+     console.log("sum",gfn_getSelectionSummary(grid));
+}

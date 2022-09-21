@@ -16,7 +16,7 @@ function gfn_setComParams() {
 	rtnParams = {...rtnParams, ...gfn_getFormObj($('.filterForm'))};
             
     // 3.dimension
-    rtnParams.dimensionList = viewinfo?.arrDim?.map(v => { return { dimCd: v, dimNm: v } });
+    rtnParams.dimensionList = viewinfo?.arrDim?.map(v => v);
     
     return rtnParams;
 }
@@ -326,9 +326,15 @@ function gfn_commButton(fType) {
 	console.log("gfn_commButton");
 	switch (fType) {
 		case 'DIMENSION' :
-			gfn_comDimensionPopup();
-			break;
 		case 'MEASURE' :
+			console.log("fType",fType);
+			let strPath = fType === "DIMENSION" ? "dimension" : "config";
+			let strTitle = fType === "DIMENSION" ? "디멘전 팝업" : "Report Configuration";
+			$("#comm_popup").css("width", "100%").css("height", "400px").attr("src", GV_CONTEXT_PATH+"popup/"+strPath);
+			$('#c_popup').css('width','800px');
+			$('.ok').off();
+			$('.ok').on('click',function() { gfn_commPopupOk(fType) });
+			setTimeout(function() { Metro.dialog.open('#c_popup',undefined,strTitle) },100);
 			break;
 		case 'EXCEL' :
 			if (typeof fn_comExportExcel === 'function') {
@@ -343,14 +349,12 @@ function gfn_commButton(fType) {
 	}
 }
 
-function gfn_commPopup(pType) {
-	console.log("gfn_commPopup");
+function gfn_commPopupOk(pType) {
+	console.log("gfn_commPopupOk");
 	switch (pType) {
-		case 'COMM_DIMENSION' :
-			_gfn_commDimension();
-			break;
-		case 'COMM2' :
-			if (typeof fn_comPopup2 === 'function') fn_comPopup2();
+		case 'DIMENSION' :
+		case 'MEASURE' :
+			$("#comm_popup").get(0).contentWindow.fn_apply(); //iframe의 함수를 호출
 			break;
 	}
 }
@@ -360,12 +364,6 @@ function gfn_localPopup(pType) {
 	if (typeof fn_comPopup === 'function') fn_comPopup(pType);
 }
 
-function _gfn_commDimension() {
-	console.log("call _gfn_commDimension");
-	//iframe의 함수를 호출
-	$("#comm_popup").get(0).contentWindow.fn_apply();
-}
-
 function gfn_comDimensionPopup() {
 	console.log("gfn_comDimensionPopup");
 	$("#comm_popup").css("width", "100%").css("height", "400px").attr("src", GV_CONTEXT_PATH+"popup/dimension");
@@ -373,4 +371,22 @@ function gfn_comDimensionPopup() {
 	Metro.dialog.open('#c_popup',undefined,'디멘전 팝업');
 }
 
+function gfn_addFilterData(el,type,data,defaultVal) {
+	let elFilter;
+	switch(type) {
+		case 'select' :
+			data.forEach(v => el.append('<option value="'+v.codeCd+'">'+v.codeNm+'</option>'));
+            elFilter = Metro.getPlugin(el, "select");
+            elFilter.reset();
+            if (defaultVal) elFilter.val(defaultVal);
+			break;
+		case 'mselect' :
+			data.forEach(v => el.append('<option value="'+v.codeCd+'" data-template="<input type=\'checkbox\' data-role=\'checkbox\' data-style=\'2\'> $1">'+v.codeNm+'</option>'));
+			elFilter = Metro.getPlugin(el, "select");
+			elFilter.reset();
+			if (defaultVal) elFilter.val(defaultVal);
+			break;
+	}
+	return elFilter;
+}
 

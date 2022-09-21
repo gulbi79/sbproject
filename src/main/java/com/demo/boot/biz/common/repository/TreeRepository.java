@@ -10,4 +10,6 @@ public interface TreeRepository {
     List<HashMap<String,String>> sales();
 
     List<HashMap<String,String>> product();
+
+    List<HashMap<String,String>> plant();
 }

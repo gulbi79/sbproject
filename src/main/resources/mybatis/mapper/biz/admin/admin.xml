@@ -8,7 +8,7 @@
     <select id="selectMenu" parameterType="map" resultType="custommap">
     -- 전체메뉴 트리
     WITH W_MENU AS (
-        SELECT MENU_CD, MENU_NM, PARENT_MENU_CD, URL, USE_YN, SORT, LEVEL AS LVL
+        SELECT MENU_CD, MENU_NM, PARENT_MENU_CD, URL, USE_YN, SORT, TREE, LEVEL AS LVL
          , 'M' || SYS_CONNECT_BY_PATH(MENU_CD, '.') AS TREE_ID
         FROM TB_MST_MENU
         START WITH PARENT_MENU_CD IS NULL
@@ -43,6 +43,7 @@
              , @{parentMenuCd} AS PARENT_MENU_CD
              , @{useYn} AS USE_YN
              , @{sort} AS SORT
+             , @{tree} AS TREE
              , @{state} AS STATE
         FROM DUAL
     ) B
@@ -54,12 +55,13 @@
                , A.PARENT_MENU_CD = B.PARENT_MENU_CD
                , A.USE_YN         = DECODE(B.STATE, 'deleted', 'N', B.USE_YN)
                , A.SORT           = B.SORT
+               , A.TREE           = B.TREE
                
           --DELETE WHERE B.STATE = 'deleted'
           
      WHEN NOT MATCHED THEN
-          INSERT (A.MENU_CD, A.MENU_NM, A.URL, A.PARENT_MENU_CD, A.USE_YN, A.SORT)
-          VALUES (B.MENU_CD, B.MENU_NM, B.URL, B.PARENT_MENU_CD, B.USE_YN, B.SORT)
+          INSERT (A.MENU_CD, A.MENU_NM, A.URL, A.PARENT_MENU_CD, A.USE_YN, A.SORT, A.TREE)
+          VALUES (B.MENU_CD, B.MENU_NM, B.URL, B.PARENT_MENU_CD, B.USE_YN, B.SORT, B.TREE)
     </insert>
 
     <!-- 공통코드조회 -->

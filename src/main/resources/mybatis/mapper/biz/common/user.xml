@@ -32,6 +32,7 @@
     -- 전체메뉴 트리
     WITH W_MENU AS (
         SELECT MENU_CD, MENU_NM, PARENT_MENU_CD, URL, USE_YN
+             , ',' || TREE || ',' AS TREE
              , LEVEL AS LVL
              , CASE WHEN CONNECT_BY_ISLEAF = 1 AND URL IS NOT NULL THEN 'Y' ELSE 'N' END AS URL_YN
              , SYS_CONNECT_BY_PATH(MENU_CD, '>') || '>' AS PATH

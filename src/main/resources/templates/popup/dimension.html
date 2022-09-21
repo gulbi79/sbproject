@@ -89,13 +89,8 @@
 		    selProvider.clearRows();
 		    selGrid.cancel();
 		    
-			const dAllData = lv_parent.com_viewinfo.arrAllDim.map(v => { 
-			    return {dimCd: v, dimNm: v}
-			})
-		
-			const dSelData = lv_parent.com_viewinfo.arrDim.map(v => { 
-			    return {dimCd: v, dimNm: v}
-			})
+			const dAllData = lv_parent.com_viewinfo.arrAllDim.map(v => v)
+			const dSelData = lv_parent.com_viewinfo.arrDim.map(v => v)
 		    
 		    allProvider.setRows(dAllData);
 		    selProvider.setRows(dSelData);
@@ -117,9 +112,7 @@
 			console.log("iframe의 fn_apply calls");
 			
 			//선택된 데이터 부모창에 셋
-			lv_parent.com_viewinfo.arrDim = selProvider.getJsonRows().map(v => { 
-			    return v.dimCd;
-			});
+			lv_parent.com_viewinfo.arrDim = selProvider.getJsonRows().map(v => v);
 		}
         
     </script>

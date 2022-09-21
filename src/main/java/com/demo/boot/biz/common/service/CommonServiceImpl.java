@@ -22,6 +22,7 @@ public class CommonServiceImpl implements CommonService {
     	HashMap<String, Object> rtnMap = new HashMap<String, Object>();
     	rtnMap.put("salesTree", treeRepository.sales());
     	rtnMap.put("productTree", treeRepository.product());
+    	rtnMap.put("plantTree", treeRepository.plant());
         return rtnMap;
     }
     

@@ -170,17 +170,17 @@ GRID.prototype = {
     
     setDimension : function(arrDim = []) {
 		this.defConfig.dimensions = arrDim.map(v => {
-			return gfn_util_camelCase(v);
+			return {...v, dimCd: gfn_util_camelCase(v.dimCd)};
 		})
 	},
 	
 	setDimensionMerge : function() {
 		let tmpPrevDim = "";
 		this.defConfig.dimensions.forEach((v, idx) => {
-			if (idx === 0) this.gridview.columnByName(v).mergeRule = {criteria: "value"};
-			else this.gridview.columnByName(v).mergeRule = {criteria: tmpPrevDim+" + value"};
+			if (idx === 0) this.gridview.columnByName(v.dimCd).mergeRule = {criteria: "value"};
+			else this.gridview.columnByName(v.dimCd).mergeRule = {criteria: tmpPrevDim+" + value"};
 			
-			tmpPrevDim += (tmpPrevDim === "" ? "" : " + ") + "values['"+v+"'] ";
+			tmpPrevDim += (tmpPrevDim === "" ? "" : " + ") + "values['"+v.dimCd+"'] ";
 		})
 	}
 }
@@ -294,7 +294,7 @@ function gfn_drawGridBucket(gridInstance, bucketlist, options) {
 	
 	//디멘전
 	let dimcolumns = gridInstance.defConfig.dimensions.map(v => {
-		return { name: v, type: "data", width: "90", header: {text: v, styleName: "vam-column"}, styleName: "tal-column", sortable : false };
+		return { name: v.dimCd, type: "data", width: "90", header: {text: v.dimNm, styleName: "vam-column"}, styleName: "tal-column", sortable : false };
 	})
 
 	//dycolumns Bucket --------------------------------
@@ -475,7 +475,7 @@ function gfn_com_getGridLayout(gridInstance, bucketlist, layoutOptions) {
 		}
 	  	
 		//드룹핑되지 않는 컬럼정보 layout 앞뒤로 처리 - 디멘전, 고정컬럼
-		layout = [...gridInstance.defConfig.dimensions, ...layout];
+		layout = [...gridInstance.defConfig.dimensions.map(v => v.dimCd), ...layout];
 		
 	  	//console.log("layout",layout);
 	  	gridview.setColumnLayout(layout);

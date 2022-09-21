@@ -21,5 +21,12 @@
     START WITH PARENT_CD IS NULL
     CONNECT BY PRIOR ITEM_CD = PARENT_CD
     </select>
+
+    <!-- plant tree 조회 -->
+    <select id="plant" parameterType="String" resultType="custommap">
+    SELECT NULL AS PLANT_CD, NULL AS PARENT_CD, NULL AS LEVEL_CD
+         , NULL AS PATH
+    FROM DUAL
+    </select>
     
 </mapper>

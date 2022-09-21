@@ -9,6 +9,7 @@
 	<th:block th:replace="/layouts/fragments/filters :: pinputFragment('Popup Code','f_pcode')"></th:block>
 	<th:block th:replace="/layouts/fragments/filters :: doublecalFragment('From~To','f_fromcal','f_tocal')"></th:block>
 	<th:block th:replace="/layouts/fragments/filters :: selectFragment('Select','f_select')"></th:block>
+	<th:block th:replace="/layouts/fragments/filters :: mselectFragment('Multiple','f_mselect')"></th:block>
 </th:block>
 
 <th:block layout:fragment="hidden">
@@ -23,8 +24,25 @@
 	<script>
         var com_viewinfo = {
 			dimension: true,
-        	arrAllDim: ["DIM01","DIM02","DIM03"], //화면에서 사용될 전체 디멘전
-        	arrDim: ["DIM01","DIM02"], //그리드에 그려질 실제 디멘전 - 기본디멘전 정의 후 디멘전 선택 팝업에서 선택한 디멘전을 갖고있는다.
+        	arrAllDim: [ //화면에서 사용될 전체 디멘전
+        		{dimCd: "DIM01", dimNm: "디멘전1"},
+        		{dimCd: "DIM02", dimNm: "디멘전2"},
+        		{dimCd: "DIM03", dimNm: "디멘전3"}
+        	],
+        	arrDim: [ //그리드에 그려질 실제 디멘전 - 기본디멘전 정의 후 디멘전 선택 팝업에서 선택한 디멘전을 갖고있는다.
+        		{dimCd: "DIM01", dimNm: "디멘전1"},
+        		{dimCd: "DIM02", dimNm: "디멘전2"},
+        	],
+        	arrAllMea: [
+        		{meaCd: "INV1", meaNm: "Inventory1"},
+        		{meaCd: "INV2", meaNm: "Inventory2"},
+        		{meaCd: "ORDER1", meaNm: "Order1"},
+        		{meaCd: "ORDER2", meaNm: "Order2"},
+        	],
+        	arrMea: [
+        		{meaCd: "INV1", meaNm: "Inventory1"},
+        		{meaCd: "ORDER1", meaNm: "Order1"},
+        	]
 		};
         let gridInstance, grid, provider;
         $(function() {
@@ -37,16 +55,17 @@
         //필터초기화
         async function fn_filterInit() {
 			//공통코드조회 후 필터 set
-			const comCode = await gfn_getCommonCode({groupCd: ['CITY']});
+			const comCode = await gfn_getCommonCode({groupCd: ['CITY','TREE']});
 	
 			//calendar set
 			$("#f_fromcal").data("calendarpicker").val("2022-08-15");
 			$("#f_tocal").data("calendarpicker").val("2022-12-31");
 			
-			//dropdown set
-			comCode.filter(v => v.groupCd === 'CITY').forEach(vv => $("#f_select").append('<option value="'+vv.codeCd+'">'+vv.codeNm+'</option>'));
-            const select = Metro.getPlugin($("#f_select"), "select");
-            select.reset();
+			//select
+			gfn_addFilterData($("#f_select"),'select',comCode.filter(v => v.groupCd === 'TREE'),'SALES');
+
+			//multi select
+			gfn_addFilterData($("#f_mselect"),'mselect',comCode.filter(v => v.groupCd === 'CITY'),['001','003']);
         }
 
         //그리드초기화
@@ -59,12 +78,6 @@
             gridInstance = new GRID().init({gridId: "realgrid1", draw: false, columns: [], fields: [], options: options});
             grid = gridInstance.gridview;
             provider = gridInstance.provider;
-
-            /*
-            grid.onSelectionChanged = function (grid) {
-			     console.log("sum",gfn_getSelectionSummary(grid));
-			}
-			*/
         }
         
         //이벤트초기화
@@ -123,14 +136,14 @@
 					$('#c_popup').css('width','400px');
 					setTimeout(function() {
 						Metro.dialog.open('#c_popup',undefined,'사용자');
-					},10);
+					},100);
 					break;
 				case 'f_pcode' :
 					$("#comm_popup").css("width", "100%").css("height", "400px").attr("src", GV_CONTEXT_PATH+"popup/code");
 					$('#c_popup').css('width','400px');
 					setTimeout(function() {
 						Metro.dialog.open('#c_popup',undefined,'공통코드');
-					},10);
+					},100);
 					break;
 			}
 		}

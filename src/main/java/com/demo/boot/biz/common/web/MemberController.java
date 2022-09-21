@@ -86,31 +86,45 @@ public class MemberController {
     	if (menuList.size() > 0) {
     		HashMap<String, String> map = menuList.get(0);
     		String url = map.get("url");
+    		String tree = map.get("tree");
     		if (url != null && !url.isEmpty()) {
     			pageUrl = url;
     			
     			//tree 조회
     			HashMap<String, Object> treeMap = commonService.selectTree();
-    			
-    			List<HashMap<String, String>> salesList = (List<HashMap<String, String>>)treeMap.get("salesTree");
-    			List<HashMap<String, String>> prodList = (List<HashMap<String, String>>)treeMap.get("productTree");
-    			
-    			//ui에서 사용하기 편하게 레벨별로 분기한다.
-    			//sales -----------------------
-    			model.addAttribute("sales1",salesList.stream().filter(t->"1".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //salesTree 1 level
-    			model.addAttribute("sales2",salesList.stream().filter(t->"2".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //salesTree 2 level
-    			model.addAttribute("sales3",salesList.stream().filter(t->"3".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //salesTree 3 level
-    			model.addAttribute("sales4",salesList.stream().filter(t->"4".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //salesTree 4 level
-    			model.addAttribute("sales5",salesList.stream().filter(t->"5".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //salesTree 5 level
-
-    			//product -----------------------
-    			model.addAttribute("prod1",prodList.stream().filter(t->"1".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //productTree 1 level
-    			model.addAttribute("prod2",prodList.stream().filter(t->"2".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //productTree 2 level
-    			model.addAttribute("prod3",prodList.stream().filter(t->"3".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //productTree 3 level
-    			model.addAttribute("prod4",prodList.stream().filter(t->"4".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //productTree 4 level
-    			model.addAttribute("prod5",prodList.stream().filter(t->"5".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //productTree 5 level
-    			
     			model.addAllAttributes(treeMap); //salesTree, productTree
+
+    			//ui에서 사용하기 편하게 레벨별로 분기한다.
+    			
+    			//sales -----------------------
+    			if (",SALES,".indexOf(tree) != -1) {
+    				List<HashMap<String, String>> salesList = (List<HashMap<String, String>>)treeMap.get("salesTree");
+    				model.addAttribute("sales1",salesList.stream().filter(t->"1".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //salesTree 1 level
+    				model.addAttribute("sales2",salesList.stream().filter(t->"2".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //salesTree 2 level
+    				model.addAttribute("sales3",salesList.stream().filter(t->"3".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //salesTree 3 level
+    				model.addAttribute("sales4",salesList.stream().filter(t->"4".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //salesTree 4 level
+    				model.addAttribute("sales5",salesList.stream().filter(t->"5".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //salesTree 5 level
+    				
+				//product -----------------------
+    			} else if (",PRODUCT,".indexOf(tree) != -1) {
+    				List<HashMap<String, String>> productList = (List<HashMap<String, String>>)treeMap.get("productTree");
+    				
+    				model.addAttribute("prod1",productList.stream().filter(t->"1".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //productTree 1 level
+    				model.addAttribute("prod2",productList.stream().filter(t->"2".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //productTree 2 level
+    				model.addAttribute("prod3",productList.stream().filter(t->"3".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //productTree 3 level
+    				model.addAttribute("prod4",productList.stream().filter(t->"4".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //productTree 4 level
+    				model.addAttribute("prod5",productList.stream().filter(t->"5".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //productTree 5 level
+
+    			//plant -----------------------
+    			} else if (",PLANT,".indexOf(tree) != -1) {
+    				List<HashMap<String, String>> plantList = (List<HashMap<String, String>>)treeMap.get("plantTree");
+    				
+    				model.addAttribute("plant1",plantList.stream().filter(t->"1".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //plantTree 1 level
+    				model.addAttribute("plant2",plantList.stream().filter(t->"2".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //plantTree 2 level
+    				model.addAttribute("plant3",plantList.stream().filter(t->"3".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //plantTree 3 level
+    				model.addAttribute("plant4",plantList.stream().filter(t->"4".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //plantTree 4 level
+    				model.addAttribute("plant5",plantList.stream().filter(t->"5".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //plantTree 5 level
+    			}
     		}
     		model.addAllAttributes(map);
     	}
