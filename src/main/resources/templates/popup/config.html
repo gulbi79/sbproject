@@ -7,12 +7,15 @@
 </th:block>
 
 <th:block layout:fragment="content">
-	<div class="row flex-align-start flex-justify-around w-100 h-50">
+	<div class="row flex-align-start flex-justify-around w-100" style="height:150px;">
     	<div id="dimGrid" class="cell-5 h-100"></div>
     	<div id="meaGrid" class="cell-5 h-100"></div>
     </div>
-	<div class="row w-100 h-50">
-    	<div id="previewGrid" class="cell w-100 h-100"></div>
+	<div class="row flex-align-end w-100" style="height:50px;">
+    	<div id="" class="cell w-100" style="padding: 6px 38px;">Preview</div>
+    </div>
+	<div class="row w-100" style="height:190px;">
+    	<div id="previewGrid" class="cell w-100" style="padding:6px 38px;"></div>
     </div>
 </th:block>
 
@@ -21,10 +24,11 @@
 		const lv_parent = this.parent;
         let dimGrid, dimProvider;
         let meaGrid, meaProvider;
-        let previewGrid, previewProvider;
+        let previewInstance, previewGrid, previewProvider;
         $(function() {
             fn_gridInit(); //그리드초기화
-            //fn_setGridData();
+            fn_setGridData();
+            fn_gridDraw();
             //fn_eventInit(); //이벤트초기화
         });
 
@@ -50,33 +54,146 @@
 	        meaGrid = meaInstance.gridview;
 	        meaProvider = meaInstance.provider;
 
-            const previewFields = [];
-            const previewColumns = [];
-            const previewInstance = new GRID().init({gridId: "previewGrid", draw: true, columns: previewColumns, fields: previewFields, options: options});
+            const previewOptions = {
+				checkBar: { visible: false }
+			  , stateBar: { visible: false }
+			};
+            previewInstance = new GRID().init({gridId: "previewGrid", draw: false, columns: [], fields: [], options: previewOptions});
 	        previewGrid = previewInstance.gridview;
 	        previewProvider = previewInstance.provider;
+	        
+	        //체크박스 이벤트 등록
+	        dimGrid.onItemChecked = function (grid, itemIndex, checked) {
+				fn_gridDraw();
+			};
 			
+			dimGrid.onItemAllChecked = function (grid, checked) {
+				fn_gridDraw();
+			};
+			
+			meaGrid.onItemChecked = function (grid, itemIndex, checked) {
+				fn_gridDraw();
+			};
+			
+			meaGrid.onItemAllChecked = function (grid, checked) {
+				fn_gridDraw();
+			};
+			
+			previewGrid.onCellClicked = function (grid, clickData) {
+			    if (clickData.cellType === "header") {
+					grid.setCurrent({ itemIndex: clickData.itemIndex , column: clickData.column });
+				}
+			}
         }
         
         function fn_setGridData() {
-			//데이터 초기화 및 그리드 데이터 생성
-		    selProvider.clearRows();
-		    selGrid.cancel();
+			// 1. 디멘전 데이터 초기화 및 그리드 데이터 생성
+		    fn_selDimData();
+			
+			// 2. 메저 데이터 초기화 및 그리드 데이터 생성
+			fn_selMeaData();
+		}
+		
+		// 1. 디멘전 데이터 초기화 및 그리드 데이터 생성
+		function fn_selDimData() {
+			dimProvider.clearRows();
+		    dimGrid.cancel();
 		    
-			const dAllData = lv_parent.com_viewinfo.arrAllDim.map(v => v)
-			const dSelData = lv_parent.com_viewinfo.arrDim.map(v => v)
+			const dAllData = lv_parent.com_viewinfo.arrAllDim.map(v => v);
+			const dSelData = lv_parent.com_viewinfo.arrDim.map(v => v);
 		    
-		    allProvider.setRows(dAllData);
-		    selProvider.setRows(dSelData);
-		    
+		    dimProvider.setRows(dAllData);
 		    //이미 선택된 디멘전 체크
 		    let arrIdx = [];
 			dSelData.forEach(v => {
-				arrIdx.push(allGrid.getJsonRows().findIndex((element) => element.dimCd === v.dimCd));
+				arrIdx.push(dimGrid.getJsonRows().findIndex((element) => element.dimCd === v.dimCd));
 			})
-			allGrid.checkRows(arrIdx, true);
+			dimGrid.checkRows(arrIdx, true);
 		}
-        
+		
+		// 2. 메저 데이터 초기화 및 그리드 데이터 생성
+		function fn_selMeaData() {
+			meaProvider.clearRows();
+		    meaGrid.cancel();
+		    
+			const dAllData = lv_parent.com_viewinfo.arrAllMea.map(v => v);
+			const dSelData = lv_parent.com_viewinfo.arrMea.map(v => v);
+		    
+		    meaProvider.setRows(dAllData);
+		    //이미 선택된 디멘전 체크
+		    let arrIdx = [];
+			dSelData.forEach(v => {
+				arrIdx.push(meaGrid.getJsonRows().findIndex((element) => element.meaCd === v.meaCd));
+			})
+			meaGrid.checkRows(arrIdx, true);
+		}
+		
+		function fn_gridDraw() {
+			//popup menu
+			const dimMenu = [{
+				label: "◀",
+			 	enabled: true,
+			  	callback: function(grid, index) {
+					console.log("left",index);
+				}
+			},{
+				label: "▶",
+			 	enabled: true,
+			  	callback: function(grid, index) {
+					console.log("right",index);
+				}
+			}];
+			
+			const meaMenu = [{
+				label: "▲",
+			 	enabled: true,
+			  	callback: function(grid, index) {
+					console.log("top",index);
+				}
+			},{
+				label: "▼",
+			 	enabled: true,
+			  	callback: function(grid, index) {
+					console.log("bottom",index);
+				}
+			}];
+			
+			previewGrid.addPopupMenu("dimMenu", dimMenu);
+			previewGrid.addPopupMenu("meaMenu", meaMenu);
+			
+			//디멘전에 체크된 데이터로 컬럼목록생성
+			const dimJsonData = dimGrid.getCheckedRows().map(v => dimProvider.getJsonRow(v)).map(vv => {
+				return {name: vv.dimCd, type: "data", width: "100", header: {text: vv.dimNm}}
+			});
+			previewInstance.defConfig.columns = [...dimJsonData];
+			
+			//메저
+			const meaJsonData = meaGrid.getCheckedRows().map(v => meaProvider.getJsonRow(v));
+			if (meaJsonData.length > 0) {
+				previewInstance.defConfig.columns.push(
+					{name: "measureNm", type: "data", width: "100", header: {text: "Category"}, popupMenu: "meaMenu", button: "popup"}
+				);
+			}
+			
+			previewInstance.setDraw();
+			
+			dimJsonData.forEach(v => {
+				previewGrid.setColumnProperty(v.name, "header", { popupMenu: "dimMenu" });
+			});
+			
+			previewGrid.refresh();
+			
+			previewProvider.clearRows();
+            previewGrid.cancel();
+            
+            if (meaJsonData.length > 0) {
+            	previewProvider.setRows(meaJsonData.map(v => { return {measureNm : v.meaNm }}));
+			} else {
+            	previewProvider.setRows([{measureNm : "" }]);
+			}
+            
+		}
+		
         //이벤트초기화
         function fn_eventInit() {
         }
@@ -86,7 +203,7 @@
 			console.log("Config iframe의 fn_apply calls");
 			
 			//선택된 데이터 부모창에 셋
-			lv_parent.com_viewinfo.arrDim = selProvider.getJsonRows().map(v => v);
+			//lv_parent.com_viewinfo.arrDim = selProvider.getJsonRows().map(v => v);
 		}
         
     </script>

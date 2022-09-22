@@ -72,17 +72,24 @@ GRID.prototype = {
 	        footer	: { visible: false },
 	        checkBar: { visible: false },
 	        stateBar: { visible: false },
-	        sorting : { enabled: true  },
+	        sorting : { 
+				enabled: false,
+				handleVisibility: "visible",
+				style: "exclusive" //1.exclusive : 단일정렬, 2.inclusive : 멀티정렬, 3.reverse : 멀티역방향정렬
+			},
 	        sortMode: "explicit",
 	        undoable: true,
 	        edit    : { insertable: true, appendable: false, updatable: true, editable: true, deletable: true, commitWhenLeave: true},
 	        header  : {
 	            heightFill: "fixed",
-	            showTooltip: true
+	            showTooltip: true,
+	            showPopupMenu: "visible"
 	        },
 	        display : {
 		        showEmptyMessage : true,
-	        	emptyMessage: "Data Not Found",
+	        	emptyMessage: "Data Not Found!!!",
+	        	editItemMerging : true,
+				rowHeight : 21,
 	        }
 	    };
 	    
@@ -90,10 +97,6 @@ GRID.prototype = {
 	    
 		this.gridview.setOptions(defaultOptions);
 	    
-	    this.gridview.setSortingOptions({
-			style: "exclusive" //1.exclusive : 단일정렬, 2.inclusive : 멀티정렬, 3.reverse : 멀티역방향정렬
-		});
-		
 		this.gridview.setPasteOptions({
 			checkReadOnly: true,
 			enableAppend: false,
@@ -109,12 +112,6 @@ GRID.prototype = {
 	
 		this.gridview.setCopyOptions({
 			lookupDisplay: true,
-		});
-	
-		this.gridview.setDisplayOptions({
-			editItemMerging : true,
-			rowHeight : 21,
-			//fitStyle : "even",
 		});
 	
 		//필터링 옵션 설정
@@ -290,7 +287,6 @@ function gfn_drawGridBucket(gridInstance, bucketlist, options) {
 	const arrLowBucketType = arrBucketType.map(v => v.toLowerCase());
 	
 	//dyco1lumns 앞뒤로 디멘전, 고정컬럼  --------------------------------
-	
 	
 	//디멘전
 	let dimcolumns = gridInstance.defConfig.dimensions.map(v => {

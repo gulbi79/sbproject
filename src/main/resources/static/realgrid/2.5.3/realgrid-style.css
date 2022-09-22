@@ -128,7 +128,8 @@ THEME : Realgrid light(Default)
   text-align: center; }
 
 .rg-header-renderer {
-  padding: 0 4px; }
+  padding: 0 4px; 
+  position: initial; }
 
 .rg-header-focus {
   background: #f9d2b9; }
