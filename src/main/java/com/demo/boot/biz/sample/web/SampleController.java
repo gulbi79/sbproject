@@ -19,8 +19,13 @@ public class SampleController {
 
     private final SampleService sampleService;
     
-    @PostMapping("samplemain")
-    public ApiResponse<?> selectMenu(@RequestBody Map<String, Object> params) {
-        return ApiResponse.createWrap(sampleService.selectMain(params));
+    @PostMapping("sample1")
+    public ApiResponse<?> selectSample1(@RequestBody Map<String, Object> params) {
+        return ApiResponse.createWrap(sampleService.selectSample1(params));
+    }
+
+    @PostMapping("sample2")
+    public ApiResponse<?> selectSample2(@RequestBody Map<String, Object> params) {
+    	return ApiResponse.createWrap(sampleService.selectSample2(params));
     }
 }

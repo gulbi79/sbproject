@@ -4,6 +4,8 @@ import java.util.Map;
 
 public interface SampleService {
 
-	Map<String, Object> selectMain(Map<String,Object> paramMap);
+	Map<String, Object> selectSample1(Map<String,Object> paramMap);
+
+	Map<String, Object> selectSample2(Map<String,Object> paramMap);
 	
 }

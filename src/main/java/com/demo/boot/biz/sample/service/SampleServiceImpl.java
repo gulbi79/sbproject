@@ -24,7 +24,7 @@ public class SampleServiceImpl implements SampleService {
     
     private final SampleRepository sampleRepository;
 
-    public Map<String, Object> selectMain(Map<String,Object> paramMap) {
+    public Map<String, Object> selectSample1(Map<String,Object> paramMap) {
     	// 1. 조회조건에 따른 bucket 구간 조회
     	Map<String, Object> rtnMap = new HashMap<String, Object>();
     	SqlContextHolder.THREAD_LOCAL_NONE_SQL.set(true);
@@ -38,7 +38,25 @@ public class SampleServiceImpl implements SampleService {
 		
 		// 2. 메인정보조회 
 		SqlContextHolder.THREAD_LOCAL_NONE_SQL.set(false);
-		rtnMap.put("sampleList", sampleRepository.selectSampleMain(paramMap));
+		rtnMap.put("sampleList", sampleRepository.selectSample1(paramMap));
+    	return rtnMap;
+    }
+
+    public Map<String, Object> selectSample2(Map<String,Object> paramMap) {
+    	// 1. 조회조건에 따른 bucket 구간 조회
+    	Map<String, Object> rtnMap = new HashMap<String, Object>();
+    	SqlContextHolder.THREAD_LOCAL_NONE_SQL.set(true);
+    	
+    	paramMap.putAll(BizUtil.getBucketYMWParams()); //bucket에 대한 공통파라미터 정의
+    	List<Map<String,Object>> bucketList = commonRepository.selectCalBucket(paramMap);
+    	rtnMap.put("bucketList", bucketList);
+    	
+    	paramMap.put("bucketList" ,bucketList.stream().filter(map -> "WEEK".equals(map.get("calType"))).collect(Collectors.toList()));
+    	paramMap.put("f_useyny"   ,"on");
+    	
+    	// 2. 메인정보조회 
+    	SqlContextHolder.THREAD_LOCAL_NONE_SQL.set(false);
+    	rtnMap.put("sampleList", sampleRepository.selectSample2(paramMap));
     	return rtnMap;
     }
 }

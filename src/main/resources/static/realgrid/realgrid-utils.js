@@ -27,6 +27,7 @@ var GRID = function() {
         columns: null,
         draw: true,
         dimensions: [],
+        measure: false,
     };
 };
 
@@ -138,7 +139,11 @@ GRID.prototype = {
 		this.gridview.setColumns(null);
 		this.provider.setFields(null);
 		
-		var fields = ["grpId"];
+		let fields = [{fieldName : "grpId"}];
+		if (this.defConfig.measure) {
+			fields.push({fieldName : "measureId"});
+			fields.push({fieldName : "measureSort"});
+		}
 		
 		//추가 fields
 		if (this.defConfig.fields) {
@@ -159,7 +164,7 @@ GRID.prototype = {
             fields = [...new Map(fields.map(function(item) {
                 return [item["fieldName"], item];
             })).values()];
-
+            
             this.provider.setFields(fields);
             this.gridview.setColumns(this.defConfig.columns);
         }
@@ -179,7 +184,11 @@ GRID.prototype = {
 			
 			tmpPrevDim += (tmpPrevDim === "" ? "" : " + ") + "values['"+v.dimCd+"'] ";
 		})
-	}
+	},
+	
+	setMeasure : function(bMeasure = false) {
+		this.defConfig.measure = bMeasure;
+	},
 }
 
 /**
@@ -271,7 +280,7 @@ function gfn_getGrdSavedata(objGrid) {
     return jRowsData;
 }
 
-function gfn_drawGridBucket(gridInstance, bucketlist, options) {
+function gfn_drawDynamicGrid(gridInstance, bucketlist, options) {
 	let defConfig = {
 		bucketType: "MONTH_WEEK",
 		bTotal1: false,
@@ -292,6 +301,12 @@ function gfn_drawGridBucket(gridInstance, bucketlist, options) {
 	let dimcolumns = gridInstance.defConfig.dimensions.map(v => {
 		return { name: v.dimCd, type: "data", width: "90", header: {text: v.dimNm, styleName: "vam-column"}, styleName: "tal-column", sortable : false };
 	})
+	
+	//메저
+	let meacolumns = [];
+	if (gridInstance.defConfig.measure) {
+		meacolumns = [{ name: "measureNm", type: "data", width: "100", header: {text: "Category", styleName: "vam-column"}, styleName: "tal-column", sortable : false }];
+	}
 
 	//dycolumns Bucket --------------------------------
 	let bucketcolumns = bucketlist.filter(v => v.calType === lastBucketType).map(function(vv) {
@@ -327,6 +342,13 @@ function gfn_drawGridBucket(gridInstance, bucketlist, options) {
   		return ret;
 	}
 
+	const meaStyleCallback = function(grid, dataCell) {
+		var ret = {};
+  		var grpId = grid.getValue(dataCell.index.itemIndex, "grpId");
+  		if (grpId > 0) ret.styleName = "dyl"+grpId+"-column";
+  		return ret;
+	}
+
 	const bucketStyleCallback = function(grid, dataCell) {
 		var ret = {};
   		var grpId = grid.getValue(dataCell.index.itemIndex, "grpId");
@@ -338,12 +360,18 @@ function gfn_drawGridBucket(gridInstance, bucketlist, options) {
 		return {...v, styleCallback: dimStyleCallback};
 	})
 
+	meacolumns = meacolumns.map(v => {
+		return {...v, styleCallback: meaStyleCallback};
+	})
+
 	bucketcolumns = bucketcolumns.map(v => {
 		return {...v, styleCallback: bucketStyleCallback};
 	})
 
 	//최종 columns
-	const dycolumns = [...dimcolumns, ...bucketcolumns];
+	const dycolumns = [...dimcolumns, ...meacolumns, ...bucketcolumns];
+	
+	console.log("dycolumns",dycolumns);
 	
 	gridInstance.defConfig.columns = dycolumns;
 	gridInstance.setDraw(); //그리드를 그린다.
@@ -471,9 +499,13 @@ function gfn_com_getGridLayout(gridInstance, bucketlist, layoutOptions) {
 		}
 	  	
 		//드룹핑되지 않는 컬럼정보 layout 앞뒤로 처리 - 디멘전, 고정컬럼
+		if (gridInstance.defConfig.measure) {
+			layout = ["measureNm", ...layout];
+		}
+		
 		layout = [...gridInstance.defConfig.dimensions.map(v => v.dimCd), ...layout];
 		
-	  	//console.log("layout",layout);
+	  	console.log("layout",layout);
 	  	gridview.setColumnLayout(layout);
 	  	
 	} catch(e) {

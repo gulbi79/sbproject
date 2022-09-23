@@ -17,6 +17,9 @@ function gfn_setComParams() {
             
     // 3.dimension
     rtnParams.dimensionList = viewinfo?.arrDim?.map(v => v);
+
+    // 4.measure
+    rtnParams.measureList = viewinfo?.arrMea?.map(v => v);
     
     return rtnParams;
 }

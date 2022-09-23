@@ -7,5 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface SampleRepository {
-    List<Map<String,Object>> selectSampleMain(Map<String,Object> paramMap);
+    List<Map<String,Object>> selectSample1(Map<String,Object> paramMap);
+
+    List<Map<String,Object>> selectSample2(Map<String,Object> paramMap);
 }

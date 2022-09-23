@@ -97,10 +97,11 @@
 
 			//그리드정보에 디멘전정보를 설정
 			gridInstance.setDimension(com_viewinfo.arrDim);
+			gridInstance.setMeasure(true);
             
 			//server api 요청
 			const pConfigs = {
-				url: 'sample/samplemain',
+				url: 'sample/sample2',
 				reqSql: sql,
 			    body: JSON.stringify(filterObj),
 			};
@@ -111,7 +112,7 @@
 			
 			try {
 				//디멘전, 고정컬럼, bucket을 이용해서 그리드 컬럼정보를 만든다.
-				gfn_drawGridBucket(gridInstance, res.data.bucketList, {bucketType: "YEAR_MONTH_WEEK", bTotal1: false, bTotal2: false, bTotal3: false});
+				gfn_drawDynamicGrid(gridInstance, res.data.bucketList, {bucketType: "YEAR_MONTH_WEEK", bTotal1: false, bTotal2: false, bTotal3: false});
 				
 				//데이터 초기화 및 그리드 데이터 생성
 	            provider.clearRows();

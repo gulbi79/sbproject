@@ -11,11 +11,23 @@
     	<div id="dimGrid" class="cell-5 h-100"></div>
     	<div id="meaGrid" class="cell-5 h-100"></div>
     </div>
-	<div class="row flex-align-end w-100" style="height:50px;">
-    	<div id="" class="cell w-100" style="padding: 6px 38px;">Preview</div>
+	<div class="row flex-justify-between w-100 mt-6" style="height:25px;">
+    	<div class="cell" style="padding: 0 38px;">Preview</div>
+    	<div class="cell" style="padding: 0 45px 0 38px; text-align:right;">
+    		<button class="button mini" onclick="fn_moveDim('F')">←</button>
+    		<button class="button mini" onclick="fn_moveDim('P')">◀</button>
+    		<button class="button mini" onclick="fn_moveDim('N')">▶</button>
+    		<button class="button mini" onclick="fn_moveDim('L')">→</button>
+    	</div>
     </div>
 	<div class="row w-100" style="height:190px;">
-    	<div id="previewGrid" class="cell w-100" style="padding:6px 38px;"></div>
+    	<div id="previewGrid" class="cell" style="padding-left:38px; max-width: 742px;"></div>
+    	<div class="pt-2">
+    		<button class="button mini" onclick="fn_moveMea('F')">↑</button><br>
+    		<button class="button mini" onclick="fn_moveMea('P')">▲</button><br>
+    		<button class="button mini" onclick="fn_moveMea('N')">▼</button><br>
+    		<button class="button mini" onclick="fn_moveMea('L')">↓</button>
+    	</div>
     </div>
 </th:block>
 
@@ -25,6 +37,7 @@
         let dimGrid, dimProvider;
         let meaGrid, meaProvider;
         let previewInstance, previewGrid, previewProvider;
+        let selDims = [], selMeas = [];
         $(function() {
             fn_gridInit(); //그리드초기화
             fn_setGridData();
@@ -64,18 +77,64 @@
 	        
 	        //체크박스 이벤트 등록
 	        dimGrid.onItemChecked = function (grid, itemIndex, checked) {
+				let dataRow = grid.getDataRow(itemIndex);
+				const checkJsonRow = dimProvider.getJsonRow(dataRow);
+				if (checked) {
+					const addData = { dimCd: checkJsonRow.dimCd, dimNm: checkJsonRow.dimNm };
+					
+					//체크된항목 상위를 찾아서 바로 아래 추가한다.
+					const checkedRows = grid.getCheckedRows();
+					let fPIdx = checkedRows.findIndex(v => v === dataRow);
+					if (fPIdx > 0) {
+						fPIdx = checkedRows[fPIdx-1];
+					}
+					
+					selDims.splice(selDims.findIndex(v => v.dimCd === dimProvider.getValue(fPIdx,"dimCd")) + 1, 0, addData);
+				} else {
+					selDims.splice(selDims.findIndex(v => v.dimCd === checkJsonRow.dimCd), 1);
+				}
 				fn_gridDraw();
 			};
 			
 			dimGrid.onItemAllChecked = function (grid, checked) {
+				selDims = [];
+				if (checked) {
+					const checkJsonRows = dimProvider.getJsonRows();
+					selDims = checkJsonRows.map(v => {
+						return { dimCd: v.dimCd, dimNm: v.dimNm };
+					})
+				}
 				fn_gridDraw();
 			};
 			
 			meaGrid.onItemChecked = function (grid, itemIndex, checked) {
+				let dataRow = grid.getDataRow(itemIndex);
+				const checkJsonRow = meaProvider.getJsonRow(dataRow);
+				if (checked) {
+					const addData = { meaCd: checkJsonRow.meaCd, meaNm: checkJsonRow.meaNm };
+					
+					//체크된항목 상위를 찾아서 바로 아래 추가한다.
+					const checkedRows = grid.getCheckedRows();
+					let fPIdx = checkedRows.findIndex(v => v === dataRow);
+					if (fPIdx > 0) {
+						fPIdx = checkedRows[fPIdx-1];
+					}
+					
+					selMeas.splice(selMeas.findIndex(v => v.meaCd === meaProvider.getValue(fPIdx,"meaCd")) + 1, 0, addData);
+				} else {
+					selMeas.splice(selMeas.findIndex(v => v.meaCd === checkJsonRow.meaCd), 1);
+				}
 				fn_gridDraw();
 			};
 			
 			meaGrid.onItemAllChecked = function (grid, checked) {
+				selMeas = [];
+				if (checked) {
+					const checkJsonRows = meaProvider.getJsonRows();
+					selMeas = checkJsonRows.map(v => {
+						return { meaCd: v.meaCd, meaNm: v.meaNm };
+					})
+				}
 				fn_gridDraw();
 			};
 			
@@ -101,6 +160,9 @@
 		    
 			const dAllData = lv_parent.com_viewinfo.arrAllDim.map(v => v);
 			const dSelData = lv_parent.com_viewinfo.arrDim.map(v => v);
+			
+			//전역변수로 저장
+			selDims = [...dSelData];
 		    
 		    dimProvider.setRows(dAllData);
 		    //이미 선택된 디멘전 체크
@@ -118,6 +180,9 @@
 		    
 			const dAllData = lv_parent.com_viewinfo.arrAllMea.map(v => v);
 			const dSelData = lv_parent.com_viewinfo.arrMea.map(v => v);
+			
+			//전역변수로 저장
+			selMeas = [...dSelData];
 		    
 		    meaProvider.setRows(dAllData);
 		    //이미 선택된 디멘전 체크
@@ -129,69 +194,40 @@
 		}
 		
 		function fn_gridDraw() {
-			//popup menu
-			const dimMenu = [{
-				label: "◀",
-			 	enabled: true,
-			  	callback: function(grid, index) {
-					console.log("left",index);
-				}
-			},{
-				label: "▶",
-			 	enabled: true,
-			  	callback: function(grid, index) {
-					console.log("right",index);
-				}
-			}];
-			
-			const meaMenu = [{
-				label: "▲",
-			 	enabled: true,
-			  	callback: function(grid, index) {
-					console.log("top",index);
-				}
-			},{
-				label: "▼",
-			 	enabled: true,
-			  	callback: function(grid, index) {
-					console.log("bottom",index);
-				}
-			}];
-			
-			previewGrid.addPopupMenu("dimMenu", dimMenu);
-			previewGrid.addPopupMenu("meaMenu", meaMenu);
-			
 			//디멘전에 체크된 데이터로 컬럼목록생성
-			const dimJsonData = dimGrid.getCheckedRows().map(v => dimProvider.getJsonRow(v)).map(vv => {
-				return {name: vv.dimCd, type: "data", width: "100", header: {text: vv.dimNm}}
+			const dimJsonData = selDims.map(v => {
+				return {name: v.dimCd, type: "data", width: "100", header: {text: v.dimNm}}
 			});
+			
 			previewInstance.defConfig.columns = [...dimJsonData];
 			
 			//메저
-			const meaJsonData = meaGrid.getCheckedRows().map(v => meaProvider.getJsonRow(v));
-			if (meaJsonData.length > 0) {
+			if (selMeas.length > 0) {
 				previewInstance.defConfig.columns.push(
-					{name: "measureNm", type: "data", width: "100", header: {text: "Category"}, popupMenu: "meaMenu", button: "popup"}
+					{name: "measureNm", type: "data", width: "100", header: {text: "Category"}}
 				);
 			}
 			
 			previewInstance.setDraw();
-			
-			dimJsonData.forEach(v => {
-				previewGrid.setColumnProperty(v.name, "header", { popupMenu: "dimMenu" });
-			});
-			
-			previewGrid.refresh();
-			
 			previewProvider.clearRows();
             previewGrid.cancel();
             
-            if (meaJsonData.length > 0) {
-            	previewProvider.setRows(meaJsonData.map(v => { return {measureNm : v.meaNm }}));
+            if (selMeas.length > 0) {
+            	previewProvider.setRows(selMeas.map(v => { return {measureNm : v.meaNm }}));
 			} else {
             	previewProvider.setRows([{measureNm : "" }]);
 			}
-            
+			
+			//focus
+			//previewGrid.setCurrent({ itemIndex: 0 , column: dimJsonData[0].dimCd });
+		}
+		
+		function fn_getCheckedMeaJsonData() {
+			const oldData = previewProvider.getJsonRows();
+			if (oldData.length === 0) {
+				return meaGrid.getCheckedRows().map(v => meaProvider.getJsonRow(v));
+			}
+			return oldData;
 		}
 		
         //이벤트초기화
@@ -203,7 +239,40 @@
 			console.log("Config iframe의 fn_apply calls");
 			
 			//선택된 데이터 부모창에 셋
-			//lv_parent.com_viewinfo.arrDim = selProvider.getJsonRows().map(v => v);
+			lv_parent.com_viewinfo.arrDim = selDims.map(v => v);
+			lv_parent.com_viewinfo.arrMea = selMeas.map(v => v);
+		}
+		
+		function fn_moveDim(mType) {
+			const current = previewGrid.getCurrent();
+			if (current.fieldIndex === -1) return;
+			
+			const fieldIdx = current.fieldIndex-1;
+			let mIdx = gfn_util_decode(mType, "F", fieldIdx === 0 ? -1 : 0, "P", fieldIdx-1, "N", fieldIdx+1, "L", fieldIdx === selDims.length-1 ? -1 : selDims.length-1);
+			
+			if (mIdx < 0 || mIdx > selDims.length-1) return;
+			
+			const moveColumn = selDims.splice(fieldIdx, 1); //삭제
+			selDims.splice(mIdx, 0, moveColumn[0]); //위치이동 추가
+			
+			fn_gridDraw();
+			
+			previewGrid.setCurrent({fieldIndex: mIdx+1});
+		}
+		
+		function fn_moveMea(mType) {
+			const current = previewGrid.getCurrent();
+			if (current.fieldIndex === -1) return;
+			
+			const mIdx = gfn_util_decode(mType, "F", 0, "P", current.dataRow-1, "N", current.dataRow+1, "L", previewProvider.getRowCount()-1);
+			if (mIdx < 0 || mIdx > previewProvider.getRowCount()-1) return;
+			
+			previewProvider.moveRow(current.dataRow, mIdx);
+			previewGrid.setCurrent({dataRow: mIdx});
+			
+			//selMeas 에 반영
+			const moveData = selMeas.splice(current.dataRow, 1); //삭제
+			selMeas.splice(mIdx, 0, moveData[0]); //위치이동 추가
 		}
         
     </script>

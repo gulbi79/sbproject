@@ -4,8 +4,8 @@
 
 <mapper namespace="com.demo.boot.biz.sample.repository.SampleRepository">
 
-    <!-- sample select -->
-    <select id="selectSampleMain" parameterType="map" resultType="custommap">
+    <!-- sample1 select -->
+    <select id="selectSample1" parameterType="map" resultType="custommap">
     <![CDATA[
     WITH W_TMP AS (
         SELECT DIM01 || ROUND(DBMS_RANDOM.VALUE(1,100)) AS DIM01
@@ -58,6 +58,76 @@
 #foreach($dim in $_parameter.dimensionList)
            , A.$dim.dimCd NULLS FIRST
 #end
+    ]]>
+    </select>
+
+    <!-- sample2 select -->
+    <select id="selectSample2" parameterType="map" resultType="custommap">
+    <![CDATA[
+    WITH W_TMP AS (
+        SELECT DIM01 || ROUND(DBMS_RANDOM.VALUE(1,100)) AS DIM01
+             , DIM02 || ROUND(DBMS_RANDOM.VALUE(1,100)) AS DIM02
+             , DIM03 || ROUND(DBMS_RANDOM.VALUE(1,100)) AS DIM03
+             , QTY
+             , '2022' || LPAD(ROUND(DBMS_RANDOM.VALUE(1,52)),2,'0') AS WEEK
+        FROM (
+        	SELECT 'A' AS DIM01, 'AA' AS DIM02, 'AAA' AS DIM03
+        	     , ROUND(DBMS_RANDOM.VALUE(0,100) * ROWNUM) AS QTY
+        	FROM DUAL
+        	CONNECT BY ROWNUM < 500
+        ) A
+    )
+    , W_RAW AS (
+        SELECT NULL AS TMPCOL
+#foreach($dim in $_parameter.dimensionList)
+ #if($dim.dimCd == "DIM01")
+             , DIM01 AS $dim.dimCd
+ #elseif($dim.dimCd == "DIM02")
+             , DIM02 AS $dim.dimCd
+ #elseif($dim.dimCd == "DIM03")
+             , DIM03 AS $dim.dimCd
+ #end
+#end
+             , WEEK
+             , QTY
+        FROM W_TMP
+    )
+    SELECT NULL AS TMPCOL
+#set($lastDim = "")
+#foreach($dim in $_parameter.dimensionList)
+         , NVL($dim.dimCd, 'Total') AS $dim.dimCd
+#end
+         , M.MEASURE_ID
+         , M.MEASURE_NM
+         , 0 #foreach($dim in $_parameter.dimensionList) + GROUPING($dim.dimCd) #end AS GRP_ID
+#foreach($bucket in $_parameter.bucketList)
+         , SUM(CASE WHEN $bucket.bucketcol = WEEK THEN QTY END) AS w$bucket.week
+#end
+    FROM W_RAW A
+    CROSS JOIN (
+#foreach($mea in $_parameter.measureList)
+ #if($foreach.index == 0)
+        SELECT '$mea.meaCd' AS MEASURE_ID, '$mea.meaNm' AS MEASURE_NM FROM DUAL
+ #else
+        UNION ALL SELECT '$mea.meaCd' AS MEASURE_ID, '$mea.meaNm' AS MEASURE_NM FROM DUAL
+ #end
+#end
+    ) M
+    GROUP BY M.MEASURE_ID, M.MEASURE_NM,
+             ROLLUP (
+#foreach($dim in $_parameter.dimensionList)
+ #if($foreach.index == 0)
+                 ($dim.dimCd)
+ #else
+               , ($dim.dimCd)
+ #end
+#end
+            )
+    ORDER BY NULL
+#foreach($dim in $_parameter.dimensionList)
+           , A.$dim.dimCd NULLS FIRST
+#end
+           , M.MEASURE_NM
     ]]>
     </select>
 
