@@ -158,8 +158,8 @@
 			dimProvider.clearRows();
 		    dimGrid.cancel();
 		    
-			const dAllData = lv_parent.com_viewinfo.arrAllDim.map(v => v);
-			const dSelData = lv_parent.com_viewinfo.arrDim.map(v => v);
+			const dAllData = lv_parent.com_viewinfo.arrAllDim?.map(v => v) ?? [];
+			const dSelData = lv_parent.com_viewinfo.arrDim?.map(v => v) ?? [];
 			
 			//전역변수로 저장
 			selDims = [...dSelData];
@@ -178,8 +178,8 @@
 			meaProvider.clearRows();
 		    meaGrid.cancel();
 		    
-			const dAllData = lv_parent.com_viewinfo.arrAllMea.map(v => v);
-			const dSelData = lv_parent.com_viewinfo.arrMea.map(v => v);
+			const dAllData = lv_parent.com_viewinfo.arrAllMea?.map(v => v) ?? [];
+			const dSelData = lv_parent.com_viewinfo.arrMea?.map(v => v) ?? [];
 			
 			//전역변수로 저장
 			selMeas = [...dSelData];
