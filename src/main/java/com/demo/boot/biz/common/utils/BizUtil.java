@@ -1,7 +1,9 @@
 package com.demo.boot.biz.common.utils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.util.StringUtils;
 
@@ -39,5 +41,19 @@ public class BizUtil {
 
 	public static Map<String,Object> getBucketMWParams() {
 		return getBucketDefaultParams(BUCKET_TYPE_MW);
+	}
+	
+	public static Map<String,Object> getBucketResultParams(List<Map<String,Object>> allBucketList, String calType) {
+		Map<String,Object> bucketRtn = new HashMap<String,Object>();
+		List<Map<String,Object>> calTypeBucketList = allBucketList.stream().filter(map -> calType.equals(map.get("calType"))).collect(Collectors.toList());
+		bucketRtn.put("bucketList" ,calTypeBucketList);
+		
+		if ("WEEK".equals(calType)) {
+			int calTypeLen = calTypeBucketList.size();
+			bucketRtn.put("bucketStartWeek" ,calTypeLen > 0 ? calTypeBucketList.get(0).get("week") : null);
+			bucketRtn.put("bucketEndWeek"   ,calTypeLen > 0 ? calTypeBucketList.get(calTypeLen-1).get("week") : null);
+		}
+		
+		return bucketRtn;
 	}
 }

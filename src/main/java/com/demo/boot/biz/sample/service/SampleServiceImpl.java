@@ -29,12 +29,11 @@ public class SampleServiceImpl implements SampleService {
     	Map<String, Object> rtnMap = new HashMap<String, Object>();
     	SqlContextHolder.THREAD_LOCAL_NONE_SQL.set(true);
     	
-    	paramMap.putAll(BizUtil.getBucketYMWParams()); //bucket에 대한 공통파라미터 정의
+    	paramMap.putAll(BizUtil.getBucketYMWParams()); //bucket 조회시 필요한 공통파라미터 정의
     	List<Map<String,Object>> bucketList = commonRepository.selectCalBucket(paramMap);
 		rtnMap.put("bucketList", bucketList);
 		
-		paramMap.put("bucketList" ,bucketList.stream().filter(map -> "WEEK".equals(map.get("calType"))).collect(Collectors.toList()));
-		paramMap.put("f_useyny"   ,"on");
+		paramMap.putAll(BizUtil.getBucketResultParams(bucketList, "WEEK")); //조회된 bucket으로 공통파라미터 정의
 		
 		// 2. 메인정보조회 
 		SqlContextHolder.THREAD_LOCAL_NONE_SQL.set(false);
@@ -51,8 +50,7 @@ public class SampleServiceImpl implements SampleService {
     	List<Map<String,Object>> bucketList = commonRepository.selectCalBucket(paramMap);
     	rtnMap.put("bucketList", bucketList);
     	
-    	paramMap.put("bucketList" ,bucketList.stream().filter(map -> "WEEK".equals(map.get("calType"))).collect(Collectors.toList()));
-    	paramMap.put("f_useyny"   ,"on");
+    	paramMap.putAll(BizUtil.getBucketResultParams(bucketList, "WEEK")); //조회된 bucket으로 공통파라미터 정의
     	
     	// 2. 메인정보조회 
     	SqlContextHolder.THREAD_LOCAL_NONE_SQL.set(false);

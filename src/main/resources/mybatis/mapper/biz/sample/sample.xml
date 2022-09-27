@@ -22,7 +22,7 @@
              , QTY
         FROM TB_DYN_SAMPLE1
         WHERE CATEGORY = 'MEASURE1'
-          AND WEEK BETWEEN '202201' AND '202253'
+          AND WEEK BETWEEN @{bucketStartWeek} AND @{bucketEndWeek}
     )
     SELECT NULL AS TMPCOL
 #set($lastDim = "")
@@ -31,7 +31,7 @@
 #end
          , 0 #foreach($dim in $_parameter.dimensionList) + GROUPING($dim.dimCd) #end AS GRP_ID
 #foreach($bucket in $_parameter.bucketList)
-         , SUM(CASE WHEN $bucket.bucketcol = WEEK THEN QTY END) AS w$bucket.week
+         , SUM(CASE WHEN $bucket.week = WEEK THEN QTY END) AS w$bucket.week
 #end
     FROM W_RAW A
     GROUP BY ROLLUP (
@@ -68,7 +68,7 @@
              , WEEK
              , QTY
         FROM TB_DYN_SAMPLE1
-        WHERE WEEK BETWEEN '202201' AND '202253'
+        WHERE WEEK BETWEEN @{bucketStartWeek} AND @{bucketEndWeek}
         
     )
     , W_RAW_GRP AS (
@@ -78,7 +78,7 @@
 #end
              , CATEGORY
 #foreach($bucket in $_parameter.bucketList)
-             , SUM(CASE WHEN WEEK = '$bucket.bucketcol' THEN QTY END) AS w$bucket.week
+             , SUM(CASE WHEN WEEK = '$bucket.week' THEN QTY END) AS w$bucket.week
 #end
         FROM W_RAW
         GROUP BY NULL

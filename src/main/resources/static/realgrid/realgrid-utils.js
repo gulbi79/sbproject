@@ -371,7 +371,7 @@ function gfn_drawDynamicGrid(gridInstance, bucketlist, options) {
 	//최종 columns
 	const dycolumns = [...dimcolumns, ...meacolumns, ...bucketcolumns];
 	
-	console.log("dycolumns",dycolumns);
+	//console.log("dycolumns",dycolumns);
 	
 	gridInstance.defConfig.columns = dycolumns;
 	gridInstance.setDraw(); //그리드를 그린다.
@@ -505,7 +505,7 @@ function gfn_com_getGridLayout(gridInstance, bucketlist, layoutOptions) {
 		
 		layout = [...gridInstance.defConfig.dimensions.map(v => v.dimCd), ...layout];
 		
-	  	console.log("layout",layout);
+	  	//console.log("layout",layout);
 	  	gridview.setColumnLayout(layout);
 	  	
 	} catch(e) {

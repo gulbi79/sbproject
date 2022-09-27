@@ -18,7 +18,8 @@
 				    <th:block th:fragment="selectFragment(title, name)">
 					    <li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> <span th:text=${title}>select</span></li>
 					    <li class="pl-3 bg-basecolor">
-					        <select name="select1" th:attr="id=${name}, name=${name}" data-role="select" class="input-small">
+					        <select name="select1" th:attr="id=${name}, name=${name}" data-role="select" class="input-small" 
+					        	data-cls-parent-option="pl-2">
 					            <option value=""></option>
 					        </select>
 					    </li>
