@@ -8,6 +8,10 @@
 
 <th:block layout:fragment="content">
 	<div id="realgrid1" class="w-100 onegrid"></div>
+	<div style="text-align:right; margin-top:6px;">
+        <button class="button small cancel">Cancel</button>
+        <button class="button primary small ok" style="min-width:57px;">Ok</button>
+	</div>
 </th:block>
 
 <th:block layout:fragment="contentjs">
@@ -43,11 +47,20 @@
         
         //이벤트초기화
         function fn_eventInit() {
+			$(".cancel").on("click", function() {
+				lv_parent.Metro.dialog.close('#c_popup');
+			});
+			
+			$(".ok").on("click", function() {
+				if (!fn_apply()) return;
+				lv_parent.Metro.dialog.close('#c_popup');
+			});
         }
         
         //닫힐때 호출
         function fn_apply() {
 			console.log("iframe의 fn_apply calls");
+			return true;
 		}
         
     </script>

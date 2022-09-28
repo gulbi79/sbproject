@@ -22,3 +22,16 @@ function gfn_util_decode() {
 function gfn_util_camelCase(str) {
   return str.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
 }
+
+// Merge a `source` object to a `target` recursively
+function gfn_util_merge(pTarget, source) {
+	const target = {...pTarget};
+  	// Iterate through `source` properties and if an `Object` set property to merge of `target` and `source` properties
+	for (let key of Object.keys(source)) {
+		if (source[key] instanceof Object) Object.assign(source[key], gfn_util_merge(target[key], source[key]));
+  	}
+
+  	// Join `target` and modified `source`
+  	Object.assign(target || {}, source);
+  	return target
+}

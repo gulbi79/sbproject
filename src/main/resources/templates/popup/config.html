@@ -20,7 +20,7 @@
     		<button class="button mini" onclick="fn_moveDim('L')">→</button>
     	</div>
     </div>
-	<div class="row w-100" style="height:190px;">
+	<div class="row w-100" style="height:160px;">
     	<div id="previewGrid" class="cell" style="padding-left:38px; max-width: 742px;"></div>
     	<div class="pt-2">
     		<button class="button mini" onclick="fn_moveMea('F')">↑</button><br>
@@ -28,6 +28,13 @@
     		<button class="button mini" onclick="fn_moveMea('N')">▼</button><br>
     		<button class="button mini" onclick="fn_moveMea('L')">↓</button>
     	</div>
+    </div>
+	<div class="row flex-justify-end w-100">
+		<div class="cell" style="text-align:right; padding-right:38px;">
+	        <button class="button small cancel">Cancel</button>
+	        <button class="button primary small ok" style="min-width:57px;">Ok</button>
+	        <button class="button primary small apply" style="min-width:57px;">Apply</button>
+		</div>
     </div>
 </th:block>
 
@@ -38,11 +45,12 @@
         let meaGrid, meaProvider;
         let previewInstance, previewGrid, previewProvider;
         let selDims = [], selMeas = [];
+        let allDims, allMeas;
         $(function() {
             fn_gridInit(); //그리드초기화
             fn_setGridData();
             fn_gridDraw();
-            //fn_eventInit(); //이벤트초기화
+            fn_eventInit(); //이벤트초기화
         });
 
         //그리드초기화
@@ -54,6 +62,7 @@
             const options = {
 				checkBar: { visible: true }
 			  , stateBar: { visible: false }
+			  , display: { showEmptyMessage: false }
 			};
             const dimInstance = new GRID().init({gridId: "dimGrid", draw: true, columns: dimColumns, fields: dimFields, options: options});
 	        dimGrid = dimInstance.gridview;
@@ -158,13 +167,13 @@
 			dimProvider.clearRows();
 		    dimGrid.cancel();
 		    
-			const dAllData = lv_parent.com_viewinfo.arrAllDim?.map(v => v) ?? [];
+			allDims = lv_parent.com_viewinfo.arrAllDim?.map(v => v) ?? [];
 			const dSelData = lv_parent.com_viewinfo.arrDim?.map(v => v) ?? [];
 			
 			//전역변수로 저장
 			selDims = [...dSelData];
 		    
-		    dimProvider.setRows(dAllData);
+		    dimProvider.setRows(allDims);
 		    //이미 선택된 디멘전 체크
 		    let arrIdx = [];
 			dSelData.forEach(v => {
@@ -178,13 +187,13 @@
 			meaProvider.clearRows();
 		    meaGrid.cancel();
 		    
-			const dAllData = lv_parent.com_viewinfo.arrAllMea?.map(v => v) ?? [];
+			allMeas = lv_parent.com_viewinfo.arrAllMea?.map(v => v) ?? [];
 			const dSelData = lv_parent.com_viewinfo.arrMea?.map(v => v) ?? [];
 			
 			//전역변수로 저장
 			selMeas = [...dSelData];
 		    
-		    meaProvider.setRows(dAllData);
+		    meaProvider.setRows(allMeas);
 		    //이미 선택된 디멘전 체크
 		    let arrIdx = [];
 			dSelData.forEach(v => {
@@ -232,15 +241,42 @@
 		
         //이벤트초기화
         function fn_eventInit() {
+			$(".cancel").on("click", function() {
+				lv_parent.Metro.dialog.close('#c_popup');
+			});
+			
+			$(".ok").on("click", function() {
+				if (!fn_apply()) return;
+				lv_parent.Metro.dialog.close('#c_popup');
+			});
+
+			$(".apply").on("click", function() {
+				if (!fn_apply()) return;
+				setTimeout(function() {
+					lv_parent.fn_apply();
+				},10);
+				lv_parent.Metro.dialog.close('#c_popup');
+			});
         }
         
         //닫힐때 호출
         function fn_apply() {
-			console.log("Config iframe의 fn_apply calls");
+			//디멘전, 메저는 무조건 한개 이상 선택되어야함
+			if (allDims.length > 0 && selDims.length === 0) {
+				gfn_alert({title: "Info", content: "Dimension이 한개이상 선택되어야합니다."});
+				return false;
+			}
+
+			if (allMeas.length > 0 && selMeas.length === 0) {
+				gfn_alert({title: "Info", content: "Measure가 한개이상 선택되어야합니다."});
+				return false;
+			}
 			
 			//선택된 데이터 부모창에 셋
 			lv_parent.com_viewinfo.arrDim = selDims.map(v => v);
 			lv_parent.com_viewinfo.arrMea = selMeas.map(v => v);
+			
+			return true;
 		}
 		
 		function fn_moveDim(mType) {
@@ -261,6 +297,8 @@
 		}
 		
 		function fn_moveMea(mType) {
+			if (selMeas.length === 0) return;
+			
 			const current = previewGrid.getCurrent();
 			if (current.fieldIndex === -1) return;
 			

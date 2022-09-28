@@ -11,7 +11,7 @@ window.onunload = function() {
 	if (typeof fn_unload === 'function') fn_unload();
 }
 
-const GRID_TOTAL_COLOR = ["#f7e9e9","#f7f3e9","#f0f7e9","#e9f7f3","#eae9f7","#f7e9f6"];
+const GRID_TOTAL_COLOR = ["#f7f3e9","#f7e9f6","#f7e9e9","#f0f7e9","#e9f7f3","#eae9f7"];
 
 var VIEW_GRID_LIST = {
 	gridview: [],
@@ -39,6 +39,7 @@ GRID.prototype = {
         this.gridview.setDataSource(this.provider);
         this.setGlobalGrid();
         this.setOptions();
+        this.setEvents();
         
         if (this.defConfig.draw) this.setDraw();
         
@@ -88,13 +89,14 @@ GRID.prototype = {
 	        },
 	        display : {
 		        showEmptyMessage : true,
-	        	emptyMessage: "Data Not Found!!!",
+	        	emptyMessage: "",
 	        	editItemMerging : true,
 				rowHeight : 21,
 	        }
 	    };
 	    
-	    defaultOptions = {...defaultOptions, ...this.defConfig.options};
+	    //defaultOptions = {...defaultOptions, ...this.defConfig.options};
+	    defaultOptions = gfn_util_merge(defaultOptions, this.defConfig.options);
 	    
 		this.gridview.setOptions(defaultOptions);
 	    
@@ -133,6 +135,17 @@ GRID.prototype = {
 			restoreMode: "auto",
 	    	softDeleting: true //삭제시 상태값만 바꾼다.
 	    });
+	},
+	
+	setEvents : function() {
+		const that = this.gridview;
+		this.provider.onRowCountChanged = function (provider, newCount) {
+			let display = that.getDisplayOptions();
+			if (display.showEmptyMessage) {
+			    display.emptyMessage = "Data Not Found!";
+			    that.setDisplayOptions(display);
+			}
+		};
 	},
 
     setDraw: function() {

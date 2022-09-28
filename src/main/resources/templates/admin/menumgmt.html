@@ -26,6 +26,7 @@
         let grid, provider;
         let comCode;
         $(async function() {
+			gfn_formInit(); //폼 공통로직 처리
             await fn_filterInit(); //필터초기화 //내부 조회로직처리
             fn_gridInit(); //그리드초기화
             fn_eventInit(); //이벤트초기화

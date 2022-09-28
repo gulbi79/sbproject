@@ -2,7 +2,8 @@
  * 공통 폼로딩 초기함수
  */
 function gfn_formInit() {
-	
+	//1. 공통버튼 정의
+	if (this?.com_viewinfo?.reportConfig !== true) $(".bConfig").hide();
 }
 
 function gfn_setComParams() {
@@ -328,16 +329,11 @@ function gfn_onCalendarHide(el, cal) {
 function gfn_commButton(fType) {
 	console.log("gfn_commButton");
 	switch (fType) {
-		case 'DIMENSION' :
-		case 'MEASURE' :
+		case 'CONFIG' :
 			console.log("fType",fType);
-			let strPath = fType === "DIMENSION" ? "dimension" : "config";
-			let strTitle = fType === "DIMENSION" ? "디멘전 팝업" : "Report Configuration";
-			$("#comm_popup").css("width", "100%").css("height", "400px").attr("src", GV_CONTEXT_PATH+"popup/"+strPath);
+			$("#comm_popup").css("width", "100%").css("height", "400px").attr("src", GV_CONTEXT_PATH+"popup/config");
 			$('#c_popup').css('width','800px');
-			$('.ok').off();
-			$('.ok').on('click',function() { gfn_commPopupOk(fType) });
-			setTimeout(function() { Metro.dialog.open('#c_popup',undefined,strTitle) },100);
+			setTimeout(function() { Metro.dialog.open('#c_popup',undefined,'Report Configuration') },100);
 			break;
 		case 'EXCEL' :
 			if (typeof fn_comExportExcel === 'function') {
@@ -352,26 +348,9 @@ function gfn_commButton(fType) {
 	}
 }
 
-function gfn_commPopupOk(pType) {
-	console.log("gfn_commPopupOk");
-	switch (pType) {
-		case 'DIMENSION' :
-		case 'MEASURE' :
-			$("#comm_popup").get(0).contentWindow.fn_apply(); //iframe의 함수를 호출
-			break;
-	}
-}
-
 function gfn_localPopup(pType) {
 	console.log("gfn_localPopup");
 	if (typeof fn_comPopup === 'function') fn_comPopup(pType);
-}
-
-function gfn_comDimensionPopup() {
-	console.log("gfn_comDimensionPopup");
-	$("#comm_popup").css("width", "100%").css("height", "400px").attr("src", GV_CONTEXT_PATH+"popup/dimension");
-	$('#c_popup').css('width','800px');
-	Metro.dialog.open('#c_popup',undefined,'디멘전 팝업');
 }
 
 function gfn_addFilterData(el,type,data,defaultVal) {

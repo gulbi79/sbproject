@@ -21,10 +21,10 @@
 
 <th:block layout:fragment="contentjs">
 	<script>
-        var Utils = Metro.utils;
         let grid, provider;
         let grid2, provider2;
         $(function() {
+			gfn_formInit(); //폼 공통로직 처리
             fn_filterInit(); //필터초기화
             fn_gridInit(); //그리드초기화
             fn_eventInit(); //이벤트초기화

@@ -97,7 +97,7 @@ public class MemberController {
     			//ui에서 사용하기 편하게 레벨별로 분기한다.
     			
     			//sales -----------------------
-    			if (",SALES,".indexOf(tree) != -1) {
+    			if (tree.indexOf(",SALES,") != -1) {
     				List<HashMap<String, String>> salesList = (List<HashMap<String, String>>)treeMap.get("salesTree");
     				model.addAttribute("sales1",salesList.stream().filter(t->"1".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //salesTree 1 level
     				model.addAttribute("sales2",salesList.stream().filter(t->"2".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //salesTree 2 level
@@ -106,7 +106,7 @@ public class MemberController {
     				model.addAttribute("sales5",salesList.stream().filter(t->"5".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //salesTree 5 level
     				
 				//product -----------------------
-    			} else if (",PRODUCT,".indexOf(tree) != -1) {
+    			} else if (tree.indexOf(",PRODUCT,") != -1) {
     				List<HashMap<String, String>> productList = (List<HashMap<String, String>>)treeMap.get("productTree");
     				
     				model.addAttribute("prod1",productList.stream().filter(t->"1".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //productTree 1 level
@@ -116,7 +116,7 @@ public class MemberController {
     				model.addAttribute("prod5",productList.stream().filter(t->"5".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //productTree 5 level
 
     			//plant -----------------------
-    			} else if (",PLANT,".indexOf(tree) != -1) {
+    			} else if (tree.indexOf(",PLANT,") != -1) {
     				List<HashMap<String, String>> plantList = (List<HashMap<String, String>>)treeMap.get("plantTree");
     				
     				model.addAttribute("plant1",plantList.stream().filter(t->"1".equals(String.valueOf(t.get("levelCd")))).collect(Collectors.toList())); //plantTree 1 level
