@@ -3,7 +3,7 @@
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <!-- 공통 헤드-->
-<th:block th:replace="/layouts/fragments/head :: headFragment"></th:block>
+<th:block th:replace="~{layouts/fragments/head :: headFragment}"></th:block>
 
 <body class="m4-cloak h-vh-100" style="overflow:hidden;">
 	<script th:inline="javascript">
@@ -11,13 +11,13 @@
     </script>
 	
     <!-- header -->
-    <th:block th:replace="/layouts/fragments/header :: headerFragment"></th:block>
+    <th:block th:replace="~{layouts/fragments/header :: headerFragment}"></th:block>
     
     <main id="framebody" class="framebody" data-role="splitter" data-split-sizes="20, 80" data-min-sizes="300, 200" data-gutter-size="5">
         <!-- Left Filter -->
         <section id="_divFilter" data-role="splitter" data-split-mode="vertical" data-split-sizes="35, 65" data-min-sizes="100" data-gutter-size="5" >
             <!-- tree -->
-            <th:block th:replace="/layouts/fragments/tree :: treeFragment"></th:block>
+            <th:block th:replace="~{layouts/fragments/tree :: treeFragment}"></th:block>
              <!-- /tree -->
             
             <!-- Filter -->
@@ -48,10 +48,10 @@
     <th:block layout:fragment="hidden"></th:block>
     
 	<!-- common popup -->
-    <th:block th:replace="/layouts/fragments/compopups :: comHiddenPopupFragment()"></th:block>
+    <th:block th:replace="~{layouts/fragments/compopups :: comHiddenPopupFragment()}"></th:block>
     
     <!-- script -->
-   	<th:block th:replace="/layouts/fragments/script :: scriptFragment"></th:block>
+   	<th:block th:replace="~{layouts/fragments/script :: scriptFragment}"></th:block>
     
     <!-- content script -->
     <th:block layout:fragment="contentjs"></th:block>

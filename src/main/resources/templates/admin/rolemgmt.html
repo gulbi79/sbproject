@@ -4,7 +4,7 @@
       layout:decorate="~{layouts/basemaster}">
 
 <th:block layout:fragment="filter">
-	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Role','f_role')"></th:block>
+	<th:block th:replace="~{layouts/fragments/filters :: inputFragment('Role','f_role')}"></th:block>
 </th:block>
 
 <th:block layout:fragment="hidden">
@@ -16,7 +16,7 @@
 		<div id="realgrid2" class="d-flex flex-justify-center flex-align-center w-100 h-100"></div>
 	</div>
 	<!-- 버튼 -->
-    <th:block th:replace="/layouts/fragments/rolebutton :: rolebuttonFragment"></th:block>
+    <th:block th:replace="~{layouts/fragments/rolebutton :: rolebuttonFragment}"></th:block>
 </th:block>
 
 <th:block layout:fragment="contentjs">

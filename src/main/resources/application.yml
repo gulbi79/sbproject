@@ -1,4 +1,9 @@
+server:
+  port: 9090
+  shutdown: graceful
 spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
   datasource:
 #    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
 #    jdbc-url: ENC(F569Wb4PMcSPZlENgatqPK4jD1a6m77m3qdL/E3kTnVwZ/ob8vt2fWqe6bg8kiAw5oYcw8wIt6JHorSy8z6Nmg==)

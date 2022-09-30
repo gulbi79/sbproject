@@ -4,7 +4,7 @@
       layout:decorate="~{layouts/basemaster}">
 
 <th:block layout:fragment="filter">
-	<th:block th:replace="/layouts/fragments/filters :: inputFragment('User','f_user')"></th:block>
+	<th:block th:replace="~{layouts/fragments/filters :: inputFragment('User','f_user')}"></th:block>
 </th:block>
 
 <th:block layout:fragment="hidden">

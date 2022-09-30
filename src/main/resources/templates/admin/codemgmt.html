@@ -4,8 +4,8 @@
       layout:decorate="~{layouts/basemaster}">
 
 <th:block layout:fragment="filter">
-	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Group','f_group')"></th:block>
-	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Code','f_code')"></th:block>
+	<th:block th:replace="~{layouts/fragments/filters :: inputFragment('Group','f_group')}"></th:block>
+	<th:block th:replace="~{layouts/fragments/filters :: inputFragment('Code','f_code')}"></th:block>
 </th:block>
 
 <th:block layout:fragment="hidden">
@@ -14,7 +14,7 @@
 <th:block layout:fragment="content">
 	<div id="realgrid1" class="w-100 onegrid"></div>
 	<!-- 버튼 -->
-    <th:block th:replace="/layouts/fragments/rolebutton :: rolebuttonFragment"></th:block>
+    <th:block th:replace="~{layouts/fragments/rolebutton :: rolebuttonFragment}"></th:block>
 </th:block>
 
 <th:block layout:fragment="contentjs">

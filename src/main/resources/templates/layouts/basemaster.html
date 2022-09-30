@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <!-- 공통 헤드-->
-<th:block th:replace="/layouts/fragments/head :: headFragment"></th:block>
+<th:block th:replace="~{layouts/fragments/head :: headFragment}"></th:block>
 
 	<body class="m4-cloak h-vh-100" >
 		<script th:inline="javascript">
@@ -11,7 +11,7 @@
 	    </script>
     
 	    <!-- header -->
-	    <th:block th:replace="/layouts/fragments/header :: headerFragment"></th:block>
+	    <th:block th:replace="~{layouts/fragments/header :: headerFragment}"></th:block>
 	    
 	    <main id="framebody" class="framebody" data-role="splitter" data-split-sizes="20, 80" data-min-sizes="300, 200" data-gutter-size="5">
 	        <!-- Left Filter -->
@@ -44,7 +44,7 @@
 	    <th:block layout:fragment="hidden"></th:block>
 	    
 	    <!-- script -->
-	   	<th:block th:replace="/layouts/fragments/script :: scriptFragment"></th:block>
+	   	<th:block th:replace="~{layouts/fragments/script :: scriptFragment}"></th:block>
 	    
 	    <!-- content script -->
 	    <th:block layout:fragment="contentjs"></th:block>

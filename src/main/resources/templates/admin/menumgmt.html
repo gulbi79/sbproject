@@ -4,7 +4,7 @@
       layout:decorate="~{layouts/basemaster}">
       
 <th:block layout:fragment="filter">
-	<th:block th:replace="/layouts/fragments/filters :: inputFragment('Menu Name','f_menuname')"></th:block>
+	<th:block th:replace="~{layouts/fragments/filters :: inputFragment('Menu Name','f_menuname')}"></th:block>
 	<li class="menu-title pl-1"><span class="mif-chevron-right icon"></span> Use Y/N</li>
     <li class="pl-3 bg-basecolor">
         <input name="f_useyny" type="checkbox" data-role="checkbox" data-caption="Y&nbsp;&nbsp;" checked>
@@ -18,7 +18,7 @@
 <th:block layout:fragment="content">
 	<div id="realgrid1" class="w-100 onegrid"></div>
 	<!-- 버튼 -->
-    <th:block th:replace="/layouts/fragments/rolebutton :: rolebuttonFragment"></th:block>
+    <th:block th:replace="~{layouts/fragments/rolebutton :: rolebuttonFragment}"></th:block>
 </th:block>
 
 <th:block layout:fragment="contentjs">
