@@ -16,7 +16,7 @@ class JasyptApplicationTests {
 
         System.out.println("url:" + jasyptEncoding(url));
         System.out.println("username:" + jasyptEncoding(username));
-        System.out.println("password" + jasyptEncoding(password));
+        System.out.println("password:" + jasyptEncoding(password));
     }
 
     public String jasyptEncoding(String value) {

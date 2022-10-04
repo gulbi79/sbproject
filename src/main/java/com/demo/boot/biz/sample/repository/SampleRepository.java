@@ -10,4 +10,6 @@ public interface SampleRepository {
     List<Map<String,Object>> selectSample1(Map<String,Object> paramMap);
 
     List<Map<String,Object>> selectSample2(Map<String,Object> paramMap);
+
+    List<Map<String,Object>> selectSample3(Map<String,Object> paramMap);
 }

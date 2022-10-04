@@ -18,7 +18,6 @@ public class SpringBootThymeApplication {
     @PostConstruct
     public void started() {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));
-
     }
 
 }

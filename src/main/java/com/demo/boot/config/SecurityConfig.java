@@ -1,12 +1,10 @@
 package com.demo.boot.config;
 
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.session.SessionRegistry;
@@ -25,12 +23,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
-
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        //web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**");
-    	web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-    }
 
     /**
      * 규칙 설정
@@ -58,6 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     	http.logout()
 	    	.logoutRequestMatcher(new AntPathRequestMatcher("/auth/logoutProc"))
 	    	.logoutSuccessUrl("/auth/logout")
+//	    	.deleteCookies("JSESSIONID", "remember - me") // 로그아웃 후 해당 쿠키 삭제
 	    	.invalidateHttpSession(true);
     	
     	http.exceptionHandling()

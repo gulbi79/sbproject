@@ -10,7 +10,7 @@ spring:
     driver-class-name: oracle.jdbc.OracleDriver
     jdbc-url: ENC(lbev09K62wfWB4gPZuxVBzdgG4WVN5vB8Uru7jhweYq4/qU1L05JHB6mGBnV9B1d7v63Ak9CM5g=)
     username: ENC(LoVBvkHceiW3h0bJfKGZ4g==)
-    password: a1234
+    password: ENC(rpeuCKJN4S5KOCf362ZH5A==)
   devtools:
     livereload:
         enabled: true

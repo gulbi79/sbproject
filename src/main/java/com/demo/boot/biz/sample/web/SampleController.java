@@ -28,4 +28,9 @@ public class SampleController {
     public ApiResponse<?> selectSample2(@RequestBody Map<String, Object> params) {
     	return ApiResponse.createWrap(sampleService.selectSample2(params));
     }
+
+    @PostMapping("sample3")
+    public ApiResponse<?> selectSample3(@RequestBody Map<String, Object> params) {
+    	return ApiResponse.createWrap(sampleService.selectSample3(params));
+    }
 }

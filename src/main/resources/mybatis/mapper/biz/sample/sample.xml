@@ -142,4 +142,123 @@
            , A.MEASURE_NM
     ]]>
     </select>
+
+    <!-- sample3 select -->
+    <select id="selectSample3" parameterType="map" resultType="custommap">
+    <![CDATA[
+    WITH W_RAW AS (
+        SELECT NULL AS TMPCOL
+#foreach($dim in $_parameter.dimensionList)
+ #if($dim.dimCd == "DIM01")
+             , PRODUCTGROUP AS $dim.dimCd
+ #elseif($dim.dimCd == "DIM02")
+             , PRODUCT AS $dim.dimCd
+ #elseif($dim.dimCd == "DIM03")
+             , ITEM AS $dim.dimCd
+ #end
+#end
+             , CATEGORY
+             , A.WEEK
+             , B.YEAR || B.MONTH AS MONTH
+             , QTY
+        FROM TB_DYN_SAMPLE1 A
+        INNER JOIN TB_MST_CALENDAR B
+           ON B.YEARWEEK = A.WEEK
+          AND B.DATEID BETWEEN @{f_fromcal} AND @{f_tocal}
+        
+    )
+    , W_RAW_GRP AS (
+        SELECT NULL AS TMPCOL
+#foreach($dim in $_parameter.dimensionList)
+             , $dim.dimCd
+#end
+             , CATEGORY
+             , SUM(QTY) AS QTY
+#foreach($bucket in $_parameter.bucketList)
+  #if($bucket.calType == "MONTH")
+             , SUM(CASE WHEN MONTH = '$bucket.fullMonth' THEN QTY END) AS m$bucket.month
+  #else
+             , SUM(CASE WHEN WEEK = '$bucket.week' THEN QTY END) AS w$bucket.week
+  #end
+#end
+        FROM W_RAW
+        GROUP BY NULL
+#foreach($dim in $_parameter.dimensionList)
+             , $dim.dimCd
+#end
+             , CATEGORY
+    )
+    , W_GRP AS (
+        SELECT NULL AS TMPCOL
+#set($lastDim = "")
+#foreach($dim in $_parameter.dimensionList)
+             , $dim.dimCd
+#end
+             , M.MEASURE_ID
+             , M.MEASURE_NM
+             , 0 #foreach($dim in $_parameter.dimensionList) + GROUPING($dim.dimCd) #end AS GRP_ID
+             , CASE WHEN M.MEASURE_ID = 'INV1'   THEN SUM(CASE WHEN A.CATEGORY = 'MEASURE1' THEN QTY END)
+                    WHEN M.MEASURE_ID = 'INV2'   THEN SUM(CASE WHEN A.CATEGORY = 'MEASURE2' THEN QTY END)
+                    WHEN M.MEASURE_ID = 'ORDER1' THEN SUM(CASE WHEN A.CATEGORY = 'MEASURE3' THEN QTY END)
+                    WHEN M.MEASURE_ID = 'ORDER2' THEN SUM(CASE WHEN A.CATEGORY = 'MEASURE4' THEN QTY END) 
+               END AS BUCKET_TOTAL
+#foreach($bucket in $_parameter.bucketList)
+  #if($bucket.calType == "MONTH")
+             , CASE WHEN M.MEASURE_ID = 'INV1'   THEN SUM(CASE WHEN A.CATEGORY = 'MEASURE1' THEN m$bucket.month END)
+                    WHEN M.MEASURE_ID = 'INV2'   THEN SUM(CASE WHEN A.CATEGORY = 'MEASURE2' THEN m$bucket.month END)
+                    WHEN M.MEASURE_ID = 'ORDER1' THEN SUM(CASE WHEN A.CATEGORY = 'MEASURE3' THEN m$bucket.month END)
+                    WHEN M.MEASURE_ID = 'ORDER2' THEN SUM(CASE WHEN A.CATEGORY = 'MEASURE4' THEN m$bucket.month END) 
+               END AS m$bucket.month
+  #else
+             , CASE WHEN M.MEASURE_ID = 'INV1'   THEN SUM(CASE WHEN A.CATEGORY = 'MEASURE1' THEN w$bucket.week END)
+                    WHEN M.MEASURE_ID = 'INV2'   THEN SUM(CASE WHEN A.CATEGORY = 'MEASURE2' THEN w$bucket.week END)
+                    WHEN M.MEASURE_ID = 'ORDER1' THEN SUM(CASE WHEN A.CATEGORY = 'MEASURE3' THEN w$bucket.week END)
+                    WHEN M.MEASURE_ID = 'ORDER2' THEN SUM(CASE WHEN A.CATEGORY = 'MEASURE4' THEN w$bucket.week END) 
+               END AS w$bucket.week
+  #end
+#end
+        FROM W_RAW_GRP A
+        CROSS JOIN (
+#foreach($mea in $_parameter.measureList)
+ #if($foreach.index == 0)
+            SELECT '$mea.meaCd' AS MEASURE_ID, '$mea.meaNm' AS MEASURE_NM FROM DUAL
+ #else
+            UNION ALL SELECT '$mea.meaCd' AS MEASURE_ID, '$mea.meaNm' AS MEASURE_NM FROM DUAL
+ #end
+#end
+        ) M
+        GROUP BY M.MEASURE_ID, M.MEASURE_NM,
+                 ROLLUP (
+#foreach($dim in $_parameter.dimensionList)
+ #if($foreach.index == 0)
+                     ($dim.dimCd)
+ #else
+                   , ($dim.dimCd)
+ #end
+#end
+                )
+    )
+    SELECT NULL AS TMPCOL
+#foreach($dim in $_parameter.dimensionList)
+         , NVL($dim.dimCd, 'Total') AS $dim.dimCd
+#end
+         , A.MEASURE_ID
+         , A.MEASURE_NM
+         , GRP_ID
+         , BUCKET_TOTAL
+#foreach($bucket in $_parameter.bucketList)
+  #if($bucket.calType == "MONTH")
+         , m$bucket.month
+  #else
+         , w$bucket.week
+  #end
+#end
+    FROM W_GRP A
+    ORDER BY NULL
+#foreach($dim in $_parameter.dimensionList)
+           , A.$dim.dimCd NULLS FIRST
+#end
+           , A.MEASURE_NM
+    ]]>
+    </select>
 </mapper>

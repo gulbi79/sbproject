@@ -130,12 +130,68 @@
 
         <!-- tabs data-tabs-type : text, group, pills.-->
         <ul id="tabs" data-role="tabs" data-tabs-type="" data-expand="true" data-cls-tabs-list-item-active="bg-gray fg-white text-light"></ul>
-        <div id="content-wrapper" class=""><div id="dashboard" style="display:block;">Dashboard!!!!</div></div>
+        <div id="content-wrapper">
+        	<div id="dashboard" style="display:block;" class="h-100">
+        		<div class="row h-50">
+        			<div class="cell-6 h-100">
+        				<canvas id="myChart1" class="h-100 w-100 p-4"></canvas>
+        			</div>
+        			<div class="cell-6 h-100">
+        				<canvas id="myChart2" class="h-100 w-100 p-4"></canvas>
+        			</div>
+        		</div>
+        		<div class="row h-50">
+        			<div class="cell-6 h-100">
+        				<canvas id="myChart3" class="h-100 w-100 p-4"></canvas>
+        			</div>
+        			<div class="cell-6 h-100">
+        				<canvas id="myChart4" class="h-100 w-100 p-4"></canvas>
+        			</div>
+        		</div>
+        	</div>
+        </div>
     </div>
 </div>
 
+<script th:attr="src=@{/static/js/common-utils.js}" src="/static/js/common-utils.js"></script>
 <script th:attr="src=@{/static/metro/js/metro.js}" src="/static/metro/js/metro.js"></script>
+<script th:attr="src=@{/static/chartjs/chartjs-utils.js}" src="/static/chartjs/chartjs-utils.js"></script>
 <script>
+	$(function() {
+		fn_chartDraw($('#myChart1'), 'Dashboard Chart1', 'line');
+		fn_chartDraw($('#myChart2'), 'Dashboard Chart2');
+		fn_chartDraw($('#myChart3'), 'Dashboard Chart3');
+		fn_chartDraw($('#myChart4'), 'Dashboard Chart4', 'line');
+	});
+	
+	function fn_chartDraw(ctx, title, type = 'bar') {
+		const tmpRanNum = function() {
+			return Math.floor(Math.random() * 5001);	
+		}
+		
+		new CHARTJS().init(ctx, {
+		    type: type,
+		    data: {
+		      	labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+		      	datasets: [
+			        {
+			          label: "Population (millions)",
+			          backgroundColor: CHART_COLORS.slice(0,5),
+			          data: [tmpRanNum(),tmpRanNum(),tmpRanNum(),tmpRanNum(),tmpRanNum()],
+			          fill: false, //line, area에 적용
+			        }
+			    ]
+		    },
+		    options: {
+			    title: {
+			        display: true,
+			        text: title,
+			        fontSize: 20,
+			    },
+		    }
+		});
+	}
+	
     function fn_clickMenu(menucd, menunm) {
         var menu = $(`div[name=${menucd}]`);
         var menuKey = 0;
