@@ -42,6 +42,28 @@ const CHARTJS = function() {
 					display: false,
 				}
 		    },
+		    scales: {
+	            yAxes: [{
+	                ticks: {
+	                    callback: function(value, index, values) {
+	                        return value !== 0 ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "";
+	                    }
+	                }
+	            }]
+	        },
+	        tooltips: {
+	            callbacks: {
+	                label: function(tooltipItem, data) {
+	                    let label = data.datasets[tooltipItem.datasetIndex].label || '';
+	
+	                    if (label) {
+	                        label += ': ';
+	                    }
+	                    label += tooltipItem.yLabel !== 0 ? tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "";
+	                    return label;
+	                }
+	            }
+	        }
 	    }
     };
 };

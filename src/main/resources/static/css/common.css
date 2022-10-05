@@ -1,6 +1,6 @@
 body{
     /*background-color: rgb(236, 230, 218);*/
-    background-color: #f6f7f8 !important;
+    /*background-color: #f6f7f8 !important;*/
 }
 
 .myCheck::before{
@@ -28,7 +28,7 @@ body{
 .filterForm{
     height: calc(100% - 35px);
     overflow: auto;
-    background-color: #f6f7f8;
+    /*background-color: #f6f7f8;*/
 }
 
 .onegrid{

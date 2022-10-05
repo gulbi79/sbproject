@@ -17,13 +17,14 @@
 </th:block>
 
 <th:block layout:fragment="content">
-	<div class="row h-50">
-		<div class="cell w-100 h-100">
-			<canvas id="myChart1" class="h-100 w-100 p-4"></canvas>
-		</div>		
-	</div>
-	<div class="row h-50">
-		<div id="realgrid1" class="cell w-100 h-100"></div>
+	<div class="h-100 _content" data-role="splitter" data-split-mode="vertical" data-split-sizes="50, 50" data-gutter-size="5">
+		<div class="w-100">
+			<canvas id="myChart1" class="w-100 h-100"></canvas>
+		</div>
+		<div class="w-100">
+			<span class="place-right mt-1 mif-zoom-in fg-cyan"></span>
+			<div id="realgrid1" class="w-100 mt-5" style="height:calc(100% - 20px);"></div>
+		</div>
 	</div>
 </th:block>
 
@@ -52,13 +53,15 @@
         		{meaCd: "ORDER1", meaNm: "Order1"},
         	]
 		};
+		let lvBucket = [];
         let gridInstance, grid, provider;
+        let chart, orgRowKey;
         $(function() {
 			gfn_formInit(); //폼 공통로직 처리
             fn_filterInit(); //필터초기화
             fn_gridInit(); //그리드초기화
             fn_eventInit(); //이벤트초기화
-            fn_chartDraw($('#myChart1'), 'Dashboard Chart1', 'line');
+            fn_chartInit();
         });
 
         //필터초기화
@@ -87,12 +90,26 @@
             gridInstance = new GRID().init({gridId: "realgrid1", draw: false, columns: [], fields: [], options: options});
             grid = gridInstance.gridview;
             provider = gridInstance.provider;
+            
+            grid.onCurrentRowChanged = async function(grid, oldRow, newRow) {
+				fn_chartData();
+			};
         }
         
         //이벤트초기화
         function fn_eventInit() {
             $("#apply").on("click", function() {
                 fn_apply();
+            });
+            
+            $(".mif-zoom-in, .mif-zoom-out").on("click", function() {
+				$(this).toggleClass("mif-zoom-in mif-zoom-out");
+				
+				if ($(this).hasClass("mif-zoom-in")) {
+					Metro.getPlugin($("._content"), "splitter").size("50,50")
+				} else {
+					Metro.getPlugin($("._content"), "splitter").size("0,100")
+				}
             });
         }
         
@@ -121,7 +138,8 @@
 			
 			try {
 				//디멘전, 고정컬럼, bucket을 이용해서 그리드 컬럼정보를 만든다.
-				gfn_drawDynamicGrid(gridInstance, res.data.bucketList, {bucketType: "MONTH_WEEK", bTotal1: true, bTotal2: true});
+				lvBucket = res.data.bucketList;
+				gfn_drawDynamicGrid(gridInstance, lvBucket, {bucketType: "MONTH_WEEK", bTotal1: true, bTotal2: true});
 				
 				//데이터 초기화 및 그리드 데이터 생성
 	            provider.clearRows();
@@ -129,7 +147,9 @@
 	            provider.setRows(res.data.sampleList);
 	            
 	            provider.clearSavePoints();
-				provider.savePoint(); //초기화 포인트 저장
+				provider.savePoint(); //초기화 포인트 
+
+				fn_chartData(); //set chart data
 			} catch(e) { console.log(e); }
         }
         
@@ -158,33 +178,67 @@
 			}
 		}
 		
-		function fn_chartDraw(ctx, title, type = 'bar') {
-			const tmpRanNum = function() {
-				return Math.floor(Math.random() * 5001);	
-			}
-			
-			new CHARTJS().init(ctx, {
-			    type: type,
+		function fn_chartInit() {
+			chart = new CHARTJS().init($('#myChart1'), {
+			    type: 'bar',
 			    data: {
-			      	labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+			      	labels: [],
 			      	datasets: [
 				        {
-				          label: "Population (millions)",
-				          backgroundColor: CHART_COLORS.slice(0,5),
-				          data: [tmpRanNum(),tmpRanNum(),tmpRanNum(),tmpRanNum(),tmpRanNum()],
-				          fill: false, //line, area에 적용
+				          label: '',
+				          backgroundColor: [],
+				          data: [],
 				        }
 				    ]
 			    },
 			    options: {
 				    title: {
 				        display: true,
-				        text: title,
+				        text: 'Analysis Chart',
 				        fontSize: 20,
 				    },
-			    }
+			    },
 			});
 		}
+		
+		function fn_chartData() {
+			//grid index
+			let datarow = grid.getCurrent().dataRow;
+			if (datarow === -1) datarow = 0; //첫행선택
+			
+			//1. 현재 선택된 행기준 디멘전 키값
+			const rowKey = com_viewinfo.arrDim.map(vv => {
+				return provider.getValue(datarow, gfn_util_camelCase(vv.dimCd)) ;
+			}).join();
+			
+			if (orgRowKey === rowKey) return; //같은키를 갖는 row
+			
+			orgRowKey = rowKey; //재설정
+			
+			//2. 디멘전 키값기준으로 데이터 필터링
+			const chartData = provider.getJsonRows().filter(v => {
+				return com_viewinfo.arrDim.map(vv => {
+					return v[gfn_util_camelCase(vv.dimCd)] ;
+				}).join() === rowKey;
+			})
+			
+			const bucket = lvBucket.filter(v => v.calType === "WEEK");
+			const labels = bucket.map(v => v.week);
+			const label = com_viewinfo.arrMea.map(v => v.meaNm);
+			
+			chart.data.datasets = []; //초기화
+			com_viewinfo.arrMea.forEach((v, i) => {
+				const rChartData = bucket.map(bv => {
+					return chartData.filter(cv => cv.measureId === v.meaCd)[0]["w"+bv.week];
+				})
+				chart.data.datasets.push({label: v.meaNm, backgroundColor: CHART_COLORS[i], data: rChartData});
+			})
+			
+			//bucket
+			chart.data.labels = labels;
+			chart.update();
+		}
+		
     </script>
 </th:block>
 </html>
