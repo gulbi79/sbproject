@@ -56,16 +56,17 @@ jobs:
         port: ${{ secrets.SERVER_PORT }}
         script: |
           SOURCE_DIR=source/build/libs
-          FILE_NAME=`find $SOURCE_DIR/*.jar -printf "%f\n"`
+          cd $SOURCE_DIR
+          FILE_NAME=`find *.jar -printf "%f\n"`
           PID=`ps -ef | grep jar | grep java | awk '{print $2}'`
 
           if [ -z "$PID" ]; then
                   echo "#### THERE IS NO PROCESS ####"
           else
                   echo "#### KILL $PID ####"
-                  sudo kill $PID
+                  kill $PID
           fi
 
-          echo "#### RUN $SOURCE_DIR/$FILE_NAME ####"
+          echo "#### RUN $FILE_NAME ####"
 
-          sudo nohup java -jar $SOURCE_DIR/$FILE_NAME &
+          nohup java -jar $FILE_NAME &
