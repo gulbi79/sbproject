@@ -10,8 +10,17 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  
+  workflow_dispatch:
+    inputs:
+      name:
+        description: "Person to greet"
+        required: true
+        default: "bossm0n5t3r"
+      home:
+        description: "location"
+        required: false
+        default: "The Octoverse"
 
 permissions:
   contents: read
