@@ -47,25 +47,25 @@ jobs:
         target: "source"
         rm: true
 
-      - name: Deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SERVER_KEY }}
-          port: ${{ secrets.SERVER_PORT }}
-          script: |
-            SOURCE_DIR=source/build/libs
-            FILE_NAME=`find $SOURCE_DIR/*.jar -printf "%f\n"`
-            PID=`ps -ef | grep occupying | grep sudo | grep -v "bash -c" | awk '{print $2}'`
+    - name: Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        key: ${{ secrets.SERVER_KEY }}
+        port: ${{ secrets.SERVER_PORT }}
+        script: |
+          SOURCE_DIR=source/build/libs
+          FILE_NAME=`find $SOURCE_DIR/*.jar -printf "%f\n"`
+          PID=`ps -ef | grep occupying | grep sudo | grep -v "bash -c" | awk '{print $2}'`
 
-            if [ -z "$PID" ]; then
-                    echo "#### THERE IS NO PROCESS ####"
-            else
-                    echo "#### KILL $PID ####"
-                    sudo kill $PID
-            fi
+          if [ -z "$PID" ]; then
+                  echo "#### THERE IS NO PROCESS ####"
+          else
+                  echo "#### KILL $PID ####"
+                  sudo kill $PID
+          fi
 
-            echo "#### RUN $SOURCE_DIR/$FILE_NAME ####"
+          echo "#### RUN $SOURCE_DIR/$FILE_NAME ####"
 
-            sudo java -jar $SOURCE_DIR/$FILE_NAME > /dev/null 2>&1 &
+          sudo java -jar $SOURCE_DIR/$FILE_NAME > /dev/null 2>&1 &
