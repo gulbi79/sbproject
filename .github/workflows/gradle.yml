@@ -60,12 +60,7 @@ jobs:
           FILE_NAME=`find *.jar -printf "%f\n"`
           PID=`ps -ef | grep jar | grep java | awk '{print $2}'`
 
-          if [ -z "$PID" ]; then
-                  echo "#### THERE IS NO PROCESS ####"
-          else
-                  echo "#### KILL $PID ####"
-                  kill $PID
-          fi
+          
 
           echo "#### RUN $FILE_NAME ####"
 
