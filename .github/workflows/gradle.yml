@@ -64,4 +64,4 @@ jobs:
 
           echo "#### RUN $FILE_NAME ####"
 
-          nohup java -jar $FILE_NAME &
+          java -jar $FILE_NAME &
