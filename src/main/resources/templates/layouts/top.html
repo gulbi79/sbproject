@@ -101,7 +101,7 @@
         	<ul class="h-menu bg-darkGrayBlue fg-white mega">
         		<th:block th:each="item1 : ${menuList}">
         		<li th:if="${item1.lvl == 1}">
-			        <a href="#" class="dropdown-toggle" th:text="${item1.menuNm}">Products</a>
+			        <a href="#" class="dropdown-toggle" th:text="${item1.menuNm}" onclick="fn_click1menu()">Products</a>
 			        <div class="mega-container p-2" data-role="dropdown">
 			            <div class="row">
 			            	<th:block th:each="item2 : ${menuList}">
@@ -164,6 +164,11 @@
 		fn_chartDraw($('#myChart4'), 'Dashboard Chart4', 'line');
 	});
 	
+	function fn_click1menu() {
+		$("._menuDropdown").remove();
+		$("<div class='w-100 h-100 _menuDropdown' style='position:absolute;top:0px;' onclick=this.remove()>").appendTo($("#content-wrapper"));
+	}
+	
 	function fn_chartDraw(ctx, title, type = 'bar') {
 		const tmpRanNum = function() {
 			return Math.floor(Math.random() * 5001);	
@@ -204,7 +209,7 @@
         $('#tabs').append(`<li class="" style="border-right: 1px solid #dfdfdf;"><a href="#_${uniqMenuCd}" class="py-1 px-5"><span class="ml-0">${menunm}</span></a><span class="badge inside c-pointer" onclick="javascript:fn_removeMenu(this,'${uniqMenuCd}')">x</span></li>`);
 
         var frameHtml = `<div name="${menucd}" id="_${uniqMenuCd}" class="h-100">`;
-        frameHtml += `<iframe name="_${uniqMenuCd}" id="_${uniqMenuCd}_frame" title="Inline Frame Example" width="100%" ></iframe>`; //src="../html/inner1.html"
+        frameHtml += `<iframe name="_${uniqMenuCd}" id="_${uniqMenuCd}_frame" title="Inline Frame Example" width="100%"></iframe>`; //src="../html/inner1.html"
         frameHtml += `</div>`;
         $('#content-wrapper').append(frameHtml);
 

@@ -18,8 +18,13 @@
 
 <th:block layout:fragment="content">
 	<div class="h-100" data-role="splitter" data-split-mode="vertical" data-split-sizes="50, 50" data-gutter-size="5">
-		<div class="w-100 _chart">
-			<canvas id="myChart1" class="w-100 h-100"></canvas>
+		<div class="row w-100 _chart">
+			<div class="cell-6">
+				<canvas id="myChart1" class="h-100"></canvas>
+			</div>
+			<div class="cell-6">
+				<canvas id="myChart2" class="h-100"></canvas>
+			</div>
 		</div>
 		<div class="w-100">
 			<span class="place-right mt-1 mif-zoom-in fg-grayMouse"></span>
@@ -55,7 +60,7 @@
 		};
 		let lvBucket = [];
         let gridInstance, grid, provider;
-        let chart, orgRowKey;
+        let chart1, chart2, orgRowKey;
         $(function() {
 			gfn_formInit(); //폼 공통로직 처리
             fn_filterInit(); //필터초기화
@@ -104,6 +109,7 @@
             
             $(".mif-zoom-in, .mif-zoom-out").on("click", function() {
 				$(this).toggleClass("mif-zoom-in mif-zoom-out");
+				
 				$("._chart").toggle();
             });
         }
@@ -174,26 +180,21 @@
 		}
 		
 		function fn_chartInit() {
-			chart = new CHARTJS().init($('#myChart1'), {
-			    type: 'bar',
-			    data: {
-			      	labels: [],
-			      	datasets: [
-				        {
-				          label: '',
-				          backgroundColor: [],
-				          data: [],
-				        }
-				    ]
-			    },
-			    options: {
-				    title: {
-				        display: true,
-				        text: 'Analysis Chart',
-				        fontSize: 20,
+			const chartInit = function(el, type, title) {
+				return new CHARTJS().init(el, {
+				    type: type,
+				    options: {
+					    title: {
+					        display: true,
+					        text: title,
+					        fontSize: 20,
+					    },
 				    },
-			    },
-			});
+				});
+			}
+			
+			chart1 = chartInit($('#myChart1'), 'bar', 'Analysis Chart1');
+			chart2 = chartInit($('#myChart2'), 'line', 'Analysis Chart2');
 		}
 		
 		function fn_chartData() {
@@ -221,17 +222,23 @@
 			const labels = bucket.map(v => v.week);
 			const label = com_viewinfo.arrMea.map(v => v.meaNm);
 			
-			chart.data.datasets = []; //초기화
-			com_viewinfo.arrMea.forEach((v, i) => {
-				const rChartData = bucket.map(bv => {
-					return chartData.filter(cv => cv.measureId === v.meaCd)[0]["w"+bv.week];
+			const setData = function(chart) {
+				chart.data.datasets = []; //초기화
+				com_viewinfo.arrMea.forEach((v, i) => {
+					const rChartData = bucket.map(bv => {
+						return chartData.filter(cv => cv.measureId === v.meaCd)[0]["w"+bv.week];
+					})
+					chart.data.datasets.push({label: v.meaNm, backgroundColor: CHART_COLORS[i], data: rChartData, fill: false, borderWidth: 2, borderColor: CHART_COLORS[i], lineTension: 0});
 				})
-				chart.data.datasets.push({label: v.meaNm, backgroundColor: CHART_COLORS[i], data: rChartData});
-			})
+				
+				//bucket
+				chart.data.labels = labels;
+				chart.update();
+			}
 			
-			//bucket
-			chart.data.labels = labels;
-			chart.update();
+			setData(chart1);
+			setData(chart2);
+			
 		}
 		
     </script>

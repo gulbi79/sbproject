@@ -36,6 +36,7 @@
              , LEVEL AS LVL
              , CASE WHEN CONNECT_BY_ISLEAF = 1 AND URL IS NOT NULL THEN 'Y' ELSE 'N' END AS URL_YN
              , SYS_CONNECT_BY_PATH(MENU_CD, '>') || '>' AS PATH
+             , SUBSTR(SYS_CONNECT_BY_PATH(MENU_NM,' > '), 4) AS PATH_NM
         FROM TB_MST_MENU
         WHERE USE_YN = 'Y'
         START WITH PARENT_MENU_CD IS NULL

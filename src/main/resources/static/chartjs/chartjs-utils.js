@@ -28,6 +28,16 @@ const CHARTJS = function() {
     this.defConfig = {
         type: 'bar',
         plugins: [ChartDataLabels],
+		data: {
+	      	labels: [],
+	      	datasets: [
+		        {
+		          label: '',
+		          backgroundColor: [],
+		          data: [],
+		        }
+		    ]
+	    },
 		options: {
 			plugins: {
 		    	title: {
