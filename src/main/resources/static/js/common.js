@@ -103,7 +103,7 @@ async function gfn_service(pConfigs) {
 	let serviceConfig = {
 		url: '',
 		method: 'post', 
-		headers: { "Content-Type": "application/json", "REQ_SQL": pConfigs.reqSql ? "Y" : "N" },
+		headers: { "Content-Type": "application/json", "REQ_SQL": pConfigs.reqSql ? "Y" : "N" , "AJAX_YN": "Y"},
 	    body: null,
 	    successCallback: null,
 	    errorCallback: null
@@ -147,9 +147,17 @@ async function gfn_service(pConfigs) {
 									
     } catch (err) {
         console.log(err);
-        err.text().then(async function(msg) {
-			await gfn_alertSync({title: "Error", content: JSON.parse(msg).message});
-		})
+        
+        //세션만료
+        if (err.status === 403) {
+        	console.log("세션이 만료되었습니다");
+          	top.location.replace(GV_CONTEXT_PATH + "auth/login"); //여기서 최상위 프레임을 로그인 창으로 이동시킴
+        } else {
+	        err.text().then(async function(msg) {
+				await gfn_alertSync({title: "Error", content: JSON.parse(msg).message});
+			})
+		}
+                
     } finally {
 		Metro.activity.close(activity);
 	}

@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.demo.boot.aop.AjaxAuthenticationEntryPoint;
 import com.demo.boot.biz.common.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	    	.invalidateHttpSession(true);
     	
     	http.exceptionHandling()
+    	    .authenticationEntryPoint(new AjaxAuthenticationEntryPoint("/auth/login"))
     		.accessDeniedPage("/auth/denied");
     	
     	http.headers()

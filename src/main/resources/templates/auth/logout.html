@@ -18,10 +18,11 @@
     <script th:attr="src=@{/static/js/common-utils.js}" src="/static/js/common-utils.js"></script>
 	
     <script th:inline="javascript">
+    	const GV_CONTEXT_PATH = "[(@{/})]";
         gfn_alert({
 			title: "로그아웃 되었습니다.",
 			okCallback: function() {
-				location.replace("/auth/login");
+				top.location.replace(GV_CONTEXT_PATH + "auth/login");
 			}
 		});
     </script>

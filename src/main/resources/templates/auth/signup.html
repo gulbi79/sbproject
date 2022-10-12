@@ -72,10 +72,10 @@
 
     <script th:attr="src=@{/static/metro/js/metro.js}" src="/static/metro/js/metro.js?ver=@@b-version"></script>
     <script>
-        function invalidForm(){
+        function invalidForm() {
             var form  = $(this);
             form.addClass("ani-ring");
-            setTimeout(function(){
+            setTimeout(function() {
                 form.removeClass("ani-ring");
             }, 1000);
         }

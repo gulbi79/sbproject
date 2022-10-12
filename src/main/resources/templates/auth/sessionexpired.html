@@ -3,11 +3,27 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>접근 거부</title>
+  	<!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- Metro 4 -->
+    <link th:href="@{/static/metro/css/metro-all.css}" href="/static/metro/css/metro-all.css?ver=@@b-version" rel="stylesheet">
+  	<title>세션만료</title>
 </head>
 <body>
-<h1>세션이 만료되었습니다.</h1>
-<hr>
+	<script th:attr="src=@{/static/metro/js/metro.js}" src="/static/metro/js/metro.js?ver=@@b-version"></script>
+	<script th:attr="src=@{/static/js/common.js}" src="/static/js/common.js"></script>
+    <script th:attr="src=@{/static/js/common-utils.js}" src="/static/js/common-utils.js"></script>
+	
+    <script th:inline="javascript">
+    	const GV_CONTEXT_PATH = "[(@{/})]";
+        gfn_alert({
+			title: "세션이 만료되었습니다.",
+			okCallback: function() {
+				top.location.replace(GV_CONTEXT_PATH + "auth/login");
+			}
+		});
+    </script>
 </body>
 </html>

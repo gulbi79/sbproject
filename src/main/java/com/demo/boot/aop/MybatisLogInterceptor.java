@@ -121,9 +121,6 @@ public class MybatisLogInterceptor implements Interceptor {
             }
         }
         
-        //console 
-        //sqlId.
-        
         String[] splitSql = StringUtils.tokenizeToStringArray(sqlId, ".");
         String strPrintSql = "\n    /* ".concat(splitSql[splitSql.length-1]).concat(" */").concat("\n    ").concat(sql.trim());
         log.info("{}",strPrintSql);
@@ -138,8 +135,8 @@ public class MybatisLogInterceptor implements Interceptor {
         	sw.start("SQL_"+startTime);
         	Object rtnObj = invocation.proceed(); // 쿼리 실행
         	sw.stop();
-        	log.info("[LOG] SQL ID: " + sqlId + " was called.");
-        	log.info("[SQL] 처리시간 {}", sw.getTotalTimeSeconds());
+        	log.info("[SQL ID] : {} was called.", sqlId);
+        	log.info("[SQL 처리시간] : {}", sw.getTotalTimeSeconds());
             
         	return rtnObj;
         }

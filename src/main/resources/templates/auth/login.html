@@ -12,7 +12,6 @@
     <title>Log in</title>
 </head>
 <body class="m4-cloak h-vh-100 d-flex flex-justify-center flex-align-center">
-
     <div class="login-box w-sm">
         <form th:action="@{/auth/loginProc}" method="post"
               class="bg-white p-4"
@@ -59,13 +58,23 @@
             </div>
         </form>
     </div>
-
+    
+	<script th:inline="javascript">
+    	const GV_CONTEXT_PATH = "[(@{/})]";
+    </script>
     <script th:attr="src=@{/static/metro/js/metro.js}" src="/static/metro/js/metro.js?ver=@@b-version"></script>
     <script>
-        function invalidForm(){
+    	$(function() {
+			//최상위 프레임이 아닐경우
+			if (document !== top.document) {
+				top.location.replace(GV_CONTEXT_PATH + "auth/login"); //여기서 최상위 프레임을 로그인 창으로 이동시킴
+			}
+		})
+        
+        function invalidForm() {
             var form  = $(this);
             form.addClass("ani-ring");
-            setTimeout(function(){
+            setTimeout(function() {
                 form.removeClass("ani-ring");
             }, 1000);
         }
