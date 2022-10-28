@@ -6,14 +6,14 @@ async function gfn_service(pConfigs) {
 	let serviceConfig = {
 		url: '',
 		method: 'post', 
-		headers: { "Content-Type": "application/json", "REQ_SQL": pConfigs.reqSql ? "Y" : "N" },
+		headers: { "Content-Type": "application/json", "REQSQL": pConfigs.reqSql ? "Y" : "N" },
 	    body: null,
 	    successCallback: null,
 	    errorCallback: null
 	};
 	
 	serviceConfig = {...serviceConfig, ...pConfigs};
-	if (serviceConfig.headers.REQ_SQL === "Y") {
+	if (serviceConfig.headers.REQSQL === "Y") {
 		serviceConfig.successCallback = function(res) {
 			const data = res.data;
 			let strSql = "";

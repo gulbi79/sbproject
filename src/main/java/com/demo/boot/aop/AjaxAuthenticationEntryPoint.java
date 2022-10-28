@@ -22,7 +22,7 @@ public class AjaxAuthenticationEntryPoint extends LoginUrlAuthenticationEntryPoi
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
 //        String ajaxHeader = ((HttpServletRequest) request).getHeader("X-Requested-With");
-        String ajaxHeader = ((HttpServletRequest) request).getHeader("AJAX_YN");
+        String ajaxHeader = ((HttpServletRequest) request).getHeader("AJAXYN");
         boolean isAjax = "Y".equals(ajaxHeader);
         if (isAjax) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Ajax REquest Denied (Session Expired)");

@@ -103,7 +103,7 @@ async function gfn_service(pConfigs) {
 	let serviceConfig = {
 		url: '',
 		method: 'post', 
-		headers: { "Content-Type": "application/json", "REQ_SQL": pConfigs.reqSql ? "Y" : "N" , "AJAX_YN": "Y"},
+		headers: { "Content-Type": "application/json", "REQSQL": pConfigs.reqSql ? "Y" : "N" , "AJAXYN": "Y"},
 	    body: null,
 	    successCallback: null,
 	    errorCallback: null
@@ -133,7 +133,7 @@ async function gfn_service(pConfigs) {
 		
 		const resData = await res.json();
 		
-		if (serviceConfig.headers.REQ_SQL === "Y") {
+		if (serviceConfig.headers.REQSQL === "Y") {
 			const data = resData.data;
 			let strSql = "";
 			for (key in data) {
