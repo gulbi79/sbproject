@@ -22,14 +22,23 @@ spring:
     static-path-pattern: /static/**
     favicon:
       enabled: false
-#  web:
-#    resources:s
-#        static-locations: classpath:static/
-#    mybatis:
-#        configuration:
-#            map-underscore-to-camel-case: true
-#mybatis.configuration.return-instance-for-empty-row=false
-
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          max-age: 31536000
+      chain:
+        strategy:
+          fixed:
+            enabled: true
+            version: 20221029-1
+          #  web:
+          #    resources:s
+          #        static-locations: classpath:static/
+          #    mybatis:
+          #        configuration:
+          #            map-underscore-to-camel-case: true
+          #mybatis.configuration.return-instance-for-empty-row=false
 jasypt:
   encryptor:
 #    bean: jasyptStringEncryptor
