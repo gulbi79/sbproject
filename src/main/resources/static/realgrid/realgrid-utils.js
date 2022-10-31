@@ -146,6 +146,10 @@ GRID.prototype = {
 			    that.setDisplayOptions(display);
 			}
 		};
+		
+		that.onContextMenuItemClicked = function(grid, item, clickData) {
+			gfn_contextMenuItemClicked(grid, item, clickData);
+		};
 	},
 
     setDraw: function() {
@@ -180,6 +184,9 @@ GRID.prototype = {
             
             this.provider.setFields(fields);
             this.gridview.setColumns(this.defConfig.columns);
+            
+            //context
+			gfn_setContextMenu(this.gridview);
         }
     },
     
@@ -202,95 +209,6 @@ GRID.prototype = {
 	setMeasure : function(bMeasure = false) {
 		this.defConfig.measure = bMeasure;
 	},
-}
-
-/**
-	그리드 객체 초기화
- */
-function gfn_gridsDestroy() {
-	try {
-		VIEW_GRID_LIST.provider.forEach(v => v.clearRows());
-	    VIEW_GRID_LIST.gridview.forEach(v => v.destroy());
-	    VIEW_GRID_LIST.provider.forEach(v => v.destroy());
-	} catch(e) {}
-}
-
-// 엑셀 내보내기 실행
-// 엑셀 내보내기 사용하려면 소스에 jszip.min.js 인크루드해야 함
-function gfn_exportExcel(grid, options) {
-	let exportDef = {
-	    type: 'excel',
-	    target: 'local',
-	    fileName: 'export.xlsx',
-	    layoutExpand: "current",
-	    indicator: 'hidden',
-	    showProgress: true,
-	    applyDynamicStyles: true,
-	    done: function () {  
-	        console.log("done excel export");
-	    },
-	    exportGrids: [
-	      { grid: grid, sheetName: 'Sheet1' }
-	    ]
-	};
-	
-	exportDef = {...exportDef, ...options};
-	
-    grid.exportGrid(exportDef);
-
-};
-
-// 선택된 dataType이 "number"인 셀들의 합계를 반환 한다.
-function gfn_getSelectionSummary(objGrid) {
-    var sum = 0;
-    var cnt = 0;
-    var selectData = objGrid.getSelectionData();
-
-    for(var rows in selectData){
-      for(var col in selectData[rows]){
-        if(objGrid.columnByName(col)?.valueType == "number"){
-          sum += selectData[rows][col] ?? 0;
-          cnt ++;
-        };
-      };
-    };
-    return sum;
-}
-
-function gfn_getGrdSavedata(objGrid) {
-	objGrid.commit();
-	var objData = objGrid.getDataSource();
-    var jData;
-    var jRowsData = [];
-    var rows = objData.getAllStateRows();
-
-    rows.deleted.forEach(v => {
-        jData = objData.getJsonRow(v);
-        jData.state = "deleted";
-        jData._rownum = v;
-        jRowsData.push(jData);
-    });
-
-    rows.updated.forEach(v => {
-        jData = objData.getJsonRow(v);
-        jData.state = "updated";
-        jData._rownum = v;
-        jRowsData.push(jData);
-    });
-
-    rows.created.forEach(v => {
-        jData = objData.getJsonRow(v);
-        jData.state = "created";
-        jData._rownum = v;
-        jRowsData.push(jData);
-    });
-
-    if (jRowsData.length === 0) {
-        objData.clearRowStates(true);
-        return jRowsData;
-    }
-
-    return jRowsData;
 }
 
 function gfn_drawDynamicGrid(gridInstance, bucketlist, options) {
@@ -525,3 +443,248 @@ function gfn_com_getGridLayout(gridInstance, bucketlist, layoutOptions) {
 		console.error("gfn_com_getGridLayout Error!!",e);
 	}
 }
+
+/**
+	그리드 객체 초기화
+ */
+function gfn_gridsDestroy() {
+	try {
+		VIEW_GRID_LIST.provider.forEach(v => v.clearRows());
+	    VIEW_GRID_LIST.gridview.forEach(v => v.destroy());
+	    VIEW_GRID_LIST.provider.forEach(v => v.destroy());
+	} catch(e) {}
+}
+
+// 엑셀 내보내기 사용하려면 소스에 jszip.min.js 인크루드해야 함
+function gfn_exportExcel(grid, options) {
+	let exportDef = {
+	    type: 'excel',
+	    target: 'local',
+	    fileName: 'export.xlsx',
+	    layoutExpand: "current",
+	    indicator: 'hidden',
+	    showProgress: true,
+	    applyDynamicStyles: true,
+	    done: function () {  
+	        console.log("done excel export");
+	    },
+	    exportGrids: [
+	      { grid: grid, sheetName: 'Sheet1' }
+	    ]
+	};
+	
+	exportDef = {...exportDef, ...options};
+	
+    grid.exportGrid(exportDef);
+
+};
+
+// 선택된 dataType이 "number"인 셀들의 합계를 반환 한다.
+function gfn_getSelectionSummary(objGrid) {
+    var sum = 0;
+    var cnt = 0;
+    var selectData = objGrid.getSelectionData();
+
+    for(var rows in selectData){
+      for(var col in selectData[rows]){
+        if(objGrid.columnByName(col)?.valueType == "number"){
+          sum += selectData[rows][col] ?? 0;
+          cnt ++;
+        };
+      };
+    };
+    return sum;
+}
+
+//그리드 저장 데이터를 리턴
+function gfn_getGrdSavedata(objGrid) {
+	objGrid.commit();
+	var objData = objGrid.getDataSource();
+    var jData;
+    var jRowsData = [];
+    var rows = objData.getAllStateRows();
+
+    rows.deleted.forEach(v => {
+        jData = objData.getJsonRow(v);
+        jData.state = "deleted";
+        jData._rownum = v;
+        jRowsData.push(jData);
+    });
+
+    rows.updated.forEach(v => {
+        jData = objData.getJsonRow(v);
+        jData.state = "updated";
+        jData._rownum = v;
+        jRowsData.push(jData);
+    });
+
+    rows.created.forEach(v => {
+        jData = objData.getJsonRow(v);
+        jData.state = "created";
+        jData._rownum = v;
+        jRowsData.push(jData);
+    });
+
+    if (jRowsData.length === 0) {
+        objData.clearRowStates(true);
+        return jRowsData;
+    }
+
+    return jRowsData;
+}
+
+// column Name이 다른 컬럼이어야 한다.
+function gfn_setContextMenu(grid) {
+    const columns = grid.getColumnNames();
+    //const row = grid.getCurrent().itemIndex + 1;
+    let visibleContextMenu = [];
+
+    for (let i in columns) {
+        let menuItem = {};
+        const column = grid.columnByName(columns[i]);
+        if (column?.fieldName) {
+            menuItem.label = column.header.text;
+            menuItem.tag = column.name;
+            menuItem.type = "check";
+            menuItem.checked = column.visible;
+
+            visibleContextMenu.push(menuItem);
+        }
+    };
+
+    visibleContextMenu.push(
+		{
+    		label: "-"
+    	},{
+            label: "컬럼 모두 보기",
+            tag: 'columnShow'
+        },{
+            label: "-"
+        },{
+            label: "현재 컬럼 필터 겨기",
+            tag: 'autoFilter'
+        }
+    );
+    
+    const contextMenu = [
+        {
+            label: "고정",
+            children: [
+                {
+                    label: "행 1개",
+                    tag: '1rowFixed'
+                },{
+                    label: "행 2개",
+                    tag: '2rowFixed'
+                },{
+                	label: "현재 행까지",
+                	tag: 'rowFixed'
+                },{
+                    label: "-"
+                },{
+                    label: "첫번째 컬럼",
+                    tag: '1colFixed'
+                },{
+                    label: "두번째 컬럼",
+                    tag: '2colFixed'
+                },{
+                	label: "현재 컬럼까지",
+                	tag: 'colFixed'
+                },{
+                    label: "-"
+                },{
+	                label: "고정 취소",
+	                tag: 'cancelFixed',                    
+                	//enabled: (grid.fixedOptions.rightCount + grid.fixedOptions.colCount + grid.fixedOptions.rowCount) != 0
+                	enabled: true
+                }
+        	]
+        },{
+            label: "컬럼",
+            tag: "columnMenu",
+            children: visibleContextMenu
+        },{
+            label: "행 높이",
+            children: [
+                {
+                    label: "보통 (28px)",
+                    tag: 'rowNormalHeight'
+                },{
+                    label: "좁게 (20px)",
+                    tag: 'rowSmallHeight'
+                },{
+                    label: "넓게 (36px)",
+                    tag: 'rowLargeHeight'
+                }
+            ]
+        },{
+            label: "-" // menu separator를 삽입합니다.
+        },{
+            label: "ExcelExport",
+            tag: 'excelExport'
+        }
+    ];     
+    grid.setContextMenu(contextMenu);
+} 
+
+function gfn_contextMenuItemClicked(grid, item, clickData) {
+    const col = grid.columnByName(clickData.column);
+
+    // parent에 Tag가 추가되면 switch 문에서 처리하자.
+    if (item.parent.label == "컬럼") {
+        grid.setColumnProperty(item.tag, "visible", item.checked);
+    }
+
+    switch (item.tag){
+        case "1rowFixed" : 
+            grid.setFixedOptions({rowCount: 1});
+            break;
+        case "2rowFixed" :
+            grid.setFixedOptions({rowCount: 2});            
+            break;
+        case "rowFixed" :
+            grid.setFixedOptions({rowCount: clickData.itemIndex + 1});            
+            break;
+        case "1colFixed" :
+            grid.setFixedOptions({colCount: 1});            
+            break;
+        case "2colFixed" :
+            grid.setFixedOptions({colCount: 2});            
+            break;
+        case "colFixed" :
+            grid.setFixedOptions({colCount: clickData.fieldIndex + 1});            
+            break;
+        case "cancelFixed" :
+            grid.setFixedOptions({colCount: 0, rowCount: 0});            
+            break;
+        case "rowNormalHeight" :
+            grid.displayOptions.rowHeight = 28;
+            break;
+        case "rowSmallHeight" :
+            grid.displayOptions.rowHeight = 20;
+            break;
+        case "rowLargeHeight" :
+            grid.displayOptions.rowHeight = 36;
+            break;
+        case "excelExport" :
+            gfn_exportExcel(grid);
+            break;
+        case "autoFilter" :
+            {
+                col.autoFilter = true;
+                grid.refresh();
+                break;
+            }
+        case "columnHide" :
+            col.visible = false;
+            break;
+        case "columnShow" :
+            {
+                const columns = grid.getColumns();
+                for (var i in columns) {
+                    columns[i].visible = true;
+                }
+            };
+            break;
+    }
+};

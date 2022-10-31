@@ -24,6 +24,7 @@ spring:
       enabled: false
   web:
     resources:
+      #static-locations: classpath:static/
       cache:
         cachecontrol:
           max-age: 31536000
@@ -32,16 +33,9 @@ spring:
           fixed:
             enabled: true
             version: 20221029-1
-          #  web:
-          #    resources:s
-          #        static-locations: classpath:static/
-          #    mybatis:
-          #        configuration:
-          #            map-underscore-to-camel-case: true
-          #mybatis.configuration.return-instance-for-empty-row=false
 jasypt:
   encryptor:
-#    bean: jasyptStringEncryptor
+    #bean: jasyptStringEncryptor
     algorithm: PBEWithMD5AndDES
     iv-generator-classname: org.jasypt.iv.NoIvGenerator
 
