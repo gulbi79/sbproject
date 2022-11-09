@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- Metro 4 -->
+    <link th:href="@{/static/metro/css/metro-all.css}" href="/static/metro/css/metro-all.css" rel="stylesheet">
+
+    <title>Send Mail</title>
+</head>
+<body class="m4-cloak h-vh-100 d-flex flex-justify-center flex-align-center">
+    <div class="login-box w-sm">
+        <form th:action="@{/mail/sendProc}" method="post"
+        	  class="bg-white p-4"
+              action="javascript:"
+              data-role="validator"
+              data-clear-invalid="5000"
+              data-on-error-form="invalidForm">
+	        <table>
+	            <tr>
+	                <td>메일 주소</td>
+	                <td>
+	                    <input type="text" name="address" placeholder="이메일 주소를 입력하세요">
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>제목</td>
+	                <td>
+	                    <input type="text" name="title" placeholder="제목을 입력하세요">
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>내용</td>
+	                <td>
+	                    <textarea name="content" placeholder="보낼 내용을 입력하세요"> </textarea>
+	                </td>
+	            </tr>
+	        </table>
+	        <button>발송</button>
+	    </form>
+    </div>
+    
+	<script th:inline="javascript">
+    	const GV_CONTEXT_PATH = "[(@{/})]";
+    </script>
+    <script th:attr="src=@{/static/metro/js/metro.js}" src="/static/metro/js/metro.js?ver=@@b-version"></script>
+    <script>
+    	$(function() {
+		})
+        
+        function invalidForm() {
+            var form  = $(this);
+            form.addClass("ani-ring");
+            setTimeout(function() {
+                form.removeClass("ani-ring");
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
