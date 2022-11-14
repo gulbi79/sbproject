@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/basemaster}">
+
+<th:block layout:fragment="filter">
+	<th:block th:replace="~{layouts/fragments/filters :: inputFragment('Board Type','f_boardType')}"></th:block>
+	<th:block th:replace="~{layouts/fragments/filters :: inputFragment('Title','f_title')}"></th:block>
+</th:block>
+
+<th:block layout:fragment="hidden">
+</th:block>
+
+<th:block layout:fragment="content">
+	<div id="realgrid1" class="w-100 onegrid"></div>
+	<!-- 버튼 -->
+	<!-- 
+    <th:block th:replace="~{layouts/fragments/rolebutton :: rolebuttonFragment}"></th:block>
+     -->
+    <div class="mt-1 place-right">
+        <button id="add" class="button shadowed small">Add</button>
+    </div>
+</th:block>
+
+<th:block layout:fragment="contentjs">
+	<script>
+        let grid, provider;
+        $(function() {
+			gfn_formInit(); //폼 공통로직 처리
+            fn_filterInit(); //필터초기화
+            fn_gridInit(); //그리드초기화
+            fn_eventInit(); //이벤트초기화
+        });
+
+        //필터초기화
+        function fn_filterInit() {
+        }
+
+        //그리드초기화
+        function fn_gridInit() {
+            //dataType이 text가 아닌경우 tag속성에 지정
+            const fields = [];
+            const columns = [
+                {name: "boardId",     	type: "data", width: "80" , header: {text: "Board ID"  		}, styleName: "tal-column" }
+              , {name: "boardType",   	type: "data", width: "80" , header: {text: "Board Type" 	}, styleName: "tal-column" }
+              , {name: "title",			type: "data", width: "100", header: {text: "Title"      	}, styleName: "tal-column" }
+              , {name: "fileSeq",      	type: "data", width: "80" , header: {text: "File"       	}, styleName: "tac-column" }
+			  , {name: "useYn",       	type: "data", width: "80" , header: {text: "Use Y/N"    	}, styleName: "tac-column" }
+			  , {name: "startDate",     type: "data", width: "100", header: {text: "Start Date"     }, styleName: "tac-column" }
+			  , {name: "endDate",       type: "data", width: "100", header: {text: "End Date"       }, styleName: "tac-column" }
+			  , {name: "createBy",      type: "data", width: "100", header: {text: "Create User"    }, styleName: "tal-column" }
+			  , {name: "createDttm",    type: "data", width: "100", header: {text: "Create Dttm"    }, styleName: "tal-column" }
+            ];
+            const options = {
+				checkBar: { visible: true }
+			  , stateBar: { visible: true }
+			  , edit    : { insertable: false, appendable: false, updatable: false, editable: false, deletable: false, commitWhenLeave: false},
+			};
+			
+            const gridInstance = new GRID().init({gridId: "realgrid1", columns: columns, fields: fields, options: options});
+            grid = gridInstance.gridview;
+            provider = gridInstance.provider;
+            
+            grid.onCellDblClicked = function (grid, clickData) {
+				if (clickData.column === "title") {
+					fn_detail(provider.getValue(clickData.dataRow, "boardId"));
+				}
+			}
+        }
+        
+        //이벤트초기화
+        function fn_eventInit() {
+            $("#apply").on("click", () => fn_apply());
+            
+            $("#add").on("click", function() {
+				fn_detail();
+            });
+        }
+        
+        function fn_detail(boardId = "") {
+			$("#comm_popup").css("width", "100%").css("height", "600px").attr("src", GV_CONTEXT_PATH+"popup/board?boardId="+boardId);
+			$('#c_popup').css('width','900px');
+			setTimeout(function() {
+				Metro.dialog.open('#c_popup',undefined,'게시판');
+			},100);
+		}
+        
+        //조회
+        async function fn_apply(sql = false) {
+            let filterObj = gfn_setComParams(); //service parameter set
+            
+            //유효성 검증
+            if (!fn_validation()) return false;
+			
+			//server api 요청
+			const pConfigs = {
+				url: 'admin/boardlist',
+				reqSql : sql,
+			    body: JSON.stringify(filterObj),
+			}; 
+			const res = await gfn_service(pConfigs);
+			
+			if (sql) return;
+			
+			//데이터 초기화 및 그리드 데이터 생성
+            provider.clearRows();
+            grid.cancel();
+            provider.setRows(res.data);
+            
+            provider.clearSavePoints();
+			provider.savePoint(); //초기화 포인트 저장
+        }
+        
+        function fn_validation() {
+            return true;
+        }
+    </script>
+</th:block>
+</html>

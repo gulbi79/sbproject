@@ -22,7 +22,8 @@ public class AdminServiceImpl implements AdminService {
     	return adminRepository.selectMenu(paramMap);
     }
     
-    @Transactional
+    @SuppressWarnings("unchecked")
+	@Transactional
     public int saveMenu(Map<String,Object> paramMap) {
     	int rtnInt = 0;
     	List<Map<String,Object>> grdData = (List<Map<String,Object>>)paramMap.get("grdData");
@@ -37,7 +38,8 @@ public class AdminServiceImpl implements AdminService {
     	return adminRepository.selectCode(paramMap);
     }
     
-    @Transactional
+    @SuppressWarnings("unchecked")
+	@Transactional
     public int saveCode(Map<String,Object> paramMap) {
     	int rtnInt = 0;
     	Map<String, Object> rtnMap = new HashMap<String, Object>();
@@ -63,7 +65,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     
-    @Transactional
+    @SuppressWarnings("unchecked")
+	@Transactional
     public int saveRole(Map<String,Object> paramMap) {
     	int rtnInt = 0;
     	for (Map<String,Object> rowMap : (List<Map<String,Object>>)paramMap.get("grdData")) {
@@ -91,7 +94,8 @@ public class AdminServiceImpl implements AdminService {
     	return adminRepository.selectUserRole(paramMap);
     }
 
-    @Transactional
+    @SuppressWarnings("unchecked")
+	@Transactional
     public int saveUser(Map<String,Object> paramMap) {
     	int rtnInt = 0;
     	/*
@@ -105,5 +109,19 @@ public class AdminServiceImpl implements AdminService {
     	if (uUserRoleList.size() > 0) adminRepository.saveUserRole(paramMap);
     	
     	return rtnInt;
+    }
+    
+    public List<Map<String, Object>> selectBoard(Map<String,Object> paramMap) {
+    	List<Map<String, Object>> rtnList = adminRepository.selectBoard(paramMap);
+        return rtnList;
+    }
+    
+    @SuppressWarnings("unchecked")
+	@Transactional
+    public int saveBoard(Map<String,Object> paramMap) {
+        int rtnInt = 0;
+        rtnInt += adminRepository.saveBoard((Map<String, Object>) paramMap.get("grdData"));
+        
+        return rtnInt;
     }
 }

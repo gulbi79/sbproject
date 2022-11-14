@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/basepopup}">
+
+<th:block layout:fragment="hidden">
+</th:block>
+
+<th:block layout:fragment="content">
+	<div id="realgrid1" class="w-100 onegrid">
+		<form class="saveForm">
+			<input type="hidden" id="boardId" name="boardId" value="" th:attr="value=${board.boardId}">
+		    <div class="row mb-2 ml-0 mr-0">
+		        <label class="cell-sm-2">Title</label>
+		        <div class="cell-sm-10">
+		            <input data-role="input" type="text" class="input-small" name="title" id="title">
+		        </div>
+		    </div>
+		    <div class="row mb-2 ml-0 mr-0">
+		        <label class="cell-sm-2">Type</label>
+		        <div class="cell-sm-10">
+		            <input name="boardType" type="radio" data-role="radio" data-caption="Board"  value="BOARD" checked>
+		            <input name="boardType" type="radio" data-role="radio" data-caption="Notice" value="NOTICE">
+		        </div>
+		    </div>
+		    <div class="row mb-2 ml-0 mr-0">
+		        <label class="cell-sm-2">Use Y/N</label>
+		        <div class="cell-sm-10">
+		            <input name="useYn" type="checkbox" data-role="checkbox" data-caption="사용" checked>
+		        </div>
+		    </div>
+		    <div class="row mb-2 ml-0 mr-0">
+		        <label class="cell-sm-2">게시기간</label>
+		        <div class="cell-sm-10">
+		        	<div class="row no-gap">
+			            <input name="startDate" id="startDate" type="text" data-role="calendarpicker" class="input-small" data-size="200"
+		                data-dialog-mode="false" data-show-week-number="true" data-cls-calendar="compact">
+		                &nbsp;~&nbsp;
+		                <input name="endDate" id="endDate" type="text" data-role="calendarpicker" class="input-small" data-size="200"
+		                data-dialog-mode="false" data-show-week-number="true" data-cls-calendar="compact">
+		        	</div>
+		        </div>
+		    </div>
+		    <div class="row mb-2 ml-0 mr-0">
+		        <label class="cell-sm-2">Content</label>
+		        <div class="cell-sm-10">
+		            <textarea name="content" id="content" data-role="textarea" data-auto-size="false" data-cls-component="board-textarea"></textarea>
+		        </div>
+		    </div>
+		</form>
+	</div>
+	<div style="text-align:right; margin-top:6px;">
+        <button class="button small cancel">Cancel</button>
+        <button class="button primary small ok" style="min-width:57px;">Save</button>
+	</div>
+</th:block>
+
+<th:block layout:fragment="contentjs">
+	<script>
+		const lv_parent = this.parent;
+        $(function() {
+			fn_apply();
+            fn_eventInit(); //이벤트초기화
+        });
+
+        //이벤트초기화
+        function fn_eventInit() {
+			$(".cancel").on("click", function() {
+				lv_parent.Metro.dialog.close('#c_popup');
+			});
+			
+			$(".ok").on("click", function() {
+				fn_save();
+			});
+        }
+        
+        //조회
+        async function fn_apply(sql = false) {
+            let filterObj = {boardId: $("#boardId").val()};
+            
+			//server api 요청
+			const pConfigs = {
+				url: 'admin/boardlist',
+				reqSql : sql,
+			    body: JSON.stringify(filterObj),
+			}; 
+			const res = await gfn_service(pConfigs);
+			
+			if (sql) return;
+			
+			const result = res.data;
+			if (result.length > 0) {
+				$("#title").val(result[0].title);
+				$("#content").val(result[0].content);
+				$("input[name='boardType'][value='"+result[0].boardType+"']").prop('checked', true);
+				$("#startDate").data("calendarpicker").val(result[0].startDate);
+				$("#endDate").data("calendarpicker").val(result[0].endDate);
+			}
+        }
+        
+        //저장
+		async function fn_save() {
+			const uGrdData = gfn_getFormObj($('.saveForm'));
+	
+			if(!await gfn_confirmSync({title: "Info", content: "저장하시겠습니까?"})) return;
+			
+			//server api 요청
+			const pConfigs = {
+				url: 'admin/boardreg',
+			    body: JSON.stringify({grdData: uGrdData}),
+			}; 
+			
+			const res = await gfn_service(pConfigs);
+			//데이터 초기화 및 그리드 데이터 생성
+			await gfn_alertSync({title: "Success", content: "Save success"});
+			
+            lv_parent.Metro.dialog.close('#c_popup');
+            
+            lv_parent.fn_apply();
+		}
+        
+    </script>
+</th:block>
+</html>

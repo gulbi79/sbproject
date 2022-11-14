@@ -25,4 +25,8 @@ public interface AdminService {
 	
 	int saveUser(Map<String,Object> paramMap);
 	
+	List<Map<String, Object>> selectBoard(Map<String,Object> paramMap);
+	
+	int saveBoard(Map<String,Object> paramMap);
+
 }

@@ -234,5 +234,58 @@
 
 	END;
     </insert>
+    
+    <!-- 게시판조회 -->
+    <select id="selectBoard" parameterType="map" resultType="custommap">
+    SELECT BOARD_ID, BOARD_TYPE, TITLE, CONTENT, USE_YN, FILE_SEQ, START_DATE, END_DATE, CREATE_BY, CREATE_DTTM
+    FROM TB_MST_BOARD
+#where()
+ #if($_parameter.f_boardType and $_parameter.f_boardType != "")
+      AND BOARD_TYPE = @{f_boardType}
+ #end
+ #if($_parameter.f_title and $_parameter.f_title != "")
+      AND UPPER(TITLE) LIKE '%' || UPPER(@{f_title}) || '%'
+ #end
+ #if($_parameter.boardId and $_parameter.boardId != "")
+      AND BOARD_ID = @{boardId}
+ #end
+#end
+    ORDER BY CREATE_DTTM DESC
+    </select>
+
+    <!-- 게시판저장 -->
+    <insert id="saveBoard" parameterType="map">
+    MERGE INTO TB_MST_BOARD A
+    USING (
+        SELECT NVL(@{boardId}, (SELECT NVL(TO_NUMBER(MAX(BOARD_ID)),0) + 1 FROM TB_MST_BOARD)) AS BOARD_ID
+             , @{boardType} AS BOARD_TYPE
+             , @{title    } AS TITLE
+             , @{content  } AS CONTENT
+             , DECODE(@{useYn},'on','Y','N') AS USE_YN
+             , @{fileSeq  } AS FILE_SEQ
+             , @{startDate} AS START_DATE
+             , @{endDate  } AS END_DATE
+             , @{state    } AS STATE
+        FROM DUAL
+    ) B
+       ON ( A.BOARD_ID = B.BOARD_ID )
+     WHEN MATCHED THEN
+          UPDATE 
+             SET A.BOARD_TYPE  = B.BOARD_TYPE
+               , A.TITLE       = B.TITLE
+               , A.CONTENT     = B.CONTENT
+               , A.USE_YN      = DECODE(B.STATE, 'deleted', 'N', B.USE_YN)
+               , A.FILE_SEQ    = B.FILE_SEQ
+               , A.START_DATE  = B.START_DATE
+               , A.END_DATE    = B.END_DATE
+               , A.UPDATE_BY   = NULL
+               , A.UPDATE_DTTM = SYSDATE
+               
+          --DELETE WHERE B.STATE = 'deleted'
+          
+     WHEN NOT MATCHED THEN
+          INSERT (A.BOARD_ID, A.BOARD_TYPE, A.TITLE, A.CONTENT, A.USE_YN, A.FILE_SEQ, A.START_DATE, A.END_DATE, A.CREATE_BY, A.CREATE_DTTM)
+          VALUES (B.BOARD_ID, B.BOARD_TYPE, B.TITLE, B.CONTENT, B.USE_YN, B.FILE_SEQ, B.START_DATE, B.END_DATE, NULL, SYSDATE)
+    </insert>
 
 </mapper>

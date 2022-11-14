@@ -42,3 +42,7 @@ body{
 .position-none{
 	position: ;
 }
+
+.board-textarea{
+	height:375px;
+}

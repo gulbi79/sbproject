@@ -20,6 +20,10 @@
         <typeAlias alias="mybatis" type="org.apache.ibatis.scripting.xmltags.XMLLanguageDriver"/>
     </typeAliases>
     
+    <typeHandlers>
+	  <typeHandler javaType="java.lang.Object" jdbcType="CLOB" handler="org.apache.ibatis.type.StringTypeHandler" />
+	</typeHandlers>
+    
     <!-- //sql 로그용도로 사용 -->
     <plugins>
 		<plugin interceptor="com.demo.boot.aop.MybatisLogInterceptor" />

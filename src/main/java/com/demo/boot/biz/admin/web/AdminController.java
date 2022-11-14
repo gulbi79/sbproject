@@ -68,4 +68,14 @@ public class AdminController {
     public ApiResponse<?> saveUser(@RequestBody Map<String, Object> params) {
     	return ApiResponse.createWrap(adminService.saveUser(params));
     }
+    
+    @PostMapping("boardlist")
+    public ApiResponse<?> selectBoard(@RequestBody Map<String, Object> params) {
+        return ApiResponse.createWrap(adminService.selectBoard(params));
+    }
+    
+    @PostMapping("boardreg")
+    public ApiResponse<?> saveBoard(@RequestBody Map<String, Object> params) {
+        return ApiResponse.createWrap(adminService.saveBoard(params));
+    }
 }
