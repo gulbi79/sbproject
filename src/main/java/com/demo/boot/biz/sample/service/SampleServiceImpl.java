@@ -3,7 +3,6 @@ package com.demo.boot.biz.sample.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,6 @@ import com.demo.boot.biz.sample.repository.SampleRepository;
 import com.demo.boot.utils.SqlContextHolder;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor

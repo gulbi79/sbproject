@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/basebiz}">
+
+<th:block layout:fragment="filter">
+	<th:block th:replace="~{layouts/fragments/filters :: inputFragment('Group','f_group')}"></th:block>
+	<th:block th:replace="~{layouts/fragments/filters :: pinputFragment('Popup Input','f_puser')}"></th:block>
+	<th:block th:replace="~{layouts/fragments/filters :: pinputFragment('Popup Code','f_pcode')}"></th:block>
+	<th:block th:replace="~{layouts/fragments/filters :: doublecalFragment('From~To','f_fromcal','f_tocal')}"></th:block>
+	<th:block th:replace="~{layouts/fragments/filters :: selectFragment('Select','f_select')}"></th:block>
+	<th:block th:replace="~{layouts/fragments/filters :: mselectFragment('Multiple','f_mselect')}"></th:block>
+</th:block>
+
+<th:block layout:fragment="content">
+	<div id="realgrid1" class="w-100 h-100"></div>
+</th:block>
+
+<th:block layout:fragment="contentjs">
+	<script>
+        var com_viewinfo = {
+			reportConfig: true,
+        	arrAllDim: [ //화면에서 사용될 전체 디멘전
+        		{dimCd: "DIM01", dimNm: "디멘전1"},
+        		{dimCd: "DIM02", dimNm: "디멘전2"},
+        		{dimCd: "DIM03", dimNm: "디멘전3"}
+        	],
+        	arrDim: [ //그리드에 그려질 실제 디멘전 - 기본디멘전 정의 후 디멘전 선택 팝업에서 선택한 디멘전을 갖고있는다.
+        		{dimCd: "DIM01", dimNm: "디멘전1"},
+        		{dimCd: "DIM02", dimNm: "디멘전2"},
+        	]
+		};
+        let gridInstance, grid, provider;
+        $(function() {
+			gfn_formInit(); //폼 공통로직 처리
+            fn_filterInit(); //필터초기화
+            fn_gridInit(); //그리드초기화
+            fn_eventInit(); //이벤트초기화
+        });
+
+        //필터초기화
+        async function fn_filterInit() {
+			//공통코드조회 후 필터 set
+			const comCode = await gfn_getCommonCode({groupCd: ['CITY','TREE']});
+	
+			//calendar set
+			$("#f_fromcal").data("calendarpicker").val("2022-08-15");
+			$("#f_tocal").data("calendarpicker").val("2022-12-31");
+			
+			//select
+			gfn_addFilterData($("#f_select"),'select',comCode.filter(v => v.groupCd === 'TREE'),'SALES');
+
+			//multi select
+			gfn_addFilterData($("#f_mselect"),'mselect',comCode.filter(v => v.groupCd === 'CITY'),['001','003']);
+        }
+
+        //그리드초기화
+        function fn_gridInit() {
+            const options = {
+				checkBar: { visible: false }
+			  , stateBar: { visible: false }
+			};
+			
+            gridInstance = new GRID().init({gridId: "realgrid1", draw: false, columns: [], fields: [], options: options});
+            grid = gridInstance.gridview;
+            provider = gridInstance.provider;
+        }
+        
+        //이벤트초기화
+        function fn_eventInit() {
+            $("#apply").on("click", function() {
+                fn_apply();
+            });
+        }
+        
+        //조회
+        async function fn_apply(sql = false) {
+            //service parameter set
+            let filterObj = gfn_setComParams();
+            
+            //유효성 검증
+            if (!fn_validation()) return false;
+
+			//그리드정보에 디멘전정보를 설정
+			gridInstance.setDimension(com_viewinfo.arrDim);
+            
+			//server api 요청
+			const pConfigs = {
+				url: 'sampleSub/sample1',
+				reqSql: sql,
+			    body: JSON.stringify(filterObj),
+			};
+			
+			const res = await gfn_service(pConfigs);
+			
+			if (sql) return;
+			
+			try {
+				//디멘전, 고정컬럼, bucket을 이용해서 그리드 컬럼정보를 만든다.
+				gfn_drawDynamicGrid(gridInstance, res.data.bucketList, {bucketType: "YEAR_MONTH_WEEK", bTotal1: false, bTotal2: false, bTotal3: false});
+				
+				//데이터 초기화 및 그리드 데이터 생성
+	            provider.clearRows();
+	            grid.cancel();
+	            provider.setRows(res.data.sampleList);
+	            
+	            provider.clearSavePoints();
+				provider.savePoint(); //초기화 포인트 저장
+			} catch(e) { console.log(e); }
+        }
+        
+        function fn_validation() {
+            return true;
+        }
+
+		//filter 팝업에서 호출됨
+        function fn_comPopup(pType) {
+			console.log('fn_comPopup',pType);
+			switch (pType) {
+				case 'f_puser' :
+					$("#comm_popup").css("width", "100%").css("height", "400px").attr("src", GV_CONTEXT_PATH+"popup/user");
+					$('#c_popup').css('width','400px');
+					setTimeout(function() {
+						Metro.dialog.open('#c_popup',undefined,'사용자');
+					},100);
+					break;
+				case 'f_pcode' :
+					$("#comm_popup").css("width", "100%").css("height", "400px").attr("src", GV_CONTEXT_PATH+"popup/code");
+					$('#c_popup').css('width','400px');
+					setTimeout(function() {
+						Metro.dialog.open('#c_popup',undefined,'공통코드');
+					},100);
+					break;
+			}
+		}
+    </script>
+</th:block>
+</html>
